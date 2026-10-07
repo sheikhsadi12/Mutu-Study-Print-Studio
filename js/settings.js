@@ -9,7 +9,7 @@ import { DEFAULT_DEMO_CONTENT } from './demo-content.js';
 
 // Master Application State
 export const appState = {
-  theme: 'dark',
+  theme: 'light',
   watermarkEnabled: true,
   watermarkOpacity: 0.04,
   

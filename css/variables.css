@@ -17,6 +17,7 @@
 
 /* 2. THEME 1: DARK MAHOGANY (Default Royal Academic Dark) */
 html[data-theme="dark"] {
+  --app-stage-bg: #0c0608;
   --bg-page: #140b0e;
   --bg-page-gradient: radial-gradient(circle at 50% 15%, #24131a 0%, #140b0e 80%);
   --surface-card: #201217;
@@ -57,6 +58,7 @@ html[data-theme="dark"] {
 
 /* 3. THEME 2: WARM WHITE / IVORY (Crisp Daylight Academic Light) */
 html[data-theme="light"] {
+  --app-stage-bg: #EFE9DE;
   --bg-page: #FDFBF7;
   --bg-page-gradient: #FDFBF7;
   --surface-card: #F4EFE6;
@@ -77,7 +79,7 @@ html[data-theme="light"] {
   --table-stripe: #F9F5EC;
   --app-ui-bg: #EFE9DE;
   
-  /* Logo Theme Colors (Light Sync) */
+  /* Logo Theme Colors (Original Light Sync) */
   --logo-text-color: #350A0D;
   --logo-left-1: #710E29;
   --logo-left-2: #59091D;
@@ -105,10 +107,12 @@ html[data-theme="light"] {
 }
 
 body {
-  background-color: #080406;
+  background-color: var(--app-stage-bg, #0c0608);
+  color: var(--text-english);
   font-family: var(--font-english);
   margin: 0;
   padding: 0;
+  transition: background-color 0.25s ease, color 0.25s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

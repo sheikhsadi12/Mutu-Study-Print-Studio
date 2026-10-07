@@ -276,7 +276,148 @@ textarea.form-control {
   color: var(--text-english);
 }
 
-/* 5. Offline Connectivity Pill Indicator */
+/* 5. PWA Welcome & Intro Modal */
+.pwa-intro-dialog {
+  background: var(--surface-card-strong);
+  border: 1.5px solid var(--border-color);
+  border-radius: 16px;
+  padding: 26px 24px;
+  max-width: 500px;
+  width: 92%;
+  color: var(--text-english);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  animation: introPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes introPop {
+  0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.intro-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+.intro-brand-header img {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.intro-title-wrap h3 {
+  font-family: var(--font-english);
+  font-size: 1.25rem;
+  color: var(--accent-primary);
+  margin-bottom: 2px;
+}
+.intro-title-wrap span {
+  font-size: 0.8rem;
+  color: var(--text-english-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.intro-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-english);
+}
+
+.intro-features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 4px 0;
+}
+.intro-feature-card {
+  background: var(--surface-card-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.intro-feature-card strong {
+  font-size: 12px;
+  color: var(--accent-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.intro-feature-card p {
+  font-size: 11px;
+  color: var(--text-english-muted);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.intro-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+.intro-actions-row {
+  display: flex;
+  gap: 10px;
+}
+.intro-btn-primary {
+  flex: 1;
+  background: linear-gradient(135deg, var(--accent-primary), #ad3e20);
+  color: #fff;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 10px var(--accent-glow);
+  transition: all 0.2s ease;
+}
+.intro-btn-primary:hover {
+  filter: brightness(1.1);
+}
+.intro-btn-secondary {
+  flex: 1;
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-english);
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.intro-btn-secondary:hover {
+  border-color: var(--accent-primary);
+}
+
+.intro-dont-show {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-english-muted);
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+/* 6. Offline Connectivity Pill Indicator */
 .offline-pill {
   position: fixed;
   bottom: 16px;

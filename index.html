@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn" data-theme="dark">
+<html lang="bn" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,10 +15,10 @@
 
   <!-- PWA & Mobile Web Capabilities -->
   <link rel="manifest" href="./manifest.json" />
-  <meta name="theme-color" content="#140b0e" />
+  <meta name="theme-color" content="#FDFBF7" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="MutuStudy" />
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
   <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
@@ -41,6 +41,12 @@
     </div>
 
     <div class="ui-actions">
+      <!-- App Intro Button -->
+      <button class="ui-btn" id="openIntroBtn" onclick="openPWAIntro()" title="অ্যাপ পরিচিতি ও ফিচার গাইড">
+        <span>ℹ️</span>
+        <span>পরিচিতি</span>
+      </button>
+
       <!-- PWA Install Action Button (Auto-detects browser / hides if already installed) -->
       <button class="ui-btn pwa-install-btn" id="pwaInstallBtn" style="display: none;" title="Install MUTU STUDY as a desktop or mobile application">
         <span>📲</span>
@@ -53,10 +59,10 @@
         <span>স্টুডিও সেটিংস (Settings)</span>
       </button>
 
-      <!-- Dual Theme Switcher Button -->
-      <button class="ui-btn" id="themeToggleBtn" onclick="toggleAcademicTheme()">
-        <span id="themeBtnIcon">☀️</span>
-        <span id="themeBtnText">Switch to Warm White</span>
+      <!-- Dual Theme Switcher Button (Defaults to Light, click switches to Dark) -->
+      <button class="ui-btn" id="themeToggleBtn">
+        <span id="themeBtnIcon">🌙</span>
+        <span id="themeBtnText">Switch to Dark Mahogany</span>
       </button>
 
       <!-- Print / Export to PDF Action Button -->
@@ -231,6 +237,20 @@
               <input type="range" min="1" max="12" id="cfgWatermarkOpacity" oninput="document.getElementById('cfgOpacityVal').innerText=this.value+'%'">
             </div>
           </div>
+
+          <div class="settings-group">
+            <div class="settings-group-title">🔔 PWA নোটিফিকেশন ও স্ট্যাটাস বার ব্যাজ</div>
+            <p style="font-size:11.5px; color:var(--text-english-muted); margin-bottom:4px;">
+              নোটিফিকেশন সক্রিয় করলে আপনার মোবাইল বা পিসির স্ট্যাটাস বারে টাইম/ডেটের পাশে আপনার ব্র্যান্ডের সাদা মিনি আইকন প্রদর্শিত হবে।
+            </p>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+              <span style="font-size:12px;">সিস্টেম নোটিফিকেশন চেক:</span>
+              <button class="ui-btn" type="button" onclick="requestNotificationPermissionAndSendDemo()">
+                <span>🔔</span>
+                <span>নোটিফিকেশন টেস্ট করুন</span>
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -241,6 +261,67 @@
         <button class="ui-btn print-now-btn" id="saveSettingsBtn" onclick="saveAllSettings()">✓ সেভ ও লাইভ আপডেট করুন</button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       PWA WELCOME & FEATURE INTRO MODAL
+       ======================================================================== -->
+  <div class="modal-overlay no-print" id="pwaIntroModal" role="dialog" aria-modal="true" aria-labelledby="introModalTitle">
+    <div class="pwa-intro-dialog">
+      <div class="intro-brand-header">
+        <img src="./icons/icon.svg" alt="MUTU STUDY Logo" width="46" height="46" />
+        <div class="intro-title-wrap">
+          <h3 id="introModalTitle">MUTU STUDY A4 Studio</h3>
+          <span>Academic Publishing &amp; Auto-Pagination PWA</span>
+        </div>
+      </div>
+
+      <p class="intro-desc">
+        স্বাগতম <strong>MUTU STUDY পাবলিশিং স্টুডিওতে</strong>! এটি উচ্চমাধ্যমিক ও বিশ্ববিদ্যালয়ের দ্বৈত-ভাষিক লেকচার নোট, একাডেমিক শিট ও মুদ্রণ-উপযোগী A4 প্রকাশনার জন্য একটি স্বয়ংসম্পূর্ণ প্রগ্রেসিভ ওয়েব অ্যাপ (PWA)।
+      </p>
+
+      <div class="intro-features-grid">
+        <div class="intro-feature-card">
+          <strong>📄 নিখুঁত A4 পেজিনেশন</strong>
+          <p>স্বয়ংক্রিয় হাইট-মেজারমেন্ট ও ডাইনামিক পেজ কাউন্টার (PAGE 01 / 02)।</p>
+        </div>
+        <div class="intro-feature-card">
+          <strong>🌗 দ্বৈত একাডেমিক থিম</strong>
+          <p>ডার্ক মেহগনি ও ওয়াম হোয়াইট (লাইট) মোডের সাথে সিঙ্কড ভেক্টর লোগো।</p>
+        </div>
+        <div class="intro-feature-card">
+          <strong>🔤 যুক্তবর্ণ-সুরক্ষিত ফন্ট</strong>
+          <p>হিন্দ শিলিগুড়ি ও ওপেনটাইপ লিগেচার ফিক্স—কোনো ভাঙা অক্ষর নয়।</p>
+        </div>
+        <div class="intro-feature-card">
+          <strong>⚡ সম্পূর্ণ অফলাইন সাপোর্ট</strong>
+          <p>ক্যাশ মেমোরি ও সার্ভিস ওয়ার্কারের মাধ্যমে ইন্টারনেট ছাড়াই কার্যকর।</p>
+        </div>
+      </div>
+
+      <div class="intro-actions">
+        <div class="intro-actions-row">
+          <button class="intro-btn-primary" onclick="triggerInstallFromIntro()">
+            <span>📲</span>
+            <span>অ্যাপ ইনস্টল করুন (Install)</span>
+          </button>
+          <button class="intro-btn-secondary" onclick="closePWAIntro(false)">
+            <span>🚀</span>
+            <span>কাজ শুরু করুন</span>
+          </button>
+        </div>
+        <div style="display:flex; justify-content:center; margin-top:2px;">
+          <button class="ui-btn" type="button" style="font-size:11.5px; padding:4px 12px;" onclick="requestNotificationPermissionAndSendDemo()">
+            <span>🔔</span>
+            <span>নোটিফিকেশন ও ব্যাজ আইকন টেস্ট করুন</span>
+          </button>
+        </div>
+        <label class="intro-dont-show">
+          <input type="checkbox" id="introDontShowCheck" onchange="closePWAIntro(this.checked)" />
+          <span>পরবর্তীতে এই পরিচিতি বার্তাটি আর প্রদর্শন করবেন না</span>
+        </label>
+      </div>
     </div>
   </div>
 
