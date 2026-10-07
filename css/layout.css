@@ -1,0 +1,334 @@
+/* ==========================================================================
+   MUTU STUDY A4 STUDIO — A4 PHYSICAL PRINT & PAGE LAYOUT (layout.css)
+   ========================================================================== */
+
+/* 1. Document Stage Viewport */
+.document-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 24px 0 50px 0;
+}
+
+/* 2. Standard A4 Physical Page (210mm x 297mm Exact) */
+.a4-page {
+  width: var(--page-width);
+  height: var(--page-height);
+  min-height: var(--page-height);
+  max-height: var(--page-height);
+  background-color: var(--bg-page);
+  background-image: var(--bg-page-gradient);
+  color: var(--text-english);
+  padding: 9.5mm 13mm 7.5mm 13mm;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 14px 45px rgba(0, 0, 0, 0.6);
+  box-sizing: border-box;
+  overflow: hidden;
+  page-break-after: always;
+  break-after: page;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* 3. Subtle Anti-Piracy Watermark */
+.page-watermark {
+  position: absolute;
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 135mm; 
+  height: 135mm;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--watermark-opacity);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.page-watermark svg { 
+  width: 100%; 
+  height: 100%; 
+}
+.watermark-disabled .page-watermark { 
+  display: none !important; 
+}
+
+/* 4. Page Structural Layers */
+.page-header, 
+.page-content-area, 
+.page-footer, 
+.cover-page-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fixed Slim Running Header */
+.page-header {
+  flex: 0 0 auto;
+  height: 40px;
+  border-bottom: 1.2px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+}
+.header-branding { 
+  display: flex; 
+  align-items: center; 
+}
+.header-meta {
+  font-size: 7.6pt;
+  color: var(--text-english-muted);
+  text-align: right;
+  line-height: 1.35;
+  font-weight: 500;
+}
+.header-meta strong { 
+  color: var(--accent-secondary); 
+}
+
+/* Confined Dynamic Content Area */
+.page-content-area {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  overflow: hidden;
+}
+
+/* Fixed Slim Running Footer */
+.page-footer {
+  flex: 0 0 auto;
+  height: 26px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 7.4pt;
+  color: var(--text-bengali-secondary);
+  margin-top: 5px;
+}
+.footer-left-meta { 
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+}
+.footer-tagline-badge {
+  font-family: var(--font-english);
+  font-size: 6.8pt;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-secondary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.footer-page-num {
+  font-family: var(--font-english);
+  font-size: 8pt;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  letter-spacing: 0.06em;
+}
+
+/* 5. MULTIPLE COVER PAGE THEMES */
+.a4-cover-page {
+  padding: 14mm 16mm 12mm 16mm;
+  justify-content: space-between;
+}
+
+/* Theme 1: Royal Classic Frame */
+.cover-theme-royal .cover-border-frame {
+  position: absolute;
+  top: 8mm; left: 8mm; right: 8mm; bottom: 8mm;
+  border: 1.2px solid var(--border-strong);
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 1;
+}
+.cover-theme-royal .cover-border-frame::after {
+  content: "";
+  position: absolute;
+  top: 3.5px; left: 3.5px; right: 3.5px; bottom: 3.5px;
+  border: 0.75px dashed var(--border-subtle);
+}
+
+.cover-page-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  padding: 6mm 4mm;
+}
+
+.cover-top-badge-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.cover-kicker {
+  font-family: var(--font-cinzel);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--accent-secondary);
+  text-transform: uppercase;
+}
+.cover-subject-pill {
+  background: var(--surface-card);
+  border: 1.2px solid var(--border-color);
+  padding: 4px 16px;
+  border-radius: 30px;
+  font-family: var(--font-english);
+  font-size: 9.5pt;
+  font-weight: 600;
+  color: var(--text-english);
+  letter-spacing: 0.06em;
+}
+
+.cover-title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 90%;
+}
+.cover-ornament-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 160px;
+}
+.cover-ornament-line::before, 
+.cover-ornament-line::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--accent-primary);
+  opacity: 0.5;
+}
+.cover-ornament-line span {
+  color: var(--accent-secondary);
+  font-size: 11px;
+}
+
+.cover-main-en-title {
+  font-family: var(--font-display);
+  font-size: 23pt;
+  line-height: 1.22;
+  font-weight: 700;
+  color: var(--text-english);
+  letter-spacing: -0.01em;
+}
+.cover-main-bn-title {
+  font-family: var(--font-bengali);
+  font-size: 16pt;
+  line-height: 1.45;
+  color: var(--accent-secondary);
+  font-weight: 600;
+}
+
+.cover-meta-grid {
+  width: 100%;
+  max-width: 140mm;
+  background: var(--surface-card);
+  border: 1.2px solid var(--border-color);
+  border-left: 4.5px solid var(--accent-primary);
+  border-radius: 8px;
+  padding: 12px 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  text-align: left;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+.cover-meta-item strong {
+  display: block;
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-secondary);
+  font-family: var(--font-english);
+  margin-bottom: 2px;
+}
+.cover-meta-item span {
+  font-size: 9.5pt;
+  color: var(--text-english);
+  font-weight: 600;
+}
+.cover-footer-imprint {
+  font-family: var(--font-cinzel);
+  font-size: 7.8pt;
+  letter-spacing: 0.16em;
+  color: var(--text-english-muted);
+  text-transform: uppercase;
+}
+
+/* Theme 2: Modern Editorial Split */
+.cover-theme-minimal .cover-page-content {
+  text-align: left;
+  align-items: flex-start;
+  padding: 10mm 6mm;
+  border-left: 5px solid var(--accent-primary);
+  padding-left: 18mm;
+}
+.cover-theme-minimal .cover-title-block { 
+  align-items: flex-start; 
+  max-width: 100%; 
+}
+.cover-theme-minimal .cover-meta-grid { 
+  max-width: 100%; 
+}
+
+/* Theme 3: Grand Academic Seal */
+.cover-theme-seal .cover-page-content {
+  justify-content: space-around;
+}
+
+/* 6. STRICT PRINT TO PDF RULES */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0 !important;
+  }
+  body { 
+    background: transparent !important; 
+  }
+  .no-print, 
+  .screen-control-bar, 
+  .modal-overlay { 
+    display: none !important; 
+  }
+  .document-stage { 
+    padding: 0 !important; 
+    margin: 0 !important; 
+    gap: 0 !important; 
+  }
+  .a4-page {
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    padding: 9.5mm 13mm 7.5mm 13mm !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  .a4-cover-page {
+    padding: 14mm 16mm 12mm 16mm !important;
+  }
+}

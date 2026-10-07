@@ -1,0 +1,10 @@
+/* ==========================================================================
+   MUTU STUDY A4 STUDIO — MASTER STYLESHEET MANIFEST (css/style.css)
+   Imports all modular stylesheets into a single unified cascade.
+   ========================================================================== */
+
+@import "./variables.css";
+@import "./typography.css";
+@import "./layout.css";
+@import "./components.css";
+@import "./ui.css";

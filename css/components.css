@@ -1,0 +1,364 @@
+/* ==========================================================================
+   MUTU STUDY A4 STUDIO — CONTENT MODULES & CARDS (components.css)
+   ========================================================================== */
+
+/* 1. Module Heading & Section Separator */
+.module-heading {
+  font-size: 8.4pt;
+  font-weight: 700;
+  letter-spacing: normal !important;
+  text-transform: none;
+  color: var(--accent-primary);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.module-heading::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-color), transparent);
+}
+
+/* 2. Chapter Hero Banner */
+.chapter-hero-banner {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-left: 4.5px solid var(--accent-primary);
+  border-radius: 5px;
+  padding: 7px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+.chapter-hero-banner h1 {
+  font-family: var(--font-display);
+  font-size: 12.5pt;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-english);
+}
+.chapter-hero-banner .bn-sub {
+  font-size: 10.4pt;
+  color: var(--text-bengali);
+  font-weight: 600;
+  margin-top: 1.5px;
+}
+.chapter-meta-pill {
+  background: var(--surface-card-strong);
+  border: 1px solid var(--border-color);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 7.2pt;
+  color: var(--accent-secondary);
+  text-align: right;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 3. Bilingual Reading Passage Card */
+.bilingual-passage-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.passage-en {
+  font-size: 9.9pt;
+  color: var(--text-english);
+  text-align: left;
+  font-weight: 500;
+}
+.passage-bn {
+  border-top: 1px dashed var(--border-color);
+  padding-top: 5px;
+  font-size: 9.8pt;
+  color: var(--text-bengali);
+  text-align: left;
+}
+
+/* 4. Sentence Analytical Breakdown Card */
+.sentence-breakdown-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 7px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5px;
+}
+.st-en {
+  font-size: 10.4pt;
+  font-weight: 600;
+  color: var(--text-english);
+}
+.st-bn {
+  font-size: 9.9pt;
+  color: var(--text-bengali);
+  padding-left: 8px;
+  border-left: 3px solid var(--accent-primary);
+}
+
+/* 5. Contextual Explanation Card */
+.explanation-card {
+  background: var(--surface-card-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 5px;
+  padding: 7px 11px;
+  font-size: 9.4pt;
+  color: var(--text-english-muted);
+}
+.explanation-card strong {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+/* 6. High-Density Vocabulary Matrix Grid */
+.vocab-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+.vocab-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 5px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5px;
+}
+.vocab-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.vocab-en-term {
+  font-size: 9.2pt;
+  font-weight: 700;
+  color: var(--text-english);
+}
+.vocab-badge {
+  font-size: 6.5pt;
+  background: var(--surface-card-strong);
+  border: 1px solid var(--border-color);
+  color: var(--accent-secondary);
+  padding: 1px 4.5px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.vocab-bn-meaning {
+  font-size: 8.9pt;
+  color: var(--text-bengali);
+}
+.vocab-synonym {
+  font-size: 7.2pt;
+  color: var(--text-english-muted);
+  border-top: 1px dotted var(--border-subtle);
+  padding-top: 1.5px;
+  margin-top: 1px;
+}
+
+/* 7. Grammar Analysis Card */
+.grammar-analysis-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-left: 3.5px solid var(--accent-secondary);
+  border-radius: 5px;
+  padding: 7px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.grammar-rule-name {
+  font-size: 9.3pt;
+  font-weight: 700;
+  color: var(--text-english);
+}
+.grammar-formula-chip {
+  font-family: monospace;
+  font-size: 8.1pt;
+  color: var(--accent-secondary);
+  background: var(--surface-card-strong);
+  padding: 2px 7px;
+  border-radius: 3.5px;
+  border: 1px solid var(--border-subtle);
+  display: inline-block;
+  width: fit-content;
+}
+.grammar-explanation {
+  font-size: 9.3pt;
+  color: var(--text-bengali);
+}
+.grammar-example-row {
+  margin-top: 3px;
+  padding-top: 3px;
+  border-top: 1px dashed var(--border-subtle);
+  font-size: 8.8pt;
+}
+.example-en { 
+  font-weight: 600; 
+  color: var(--text-english); 
+}
+.example-bn { 
+  color: var(--text-bengali-secondary); 
+}
+
+/* 8. Academic Comparative Table */
+.academic-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.5pt;
+  text-align: left;
+}
+.academic-table th {
+  background: var(--surface-card-strong);
+  color: var(--accent-secondary);
+  font-weight: 700;
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  font-size: 7.7pt;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.academic-table td {
+  padding: 3.8px 8px;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-english);
+  background: var(--surface-card);
+}
+.academic-table tr:nth-child(even) td { 
+  background: var(--table-stripe); 
+}
+.academic-table .bn-cell { 
+  color: var(--text-bengali); 
+}
+
+/* 9. Teacher's Corner & Admission Hacks */
+.teachers-corner-card {
+  background: var(--surface-card-subtle);
+  border: 1px solid var(--border-color);
+  border-left: 3.5px solid var(--accent-primary);
+  border-radius: 5px;
+  padding: 6.5px 10.5px;
+}
+.tc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+}
+.tc-title {
+  font-size: 7.8pt;
+  font-weight: 700;
+  color: var(--accent-primary);
+  letter-spacing: normal !important;
+}
+.tc-tag {
+  font-size: 6.5pt;
+  background: var(--accent-primary);
+  color: #fff;
+  padding: 1px 4.5px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+.tc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  font-size: 8.7pt;
+}
+.tc-item strong {
+  color: var(--accent-secondary);
+  display: block;
+  font-size: 8.3pt;
+  margin-bottom: 1px;
+}
+
+/* 10. Editorial Quote Box */
+.editorial-quote-box {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 7px 11px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.quote-en {
+  font-family: var(--font-display);
+  font-size: 10.6pt;
+  font-style: italic;
+  color: var(--accent-secondary);
+}
+.quote-bn {
+  font-size: 9.6pt;
+  color: var(--text-bengali);
+}
+
+/* 11. Mnemonic Chhanda Ribbon */
+.mnemonic-ribbon {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-top: 2.5px solid var(--accent-primary);
+  padding: 5.5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
+}
+.mnemonic-pill {
+  background: var(--accent-primary);
+  color: #fff;
+  font-size: 7pt;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: normal !important;
+  white-space: nowrap;
+}
+.mnemonic-text {
+  font-size: 9.3pt;
+  color: var(--text-english);
+}
+.mnemonic-text em {
+  color: var(--accent-secondary);
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* 12. Board & Admission Practice Question Card */
+.practice-question-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 6.5px 10.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+}
+.pq-title {
+  font-size: 7.6pt;
+  font-weight: 700;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+}
+.pq-content {
+  font-size: 9.1pt;
+  color: var(--text-english);
+}
+.pq-answer {
+  font-size: 8.8pt;
+  color: var(--text-bengali-secondary);
+  background: var(--surface-card-subtle);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-top: 1.5px;
+}

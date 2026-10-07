@@ -1,0 +1,55 @@
+/* ==========================================================================
+   MUTU STUDY A4 STUDIO — TYPOGRAPHY & LIGATURE SAFE ENGINE (typography.css)
+   ========================================================================== */
+
+/* 1. Google Fonts Extended Library */
+@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap');
+
+/* 2. Local Font-Face Fallback */
+@font-face {
+  font-family: 'Cinzel Decorative';
+  src: local('Cinzel Decorative Bold'), local('Cinzel Decorative'), url('CinzelDecorative.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* 3. Bengali Typography Engine (যুক্তবর্ণ ও ল্যাগেচার ফিক্স - Zero Broken Glyphs) */
+.bn-text, 
+[lang="bn"], 
+.passage-bn, 
+.st-bn, 
+.vocab-bn-meaning, 
+.grammar-explanation, 
+.explanation-card, 
+.bn-cell, 
+.quote-bn, 
+.mnemonic-text, 
+.pq-answer, 
+.bn-sub {
+  font-family: var(--font-bengali) !important;
+  letter-spacing: normal !important;
+  word-spacing: normal;
+  line-height: 1.62 !important;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+/* 4. English Typography Engine */
+.en-text, 
+.passage-en, 
+.st-en, 
+.vocab-en-term, 
+.grammar-rule-name, 
+.example-en, 
+.pq-content {
+  font-family: var(--font-english);
+  letter-spacing: -0.01em;
+  line-height: 1.48;
+}
+
+/* Global Font Scale Support for A4 Pages */
+.a4-page {
+  font-size: calc(10pt * var(--global-font-scale, 1));
+}

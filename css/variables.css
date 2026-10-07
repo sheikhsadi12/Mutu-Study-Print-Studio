@@ -1,0 +1,115 @@
+/* ==========================================================================
+   MUTU STUDY A4 STUDIO — DESIGN TOKENS & COLOR THEMES (variables.css)
+   ========================================================================== */
+
+/* 1. Global Dimensions & Design Tokens */
+:root {
+  --font-cinzel: 'Cinzel Decorative', Georgia, serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-english: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-bengali: 'Hind Siliguri', 'Kalpurush', sans-serif;
+  
+  --page-width: 210mm;
+  --page-height: 297mm;
+  --watermark-opacity: 0.04;
+  --global-font-scale: 1;
+}
+
+/* 2. THEME 1: DARK MAHOGANY (Default Royal Academic Dark) */
+html[data-theme="dark"] {
+  --bg-page: #140b0e;
+  --bg-page-gradient: radial-gradient(circle at 50% 15%, #24131a 0%, #140b0e 80%);
+  --surface-card: #201217;
+  --surface-card-subtle: rgba(224, 122, 95, 0.06);
+  --surface-card-strong: #2a1820;
+  
+  --accent-primary: #e07a5f;
+  --accent-secondary: #e89982;
+  --accent-glow: rgba(224, 122, 95, 0.22);
+  --border-color: rgba(232, 153, 130, 0.22);
+  --border-subtle: rgba(232, 153, 130, 0.12);
+  --border-strong: rgba(232, 153, 130, 0.45);
+  
+  --text-english: #f6efe9;
+  --text-english-muted: #b8aba2;
+  --text-bengali: #d1b8c4;
+  --text-bengali-secondary: #a38d97;
+  --table-stripe: #1c0f14;
+  --app-ui-bg: #1c0e13;
+  
+  /* Logo Theme Colors (Dark Sync) */
+  --logo-text-color: #f6efe9;
+  --logo-left-1: #e2856c;
+  --logo-left-2: #c4583d;
+  --logo-left-3: #8a2415;
+  --logo-center-1: #f0967d;
+  --logo-center-2: #ad462f;
+  --logo-center-3: #63170c;
+  --logo-gold-1: #ffe694;
+  --logo-gold-2: #f3b23e;
+  --logo-gold-3: #cf6f1b;
+  --logo-cap-board-1: #e2856c;
+  --logo-cap-board-2: #a33b24;
+  --logo-cap-board-3: #5e160c;
+  --logo-cap-base: #3d0815;
+  --logo-cap-tassel: #ffe694;
+}
+
+/* 3. THEME 2: WARM WHITE / IVORY (Crisp Daylight Academic Light) */
+html[data-theme="light"] {
+  --bg-page: #FDFBF7;
+  --bg-page-gradient: #FDFBF7;
+  --surface-card: #F4EFE6;
+  --surface-card-subtle: #FAF6EF;
+  --surface-card-strong: #EDE5D8;
+  
+  --accent-primary: #4A1112;
+  --accent-secondary: #7A1D20;
+  --accent-glow: rgba(74, 17, 18, 0.12);
+  --border-color: #E2DAC8;
+  --border-subtle: #ECE5D8;
+  --border-strong: #C9BDA5;
+  
+  --text-english: #1F1B1C;
+  --text-english-muted: #574F52;
+  --text-bengali: #2D2427;
+  --text-bengali-secondary: #6B5E63;
+  --table-stripe: #F9F5EC;
+  --app-ui-bg: #EFE9DE;
+  
+  /* Logo Theme Colors (Light Sync) */
+  --logo-text-color: #350A0D;
+  --logo-left-1: #710E29;
+  --logo-left-2: #59091D;
+  --logo-left-3: #320310;
+  --logo-center-1: #5a0a1f;
+  --logo-center-2: #420615;
+  --logo-center-3: #24020a;
+  --logo-gold-1: #D6A13B;
+  --logo-gold-2: #C7892E;
+  --logo-gold-3: #C1621A;
+  --logo-cap-board-1: #5a1327;
+  --logo-cap-board-2: #3b0918;
+  --logo-cap-board-3: #24040c;
+  --logo-cap-base: #24040c;
+  --logo-cap-tassel: #D6A13B;
+}
+
+/* 4. Global Baseline Resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+body {
+  background-color: #080406;
+  font-family: var(--font-english);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
