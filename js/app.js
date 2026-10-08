@@ -184,8 +184,8 @@ export async function triggerPWAInstall() {
     return;
   }
 
-  // 4. In a top-level window, wait up to 2.2 seconds in case beforeinstallprompt is firing asynchronously
-  showToast("ইনস্টলারের সাথে সংযোগ স্থাপন হচ্ছে...", 2000);
+  // 4. In a top-level window, wait up to 2.5 seconds in case beforeinstallprompt is firing asynchronously
+  showToast("ইনস্টলার প্রস্তুত হচ্ছে...", 1800);
   const eventFired = await new Promise((resolve) => {
     if (window.__pwaInstallPrompt || deferredInstallPrompt) return resolve(true);
     const onPrompt = () => {
@@ -196,18 +196,20 @@ export async function triggerPWAInstall() {
     setTimeout(() => {
       window.removeEventListener('pwa-prompt-ready', onPrompt);
       resolve(false);
-    }, 2200);
+    }, 2500);
   });
 
   const readyPrompt = window.__pwaInstallPrompt || deferredInstallPrompt;
-  if (eventFired && readyPrompt) {
+  if (readyPrompt) {
     try {
       await readyPrompt.prompt();
       const choice = await readyPrompt.userChoice;
-      if (choice.outcome === 'accepted') {
-        showToast("🎉 MUTU STUDY অ্যাপ ইনস্টলেশন শুরু হয়েছে!");
+      if (choice && choice.outcome === 'accepted') {
+        showToast("🎉 MUTU STUDY অ্যাপ ইনস্টলেশন সম্পন্ন হয়েছে!");
         window.__pwaInstallPrompt = null;
         deferredInstallPrompt = null;
+        const btn = document.getElementById('pwaInstallBtn');
+        if (btn) btn.style.display = 'none';
       }
       return;
     } catch (err) {
@@ -215,8 +217,8 @@ export async function triggerPWAInstall() {
     }
   }
 
-  // 5. If browser still did not supply prompt event (e.g. prompt previously dismissed, or unsupported browser engine)
-  openPWADiagnosticModal();
+  // 5. If browser did not supply prompt event
+  showToast("ইনস্টল ডায়ালগ পেতে পেজটি একবার রিলোড করে 'অ্যাপ ইনস্টল করুন' চাপুন।", 3500);
 }
 
 /**
@@ -368,10 +370,10 @@ export function openPWADiagnosticModal() {
     if (promptDesc) promptDesc.innerText = 'ব্রাউজার সিকিউরিটি প্রিভিউ আইফ্রেমে ইনস্টল ব্লক রাখে। নতুন ট্যাবে খুলুন।';
   } else {
     if (promptElem) {
-      promptElem.innerText = 'ℹ️ ব্রাউজার মেনু থেকে ইনস্টলযোগ্য';
+      promptElem.innerText = 'ℹ️ ইনস্টল সক্রিয়';
       promptElem.style.color = '#F59E0B';
     }
-    if (promptDesc) promptDesc.innerText = 'ব্রাউজারের অ্যাড্রেস বারের Install (⬇) আইকন অথবা মেনুর "Add to Home Screen" অপশন ব্যবহার করুন।';
+    if (promptDesc) promptDesc.innerText = 'ইনস্টল ডায়ালগ সরাসরি পেতে পেজটি একবার রিলোড করুন অথবা "অ্যাপ ইনস্টল করুন" বাটনে চাপুন।';
   }
 }
 

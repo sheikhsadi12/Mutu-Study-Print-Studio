@@ -15,7 +15,6 @@
 
   <!-- PWA & Mobile Web Capabilities -->
   <link rel="manifest" href="/manifest.webmanifest" />
-  <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#4A1112" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -26,10 +25,23 @@
   <link rel="alternate icon" type="image/png" href="/icons/icon-192.png" />
 
   <script>
-    // Ultra-Early PWA Lifecycle Handler (captures event from millisecond zero)
+    // Ultra-Early PWA Lifecycle Handler & Instant SW Registration
     window.__pwaInstallPrompt = null;
     window.__pwaIsStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                                (window.navigator.standalone === true);
+
+    // Register Service Worker from millisecond zero to accelerate browser PWA heuristics
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then(function(reg) {
+          console.log('[MUTU PWA] Early SW registered successfully with scope:', reg.scope);
+        })
+        .catch(function(err) {
+          console.warn('[MUTU PWA] Early SW registration failed:', err);
+        });
+    }
+
+    // Capture beforeinstallprompt event immediately
     window.addEventListener('beforeinstallprompt', function(e) {
       e.preventDefault();
       window.__pwaInstallPrompt = e;
@@ -40,6 +52,7 @@
         btn.style.display = 'inline-flex';
       }
     });
+
     window.addEventListener('appinstalled', function() {
       window.__pwaInstallPrompt = null;
       window.__pwaIsStandalone = true;
@@ -48,6 +61,26 @@
       var btn = document.getElementById('pwaInstallBtn');
       if (btn) btn.style.display = 'none';
     });
+
+    // Instant 1-Click Auto-Prompt Handler for external window or ?install=1
+    if (window.location.search.includes('install=1')) {
+      var triggered = false;
+      var tryAutoPrompt = function() {
+        if (!triggered && window.__pwaInstallPrompt) {
+          triggered = true;
+          window.__pwaInstallPrompt.prompt().then(function(choice) {
+            console.log('[MUTU PWA] Auto-install outcome:', choice.outcome);
+          }).catch(function(err) {
+            console.warn('[MUTU PWA] Auto-prompt error:', err);
+          });
+        }
+      };
+      window.addEventListener('pwa-prompt-ready', function() {
+        setTimeout(tryAutoPrompt, 150);
+      });
+      setTimeout(tryAutoPrompt, 600);
+      setTimeout(tryAutoPrompt, 1500);
+    }
   </script>
 
   <!-- Modular CSS Hierarchy -->
@@ -597,13 +630,13 @@
       </p>
 
       <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
-        <a id="pwaOpenTabBtn" href="./" target="_blank" rel="noopener noreferrer" class="intro-btn-primary" style="text-decoration: none; justify-content: center; text-align: center;">
+        <a id="pwaOpenTabBtn" href="./?install=1" target="_blank" rel="noopener noreferrer" class="intro-btn-primary" style="text-decoration: none; justify-content: center; text-align: center;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-            <polyline points="15 3 21 3 21 9"/>
-            <line x1="10" y1="14" x2="21" y2="3"/>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          <span>🚀 নতুন ট্যাবে খুলুন ও ১-ক্লিকে ইনস্টল করুন</span>
+          <span>⚡ ১-ক্লিকে অ্যাপ ইনস্টল করুন</span>
         </a>
 
         <button class="intro-btn-secondary" onclick="closePWAFrameModal()" style="justify-content: center;">
