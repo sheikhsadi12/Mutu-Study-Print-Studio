@@ -242,11 +242,12 @@ export function saveAllSettings() {
  * Resets Content Input to Default Lecture Content Pool
  */
 export function resetDemoContent() {
-  if (confirm("আপনি কি ডেমো কন্টেন্ট রিস্টোর করতে চান? আপনার বর্তমান কন্টেন্ট প্রতিস্থাপিত হবে।")) {
-    const input = document.getElementById('cfgRawContentInput');
-    if (input) {
-      input.value = DEFAULT_DEMO_CONTENT;
-      appState.rawContentHtml = DEFAULT_DEMO_CONTENT;
+  const input = document.getElementById('cfgRawContentInput');
+  if (input) {
+    input.value = DEFAULT_DEMO_CONTENT;
+    appState.rawContentHtml = DEFAULT_DEMO_CONTENT;
+    if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+      window.showToast("ডেমো কন্টেন্ট সফলভাবে রিস্টোর করা হয়েছে।");
     }
   }
 }

@@ -107,6 +107,35 @@ function initServiceWorker() {
 }
 
 /**
+ * Studio Non-Blocking Glassmorphic Toast Notification
+ * (Strict compliance with iframe sandbox & zero window.alert policy)
+ * @param {string} message 
+ * @param {number} [duration=3500] 
+ */
+export function showToast(message, duration = 3500) {
+  let toast = document.getElementById('studioToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'studioToast';
+    toast.className = 'studio-toast no-print';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="16" x2="12" y2="12"/>
+      <line x1="12" y1="8" x2="12.01" y2="8"/>
+    </svg>
+    <span>${message}</span>
+  `;
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, duration);
+}
+
+/**
  * Configures In-App PWA Install Prompts (Android/Chromium & iOS)
  */
 function initInstallPrompt() {
@@ -138,6 +167,7 @@ function initInstallPrompt() {
       installBtn.style.display = 'none';
     }
     closePWAIntro(true);
+    showToast("MUTU STUDY অ্যাপটি সফলভাবে আপনার ডিভাইসে ইনস্টল হয়েছে!");
   });
 
   if (installBtn) {
@@ -153,11 +183,12 @@ function initInstallPrompt() {
         deferredInstallPrompt = null;
         if (outcome === 'accepted') {
           installBtn.style.display = 'none';
+          showToast("ইনস্টলেশন শুরু হয়েছে...");
         }
       } else if (isIOS) {
         openIOSInstallDialog();
       } else {
-        alert("অ্যাপটি ইনস্টল করতে আপনার ব্রাউজারের অ্যাড্রেস বারের Install (⬇) বা মেনু থেকে 'Add to Home Screen' ক্লিক করুন।");
+        showToast("ইনস্টল করতে ব্রাউজারের অ্যাড্রেস বারের Install (⬇) বা মেনু থেকে 'Add to Home Screen' ক্লিক করুন।");
       }
     });
   }
@@ -199,6 +230,7 @@ export async function triggerInstallFromIntro() {
     deferredInstallPrompt = null;
     if (outcome === 'accepted' && installBtn) {
       installBtn.style.display = 'none';
+      showToast("ইনস্টলেশন শুরু হয়েছে...");
     }
   } else {
     const userAgent = window.navigator.userAgent.toLowerCase();
@@ -206,7 +238,7 @@ export async function triggerInstallFromIntro() {
     if (isIOS) {
       openIOSInstallDialog();
     } else {
-      alert("অ্যাপটি ইনস্টল করতে আপনার ব্রাউজারের অ্যাড্রেস বারের Install (⬇) আইকন বা মেনু থেকে 'Add to Home Screen' ক্লিক করুন।");
+      showToast("ইনস্টল করতে ব্রাউজারের অ্যাড্রেস বারের Install (⬇) বা মেনু থেকে 'Add to Home Screen' ক্লিক করুন।");
     }
   }
 }
@@ -230,7 +262,7 @@ export function closeIOSInstallDialog() {
  */
 export async function requestNotificationPermissionAndSendDemo() {
   if (!('Notification' in window)) {
-    alert('দুঃখিত, এই ব্রাউজারটিতে ওয়েব নোটিফিকেশন সুবিধা পাওয়া যায়নি।');
+    showToast('দুঃখিত, এই ব্রাউজারটিতে ওয়েব নোটিফিকেশন সুবিধা পাওয়া যায়নি।');
     return;
   }
 
@@ -265,7 +297,7 @@ export async function requestNotificationPermissionAndSendDemo() {
         badge: './icons/badge-72x72.png'
       });
     } else if (permission === 'denied') {
-      alert('নোটিফিকেশন অনুমতি ব্লক করা রয়েছে। ব্রাউজারের সাইট সেটিংস থেকে নোটিফিকেশন এলাও করুন।');
+      showToast('নোটিফিকেশন অনুমতি ব্লক করা রয়েছে। সাইট সেটিংস থেকে নোটিফিকেশন এলাও করুন।');
     }
   } catch (err) {
     console.warn('[MUTU PWA] Notification trigger error:', err);
@@ -293,6 +325,131 @@ function initNetworkStatusListener() {
 }
 
 /**
+ * Extracts and sanitizes the primary document title for clean PDF filename
+ * @returns {string} Sanitized title string
+ */
+export function getDocumentBaseTitle() {
+  if (appState.coverTitleEn && appState.coverTitleEn.trim()) {
+    return appState.coverTitleEn.trim().replace(/[/\\?%*:|"<>]/g, '-');
+  }
+  if (appState.headerCourse && appState.headerCourse.trim()) {
+    return appState.headerCourse.trim().replace(/[/\\?%*:|"<>]/g, '-');
+  }
+  return "MUTU STUDY Lecture";
+}
+
+/**
+ * Exports/Prints PDF with exact requested Theme suffix in filename
+ * Light PDF: "[Document Name] - Light Theme.pdf"
+ * Dark PDF:  "[Document Name] - Dark Theme.pdf"
+ * @param {'light' | 'dark' | null} [targetTheme=null]
+ */
+export function exportPDF(targetTheme = null) {
+  const currentTheme = appState.theme || document.documentElement.getAttribute('data-theme') || 'light';
+  const themeToApply = targetTheme || currentTheme;
+  const themeSuffix = (themeToApply === 'light') ? 'Light Theme' : 'Dark Theme';
+  const baseTitle = getDocumentBaseTitle();
+  const pdfFileName = `${baseTitle} - ${themeSuffix}`;
+
+  const previousTitle = document.title;
+  document.title = pdfFileName;
+
+  const isSwitchNeeded = (themeToApply !== currentTheme);
+  if (isSwitchNeeded) {
+    setTheme(themeToApply);
+  }
+
+  showToast(`PDF প্রস্তুত হচ্ছে: "${pdfFileName}.pdf"`, 2500);
+
+  setTimeout(() => {
+    window.print();
+
+    // After print dialog closes, restore title and theme if it was switched
+    setTimeout(() => {
+      document.title = previousTitle;
+      if (isSwitchNeeded) {
+        setTheme(currentTheme);
+      }
+    }, 1500);
+  }, isSwitchNeeded ? 140 : 40);
+}
+
+/**
+ * Opens Dual Theme PDF Export Dialog
+ */
+export function openDualExportModal() {
+  const modal = document.getElementById('dualExportModal');
+  const baseTitle = getDocumentBaseTitle();
+  const lightNameEl = document.getElementById('dualLightFileName');
+  const darkNameEl = document.getElementById('dualDarkFileName');
+  if (lightNameEl) lightNameEl.innerText = `${baseTitle} - Light Theme.pdf`;
+  if (darkNameEl) darkNameEl.innerText = `${baseTitle} - Dark Theme.pdf`;
+
+  if (modal) modal.classList.add('open');
+}
+
+/**
+ * Closes Dual Theme PDF Export Dialog
+ */
+export function closeDualExportModal() {
+  const modal = document.getElementById('dualExportModal');
+  if (modal) modal.classList.remove('open');
+}
+
+/**
+ * Sequential One-Click Dual PDF Export Flow
+ */
+export function sequentialDualExport() {
+  closeDualExportModal();
+  showToast("ধাপ ১/২: প্রথমে Light Theme PDF প্রিন্ট/সেভ করুন...", 2800);
+  exportPDF('light');
+
+  setTimeout(() => {
+    showToast("ধাপ ২/২: এখন Dark Theme PDF প্রিন্ট/সেভ করুন...", 3500);
+    setTimeout(() => {
+      exportPDF('dark');
+    }, 1000);
+  }, 2200);
+}
+
+/**
+ * Updates dynamic responsive scaling on mobile & tablet viewports
+ */
+export function updateResponsivePageScale() {
+  const viewportWidth = window.innerWidth;
+
+  if (viewportWidth <= 860 && !document.documentElement.classList.contains('view-mode-actual')) {
+    const a4PixelWidth = 794; // Standard 210mm in 96dpi CSS px
+    const availableWidth = Math.max(280, viewportWidth - 20);
+    const scale = Math.min(1, availableWidth / a4PixelWidth);
+    document.documentElement.style.setProperty('--doc-preview-scale', scale.toFixed(4));
+  } else {
+    document.documentElement.style.setProperty('--doc-preview-scale', '1');
+  }
+}
+
+/**
+ * Toggles between "Fit to Screen" (scaled mobile preview) and "100% Print View"
+ */
+export function toggleViewMode() {
+  const html = document.documentElement;
+  const isActual = html.classList.toggle('view-mode-actual');
+  const toggleBtnText = document.getElementById('viewModeBtnText');
+  const fabViewTooltip = document.getElementById('fabViewTooltip');
+
+  if (isActual) {
+    if (toggleBtnText) toggleBtnText.innerText = 'Fit to Screen';
+    if (fabViewTooltip) fabViewTooltip.innerText = 'Fit to Screen';
+    showToast("প্রিভিউ মোড: ১০০% আসল প্রিন্ট সাইজ (হরাইজন্টাল প্যানিং চালু)");
+  } else {
+    if (toggleBtnText) toggleBtnText.innerText = '100% Zoom';
+    if (fabViewTooltip) fabViewTooltip.innerText = '100% Zoom';
+    showToast("প্রিভিউ মোড: মোবাইল ফিট (স্ক্রিনের মাপে ফিট)");
+  }
+  updateResponsivePageScale();
+}
+
+/**
  * Attaches Event Handlers for UI Buttons
  */
 function bindUIEventListeners() {
@@ -303,7 +460,7 @@ function bindUIEventListeners() {
 
   const printBtn = document.getElementById('printNowBtn');
   if (printBtn) {
-    printBtn.addEventListener('click', () => window.print());
+    printBtn.addEventListener('click', () => exportPDF());
   }
 
   const settingsBtn = document.getElementById('openSettingsBtn');
@@ -345,12 +502,14 @@ window.addEventListener('DOMContentLoaded', () => {
   initInstallPrompt();
   initNetworkStatusListener();
 
-  // Initial Auto-Pagination
+  // Initial Responsive Sizing & Auto-Pagination
+  updateResponsivePageScale();
   runAutoPagination(appState);
 
   // Re-run once web fonts finish loading to prevent layout shifts
   if (document.fonts) {
     document.fonts.ready.then(() => {
+      updateResponsivePageScale();
       runAutoPagination(appState);
     });
   }
@@ -372,12 +531,16 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Debounced Window Resize Handler for Real-Time Auto-Pagination
+// Debounced Window Resize & Orientation Change Handler
 let resizeTimer;
-window.addEventListener('resize', () => {
+const handleViewportResize = () => {
+  updateResponsivePageScale();
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => runAutoPagination(appState), 150);
-});
+};
+
+window.addEventListener('resize', handleViewportResize);
+window.addEventListener('orientationchange', handleViewportResize);
 
 // Global Window Exports for direct HTML onclick binding & console access
 if (typeof window !== 'undefined') {
@@ -398,4 +561,12 @@ if (typeof window !== 'undefined') {
   window.closePWAIntro = closePWAIntro;
   window.triggerInstallFromIntro = triggerInstallFromIntro;
   window.requestNotificationPermissionAndSendDemo = requestNotificationPermissionAndSendDemo;
+  window.showToast = showToast;
+  window.getDocumentBaseTitle = getDocumentBaseTitle;
+  window.exportPDF = exportPDF;
+  window.openDualExportModal = openDualExportModal;
+  window.closeDualExportModal = closeDualExportModal;
+  window.sequentialDualExport = sequentialDualExport;
+  window.updateResponsivePageScale = updateResponsivePageScale;
+  window.toggleViewMode = toggleViewMode;
 }

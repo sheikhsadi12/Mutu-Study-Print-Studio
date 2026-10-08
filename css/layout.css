@@ -3,12 +3,48 @@
    ========================================================================== */
 
 /* 1. Document Stage Viewport */
+:root {
+  --doc-preview-scale: 1;
+}
+
 .document-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 28px;
   padding: 24px 0 50px 0;
+}
+
+/* Responsive Document Viewport Adaptations for Mobile & Tablet */
+@media screen and (max-width: 860px) {
+  .document-stage {
+    padding: 14px 0 85px 0;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    align-items: center;
+  }
+
+  .a4-page {
+    transform: scale(var(--doc-preview-scale, 1));
+    transform-origin: top center;
+    margin-bottom: calc((var(--page-height) * var(--doc-preview-scale, 1)) - var(--page-height) + 18px);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), margin-bottom 0.25s ease;
+  }
+}
+
+/* User-selected 100% Actual Physical Print Scale Mode on Mobile */
+html.view-mode-actual .a4-page {
+  transform: none !important;
+  margin-bottom: 24px !important;
+}
+html.view-mode-actual .document-stage {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  align-items: flex-start;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 /* 2. Standard A4 Physical Page (210mm x 297mm Exact) */
@@ -338,6 +374,7 @@ html[data-theme="light"] .a4-page {
     text-shadow: none !important;
   }
   .a4-page {
+    transform: none !important;
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
