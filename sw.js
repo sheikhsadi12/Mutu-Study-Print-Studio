@@ -11,6 +11,7 @@ const PRECACHE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './manifest.webmanifest',
   './css/variables.css',
   './css/typography.css',
   './css/layout.css',
@@ -26,6 +27,7 @@ const PRECACHE_ASSETS = [
   './icons/badge.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './icons/maskable-icon-512.png',
   './icons/apple-touch-icon.png',
   './icons/badge-72x72.png',
   './icons/badge-96x96.png'

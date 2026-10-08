@@ -88,21 +88,18 @@ export function toggleAcademicTheme(e) {
 }
 
 /**
- * Initializes PWA Service Worker Registration
+ * Initializes PWA Service Worker Registration immediately
  */
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      // Register with relative path for seamless hosting on Vercel or GitHub Pages
-      const swUrl = './sw.js';
-      navigator.serviceWorker.register(swUrl)
-        .then((registration) => {
-          console.log('[MUTU PWA] Service Worker registered with scope:', registration.scope);
-        })
-        .catch((error) => {
-          console.warn('[MUTU PWA] Service Worker registration failed:', error);
-        });
-    });
+    const swUrl = './sw.js';
+    navigator.serviceWorker.register(swUrl, { scope: './' })
+      .then((registration) => {
+        console.log('[MUTU PWA] Service Worker registered with scope:', registration.scope);
+      })
+      .catch((error) => {
+        console.warn('[MUTU PWA] Service Worker registration failed:', error);
+      });
   }
 }
 
@@ -136,26 +133,116 @@ export function showToast(message, duration = 3500) {
 }
 
 /**
+ * Main Direct PWA Install Handler (Called by Header Install Button, Intro Modal, & Diagnostics)
+ */
+export async function triggerPWAInstall() {
+  const isStandalone = window.__pwaIsStandalone ||
+                       window.matchMedia('(display-mode: standalone)').matches || 
+                       (window.navigator.standalone === true);
+  if (isStandalone) {
+    showToast("✅ MUTU STUDY অ্যাপটি ইতিমধ্যে আপনার ডিভাইসে ইনস্টল করা আছে!");
+    const btn = document.getElementById('pwaInstallBtn');
+    if (btn) btn.style.display = 'none';
+    return;
+  }
+
+  // 1. If native deferred prompt is already captured
+  const promptEvent = window.__pwaInstallPrompt || deferredInstallPrompt;
+  if (promptEvent) {
+    try {
+      await promptEvent.prompt();
+      const choice = await promptEvent.userChoice;
+      console.log('[MUTU PWA] User prompt choice:', choice.outcome);
+      if (choice.outcome === 'accepted') {
+        showToast("🎉 MUTU STUDY অ্যাপ ইনস্টলেশন শুরু হয়েছে!");
+        window.__pwaInstallPrompt = null;
+        deferredInstallPrompt = null;
+        const btn = document.getElementById('pwaInstallBtn');
+        if (btn) btn.style.display = 'none';
+      } else {
+        showToast("ইনস্টলেশন বাতিল হয়েছে। প্রয়োজনে পুনরায় ক্লিক করুন।");
+      }
+      return;
+    } catch (err) {
+      console.warn('[MUTU PWA] Error triggering install prompt:', err);
+    }
+  }
+
+  // 2. If running on iOS Safari
+  const ua = window.navigator.userAgent.toLowerCase();
+  const isIOS = /iphone|ipad|ipod/.test(ua);
+  if (isIOS) {
+    openIOSInstallDialog();
+    return;
+  }
+
+  // 3. If running inside an iFrame (e.g. AI Studio preview sandbox)
+  // Browser security strictly forbids beforeinstallprompt / direct installation in iframes
+  const isIframe = window.self !== window.top;
+  if (isIframe) {
+    openPWAFrameModal();
+    return;
+  }
+
+  // 4. In a top-level window, wait up to 2.2 seconds in case beforeinstallprompt is firing asynchronously
+  showToast("ইনস্টলারের সাথে সংযোগ স্থাপন হচ্ছে...", 2000);
+  const eventFired = await new Promise((resolve) => {
+    if (window.__pwaInstallPrompt || deferredInstallPrompt) return resolve(true);
+    const onPrompt = () => {
+      window.removeEventListener('pwa-prompt-ready', onPrompt);
+      resolve(true);
+    };
+    window.addEventListener('pwa-prompt-ready', onPrompt);
+    setTimeout(() => {
+      window.removeEventListener('pwa-prompt-ready', onPrompt);
+      resolve(false);
+    }, 2200);
+  });
+
+  const readyPrompt = window.__pwaInstallPrompt || deferredInstallPrompt;
+  if (eventFired && readyPrompt) {
+    try {
+      await readyPrompt.prompt();
+      const choice = await readyPrompt.userChoice;
+      if (choice.outcome === 'accepted') {
+        showToast("🎉 MUTU STUDY অ্যাপ ইনস্টলেশন শুরু হয়েছে!");
+        window.__pwaInstallPrompt = null;
+        deferredInstallPrompt = null;
+      }
+      return;
+    } catch (err) {
+      console.warn('[MUTU PWA] Prompt launch error:', err);
+    }
+  }
+
+  // 5. If browser still did not supply prompt event (e.g. prompt previously dismissed, or unsupported browser engine)
+  openPWADiagnosticModal();
+}
+
+/**
  * Configures In-App PWA Install Prompts (Android/Chromium & iOS)
  */
 function initInstallPrompt() {
   const installBtn = document.getElementById('pwaInstallBtn');
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+  const isStandalone = window.__pwaIsStandalone ||
+                       window.matchMedia('(display-mode: standalone)').matches || 
                        (window.navigator.standalone === true);
 
-  if (isStandalone && installBtn) {
-    installBtn.style.display = 'none';
+  if (isStandalone) {
+    if (installBtn) installBtn.style.display = 'none';
     return;
   }
 
-  // Detect iOS Safari
-  const userAgent = window.navigator.userAgent.toLowerCase();
-  const isIOS = /iphone|ipad|ipod/.test(userAgent);
+  if (installBtn) {
+    installBtn.style.display = 'inline-flex';
+    installBtn.addEventListener('click', triggerPWAInstall);
+  }
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredInstallPrompt = e;
-    if (installBtn) {
+    window.__pwaInstallPrompt = e;
+    if (installBtn && !isStandalone) {
       installBtn.style.display = 'inline-flex';
     }
   });
@@ -163,35 +250,16 @@ function initInstallPrompt() {
   window.addEventListener('appinstalled', () => {
     console.log('[MUTU PWA] Application was successfully installed.');
     deferredInstallPrompt = null;
+    window.__pwaInstallPrompt = null;
+    window.__pwaIsStandalone = true;
     if (installBtn) {
       installBtn.style.display = 'none';
     }
     closePWAIntro(true);
+    closePWAFrameModal();
+    closePWADiagnosticModal();
     showToast("MUTU STUDY অ্যাপটি সফলভাবে আপনার ডিভাইসে ইনস্টল হয়েছে!");
   });
-
-  if (installBtn) {
-    if (isIOS && !isStandalone) {
-      installBtn.style.display = 'inline-flex';
-    }
-
-    installBtn.addEventListener('click', async () => {
-      if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
-        const { outcome } = await deferredInstallPrompt.userChoice;
-        console.log('[MUTU PWA] User install choice:', outcome);
-        deferredInstallPrompt = null;
-        if (outcome === 'accepted') {
-          installBtn.style.display = 'none';
-          showToast("ইনস্টলেশন শুরু হয়েছে...");
-        }
-      } else if (isIOS) {
-        openIOSInstallDialog();
-      } else {
-        showToast("ইনস্টল করতে ব্রাউজারের অ্যাড্রেস বারের Install (⬇) বা মেনু থেকে 'Add to Home Screen' ক্লিক করুন।");
-      }
-    });
-  }
 }
 
 /**
@@ -221,26 +289,7 @@ export function closePWAIntro(dontShowAgain = false) {
  */
 export async function triggerInstallFromIntro() {
   closePWAIntro(false);
-  const installBtn = document.getElementById('pwaInstallBtn');
-
-  if (deferredInstallPrompt) {
-    deferredInstallPrompt.prompt();
-    const { outcome } = await deferredInstallPrompt.userChoice;
-    console.log('[MUTU PWA] Intro install choice:', outcome);
-    deferredInstallPrompt = null;
-    if (outcome === 'accepted' && installBtn) {
-      installBtn.style.display = 'none';
-      showToast("ইনস্টলেশন শুরু হয়েছে...");
-    }
-  } else {
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    const isIOS = /iphone|ipad|ipod/.test(userAgent);
-    if (isIOS) {
-      openIOSInstallDialog();
-    } else {
-      showToast("ইনস্টল করতে ব্রাউজারের অ্যাড্রেস বারের Install (⬇) বা মেনু থেকে 'Add to Home Screen' ক্লিক করুন।");
-    }
-  }
+  await triggerPWAInstall();
 }
 
 /**
@@ -254,6 +303,86 @@ export function openIOSInstallDialog() {
 export function closeIOSInstallDialog() {
   const dialog = document.getElementById('iosInstallModal');
   if (dialog) dialog.classList.remove('open');
+}
+
+/**
+ * Displays PWA iFrame Launcher Guide Modal
+ */
+export function openPWAFrameModal() {
+  const modal = document.getElementById('pwaFrameModal');
+  const openBtn = document.getElementById('pwaOpenTabBtn');
+  if (openBtn) {
+    openBtn.href = window.location.href;
+  }
+  if (modal) modal.classList.add('open');
+}
+
+export function closePWAFrameModal() {
+  const modal = document.getElementById('pwaFrameModal');
+  if (modal) modal.classList.remove('open');
+}
+
+/**
+ * Displays PWA System Health & Diagnostic Center
+ */
+export function openPWADiagnosticModal() {
+  const modal = document.getElementById('pwaDiagnosticModal');
+  if (!modal) return;
+  modal.classList.add('open');
+
+  const swElem = document.getElementById('diagSWStatus');
+  const promptElem = document.getElementById('diagPromptStatus');
+  const promptDesc = document.getElementById('diagPromptDesc');
+
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    if (swElem) swElem.innerText = '✅ সক্রিয় (Active Controller)';
+  } else if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(() => {
+      if (swElem) swElem.innerText = '✅ সক্রিয় (Service Worker Ready)';
+    });
+  }
+
+  const promptEvent = window.__pwaInstallPrompt || deferredInstallPrompt;
+  const isStandalone = window.__pwaIsStandalone ||
+                       window.matchMedia('(display-mode: standalone)').matches || 
+                       (window.navigator.standalone === true);
+  const isIframe = window.self !== window.top;
+
+  if (isStandalone) {
+    if (promptElem) {
+      promptElem.innerText = '✅ অ্যাপ ইতিমধ্যে ইনস্টলড';
+      promptElem.style.color = '#10B981';
+    }
+    if (promptDesc) promptDesc.innerText = 'অ্যাপ্লিকেশনটি ডিভাইস হোম স্ক্রিন / স্ট্যান্ডঅ্যালোন মোডে রানিং রয়েছে।';
+  } else if (promptEvent) {
+    if (promptElem) {
+      promptElem.innerText = '✅ প্রস্তুত (Ready for 1-Click)';
+      promptElem.style.color = '#10B981';
+    }
+    if (promptDesc) promptDesc.innerText = '১-ক্লিকে ইনস্টল বাটন চাপলেই সিস্টেম ইনস্টলেশন পপআপ চলে আসবে।';
+  } else if (isIframe) {
+    if (promptElem) {
+      promptElem.innerText = '⚠️ আইফ্রেম মোড (iFrame Sandbox)';
+      promptElem.style.color = '#EF4444';
+    }
+    if (promptDesc) promptDesc.innerText = 'ব্রাউজার সিকিউরিটি প্রিভিউ আইফ্রেমে ইনস্টল ব্লক রাখে। নতুন ট্যাবে খুলুন।';
+  } else {
+    if (promptElem) {
+      promptElem.innerText = 'ℹ️ ব্রাউজার মেনু থেকে ইনস্টলযোগ্য';
+      promptElem.style.color = '#F59E0B';
+    }
+    if (promptDesc) promptDesc.innerText = 'ব্রাউজারের অ্যাড্রেস বারের Install (⬇) আইকন অথবা মেনুর "Add to Home Screen" অপশন ব্যবহার করুন।';
+  }
+}
+
+export function closePWADiagnosticModal() {
+  const modal = document.getElementById('pwaDiagnosticModal');
+  if (modal) modal.classList.remove('open');
+}
+
+export function forceTriggerPWAInstall() {
+  closePWADiagnosticModal();
+  triggerPWAInstall();
 }
 
 /**
@@ -557,6 +686,12 @@ if (typeof window !== 'undefined') {
   window.runAutoPagination = () => runAutoPagination(appState);
   window.openIOSInstallDialog = openIOSInstallDialog;
   window.closeIOSInstallDialog = closeIOSInstallDialog;
+  window.openPWAFrameModal = openPWAFrameModal;
+  window.closePWAFrameModal = closePWAFrameModal;
+  window.openPWADiagnosticModal = openPWADiagnosticModal;
+  window.closePWADiagnosticModal = closePWADiagnosticModal;
+  window.forceTriggerPWAInstall = forceTriggerPWAInstall;
+  window.triggerPWAInstall = triggerPWAInstall;
   window.openPWAIntro = openPWAIntro;
   window.closePWAIntro = closePWAIntro;
   window.triggerInstallFromIntro = triggerInstallFromIntro;

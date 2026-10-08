@@ -14,15 +14,41 @@
   <meta name="twitter:card" content="summary_large_image" />
 
   <!-- PWA & Mobile Web Capabilities -->
-  <link rel="manifest" href="./manifest.json" />
-  <meta name="theme-color" content="#FDFBF7" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#4A1112" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="MutuStudy" />
-  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
-  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
-  <link rel="alternate icon" type="image/png" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+  <link rel="alternate icon" type="image/png" href="/icons/icon-192.png" />
+
+  <script>
+    // Ultra-Early PWA Lifecycle Handler (captures event from millisecond zero)
+    window.__pwaInstallPrompt = null;
+    window.__pwaIsStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                               (window.navigator.standalone === true);
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      window.__pwaInstallPrompt = e;
+      window.dispatchEvent(new CustomEvent('pwa-prompt-ready', { detail: e }));
+      console.log('[MUTU PWA] beforeinstallprompt captured early.');
+      var btn = document.getElementById('pwaInstallBtn');
+      if (btn && !window.__pwaIsStandalone) {
+        btn.style.display = 'inline-flex';
+      }
+    });
+    window.addEventListener('appinstalled', function() {
+      window.__pwaInstallPrompt = null;
+      window.__pwaIsStandalone = true;
+      console.log('[MUTU PWA] appinstalled captured.');
+      window.dispatchEvent(new CustomEvent('pwa-installed'));
+      var btn = document.getElementById('pwaInstallBtn');
+      if (btn) btn.style.display = 'none';
+    });
+  </script>
 
   <!-- Modular CSS Hierarchy -->
   <link rel="stylesheet" href="./css/variables.css" />
@@ -60,7 +86,7 @@
       </button>
 
       <!-- PWA Install Action Button (Auto-detects browser / hides if already installed) -->
-      <button class="ui-btn pwa-install-btn" id="pwaInstallBtn" style="display: none;" title="Install MUTU STUDY as a desktop or mobile application">
+      <button class="ui-btn pwa-install-btn" id="pwaInstallBtn" onclick="triggerPWAInstall()" title="MUTU STUDY অ্যাপটি আপনার ডিভাইসে ইনস্টল করুন">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
           <polyline points="7 10 12 15 17 10"/>
@@ -494,13 +520,19 @@
           </button>
         </div>
 
-        <div style="display:flex; justify-content:center; margin-top:2px;">
-          <button class="ui-btn" type="button" style="font-size:11.5px; padding:5px 14px;" onclick="requestNotificationPermissionAndSendDemo()">
+        <div style="display:flex; justify-content:center; gap: 8px; flex-wrap:wrap; margin-top:2px;">
+          <button class="ui-btn" type="button" style="font-size:11.5px; padding:5px 12px;" onclick="requestNotificationPermissionAndSendDemo()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
             </svg>
-            <span>নোটিফিকেশন ও ব্যাজ আইকন টেস্ট করুন</span>
+            <span>নোটিফিকেশন টেস্ট</span>
+          </button>
+          <button class="ui-btn" type="button" style="font-size:11.5px; padding:5px 12px;" onclick="openPWADiagnosticModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            <span>PWA ডায়াগনস্টিক ও স্বাস্থ্য</span>
           </button>
         </div>
 
@@ -537,6 +569,114 @@
         </svg>
         <span>বুঝেছি (Close)</span>
       </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       PWA IFRAME LAUNCHER GUIDE MODAL
+       (ব্রাউজার সিকিউরিটি ফ্রেমের ভেতর ইনস্টল ব্লক করলে সরাসরি ১-ক্লিক ট্যাব ওপেনার)
+       ======================================================================== -->
+  <div class="modal-overlay no-print" id="pwaFrameModal" role="dialog" aria-modal="true" aria-labelledby="pwaFrameTitle">
+    <div class="pwa-intro-dialog" style="max-width: 480px;">
+      <div class="intro-brand-header">
+        <img src="/icons/icon.svg" alt="MUTU STUDY Logo" width="44" height="44" />
+        <div class="intro-title-wrap">
+          <h3 id="pwaFrameTitle">PWA অ্যাপ ইনস্টলেশন গাইড</h3>
+          <span>AI Studio প্রিভিউ ফ্রেম ডিটেকশন</span>
+        </div>
+      </div>
+
+      <div style="background: rgba(220, 38, 38, 0.08); border: 1px solid rgba(220, 38, 38, 0.25); border-radius: 12px; padding: 12px 14px; margin: 12px 0;">
+        <p style="font-size: 13px; line-height: 1.5; color: var(--text-bengali); margin: 0;">
+          💡 <strong>গুরুত্বপূর্ণ তথ্য:</strong> আপনি বর্তমানে AI Studio-এর প্রিভিউ স্ক্রিনে (iFrame) আছেন। কোনো আধুনিক ব্রাউজারই (Chrome/Edge/Android) সিকিউরিটির কারণে আইফ্রেমের ভেতরে সরাসরি ইনস্টল ডায়ালগ প্রদর্শন করে না।
+        </p>
+      </div>
+
+      <p style="font-size: 13px; line-height: 1.55; color: var(--text-english);">
+        অ্যাপটি আপনার মোবাইল বা কম্পিউটারে <strong>সরাসরি ১-ক্লিকে ইনস্টল</strong> করতে নিচের বাটনে চাপ দিন (আলাদা ব্রাউজার উইন্ডোতে খুলবে, সেখানে সরাসরি ইনস্টল পপআপ চলে আসবে):
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+        <a id="pwaOpenTabBtn" href="./" target="_blank" rel="noopener noreferrer" class="intro-btn-primary" style="text-decoration: none; justify-content: center; text-align: center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          <span>🚀 নতুন ট্যাবে খুলুন ও ১-ক্লিকে ইনস্টল করুন</span>
+        </a>
+
+        <button class="intro-btn-secondary" onclick="closePWAFrameModal()" style="justify-content: center;">
+          <span>পরে করব (বন্ধ করুন)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       PWA DIAGNOSTICS & SYSTEM HEALTH MODAL
+       ======================================================================== -->
+  <div class="modal-overlay no-print" id="pwaDiagnosticModal" role="dialog" aria-modal="true" aria-labelledby="pwaDiagTitle">
+    <div class="pwa-intro-dialog" style="max-width: 520px;">
+      <div class="modal-header" style="padding: 0 0 10px 0; border-bottom: 1px solid var(--glass-border); width: 100%;">
+        <h3 id="pwaDiagTitle" style="display:flex; align-items:center; gap:8px; font-size:1.15rem; color:var(--accent-primary);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <span>PWA সিস্টেম স্বাস্থ্য ও ইনস্টলেশন সেন্টার</span>
+        </h3>
+        <button class="ui-btn" style="padding: 6px 10px;" onclick="closePWADiagnosticModal()" aria-label="Close modal">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="intro-features-grid" style="grid-template-columns: 1fr; gap: 8px; margin-top: 12px;">
+        <div class="intro-feature-card" style="padding: 10px 14px;">
+          <strong style="justify-content: space-between;">
+            <span>🌐 Web App Manifest</span>
+            <span style="color: #10B981; font-size: 11px;">✅ সঠিক (Valid v1.1)</span>
+          </strong>
+          <p style="font-size: 11.5px; margin-top: 4px;">আইকন (192px, 512px, Maskable), স্ট্যান্ডঅ্যালোন ডিসপ্লে মোড ও থিম কালার সংযুক্ত।</p>
+        </div>
+
+        <div class="intro-feature-card" style="padding: 10px 14px;">
+          <strong style="justify-content: space-between;">
+            <span>⚙️ Service Worker & ক্যাশ ইঞ্জিন</span>
+            <span id="diagSWStatus" style="color: #10B981; font-size: 11px;">✅ সক্রিয় (Active)</span>
+          </strong>
+          <p style="font-size: 11.5px; margin-top: 4px;">অফলাইন অ্যাসেট ও ফন্ট ক্যাশিং সক্ষম (ক্যাশ নাম: mutu-study-v1.1.0)।</p>
+        </div>
+
+        <div class="intro-feature-card" style="padding: 10px 14px;">
+          <strong style="justify-content: space-between;">
+            <span>📲 ইনস্টলেশন প্রম্পট স্ট্যাটাস</span>
+            <span id="diagPromptStatus" style="color: #F59E0B; font-size: 11px;">যাচাই করা হচ্ছে...</span>
+          </strong>
+          <p id="diagPromptDesc" style="font-size: 11.5px; margin-top: 4px;">ব্রাউজারের বিফোর-ইনস্টল ইভেন্ট ট্র্যাপ অ্যাক্টিভ রয়েছে।</p>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+        <button class="intro-btn-primary" onclick="forceTriggerPWAInstall()" style="justify-content: center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>ইনস্টল ডায়ালগ ওপেন করুন</span>
+        </button>
+
+        <button class="ui-btn" type="button" style="justify-content: center; padding: 8px 14px;" onclick="requestNotificationPermissionAndSendDemo()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span>নোটিফিকেশন ও স্ট্যাটাস বার ব্যাজ আইকন টেস্ট করুন</span>
+        </button>
+      </div>
     </div>
   </div>
 
