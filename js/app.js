@@ -146,7 +146,7 @@ export async function triggerPWAInstall() {
     return;
   }
 
-  // 1. If native deferred prompt is already captured
+  // 1. If native deferred prompt is already captured, trigger immediately in user gesture!
   const promptEvent = window.__pwaInstallPrompt || deferredInstallPrompt;
   if (promptEvent) {
     try {
@@ -159,6 +159,8 @@ export async function triggerPWAInstall() {
         deferredInstallPrompt = null;
         const btn = document.getElementById('pwaInstallBtn');
         if (btn) btn.style.display = 'none';
+        closePWAFrameModal();
+        closePWAIntro(true);
       } else {
         showToast("ইনস্টলেশন বাতিল হয়েছে। প্রয়োজনে পুনরায় ক্লিক করুন।");
       }
@@ -177,15 +179,21 @@ export async function triggerPWAInstall() {
   }
 
   // 3. If running inside an iFrame (e.g. AI Studio preview sandbox)
-  // Browser security strictly forbids beforeinstallprompt / direct installation in iframes
+  // Attempt top-level standalone window launch for direct 1-click install
   const isIframe = window.self !== window.top;
   if (isIframe) {
-    openPWAFrameModal();
+    const directUrl = window.location.origin + window.location.pathname + '?source=pwa&install=1';
+    const newWin = window.open(directUrl, '_blank');
+    if (!newWin) {
+      openPWAFrameModal();
+    } else {
+      showToast("🚀 নতুন উইন্ডোতে অ্যাপ ওপেন করা হয়েছে—সেখানে সরাসরি ১-ক্লিকে ইনস্টল সম্পন্ন করুন!");
+    }
     return;
   }
 
-  // 4. In a top-level window, wait up to 2.5 seconds in case beforeinstallprompt is firing asynchronously
-  showToast("ইনস্টলার প্রস্তুত হচ্ছে...", 1800);
+  // 4. In a top-level window, wait up to 1.5 seconds in case beforeinstallprompt is firing asynchronously
+  showToast("ইনস্টলার চালু হচ্ছে...", 1500);
   const eventFired = await new Promise((resolve) => {
     if (window.__pwaInstallPrompt || deferredInstallPrompt) return resolve(true);
     const onPrompt = () => {
@@ -196,7 +204,7 @@ export async function triggerPWAInstall() {
     setTimeout(() => {
       window.removeEventListener('pwa-prompt-ready', onPrompt);
       resolve(false);
-    }, 2500);
+    }, 1500);
   });
 
   const readyPrompt = window.__pwaInstallPrompt || deferredInstallPrompt;
@@ -210,6 +218,8 @@ export async function triggerPWAInstall() {
         deferredInstallPrompt = null;
         const btn = document.getElementById('pwaInstallBtn');
         if (btn) btn.style.display = 'none';
+        closePWAFrameModal();
+        closePWAIntro(true);
       }
       return;
     } catch (err) {
@@ -218,7 +228,7 @@ export async function triggerPWAInstall() {
   }
 
   // 5. If browser did not supply prompt event
-  showToast("ইনস্টল ডায়ালগ পেতে পেজটি একবার রিলোড করে 'অ্যাপ ইনস্টল করুন' চাপুন।", 3500);
+  showToast("ইনস্টলার প্রস্তুত হচ্ছে, অনুগ্রহ করে কয়েক সেকেন্ড পর আবার ক্লিক করুন।", 3000);
 }
 
 /**
@@ -314,7 +324,7 @@ export function openPWAFrameModal() {
   const modal = document.getElementById('pwaFrameModal');
   const openBtn = document.getElementById('pwaOpenTabBtn');
   if (openBtn) {
-    openBtn.href = window.location.href;
+    openBtn.href = window.location.origin + window.location.pathname + '?source=pwa&install=1';
   }
   if (modal) modal.classList.add('open');
 }

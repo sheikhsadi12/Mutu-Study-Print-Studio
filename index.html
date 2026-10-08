@@ -25,28 +25,17 @@
   <link rel="alternate icon" type="image/png" href="/icons/icon-192.png" />
 
   <script>
-    // Ultra-Early PWA Lifecycle Handler & Instant SW Registration
+    // Ultra-Early PWA Lifecycle Handler
     window.__pwaInstallPrompt = null;
     window.__pwaIsStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                                (window.navigator.standalone === true);
 
-    // Register Service Worker from millisecond zero to accelerate browser PWA heuristics
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js', { scope: '/' })
-        .then(function(reg) {
-          console.log('[MUTU PWA] Early SW registered successfully with scope:', reg.scope);
-        })
-        .catch(function(err) {
-          console.warn('[MUTU PWA] Early SW registration failed:', err);
-        });
-    }
-
-    // Capture beforeinstallprompt event immediately
+    // Capture beforeinstallprompt event immediately with highest priority
     window.addEventListener('beforeinstallprompt', function(e) {
       e.preventDefault();
       window.__pwaInstallPrompt = e;
       window.dispatchEvent(new CustomEvent('pwa-prompt-ready', { detail: e }));
-      console.log('[MUTU PWA] beforeinstallprompt captured early.');
+      console.log('[MUTU PWA] beforeinstallprompt captured and ready for 1-click install.');
       var btn = document.getElementById('pwaInstallBtn');
       if (btn && !window.__pwaIsStandalone) {
         btn.style.display = 'inline-flex';
@@ -62,24 +51,72 @@
       if (btn) btn.style.display = 'none';
     });
 
-    // Instant 1-Click Auto-Prompt Handler for external window or ?install=1
+    // PWA Service Worker Registration Strategy:
+    // Checks for navigator.serviceWorker.controller before registering,
+    // ensuring the SW is correctly controlling the page during load.
+    function executeSWRegistrationStrategy() {
+      if (!('serviceWorker' in navigator)) return;
+
+      var isControlled = Boolean(navigator.serviceWorker.controller);
+      console.log('[MUTU PWA] SW Registration Strategy check: controller is', isControlled ? 'ACTIVE' : 'NOT YET CONTROLLING');
+
+      // Listen for controller changes to ensure immediate control
+      navigator.serviceWorker.addEventListener('controllerchange', function() {
+        console.log('[MUTU PWA] Controller changed: SW is now actively controlling the page.');
+      });
+
+      // Register the service worker with root scope
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then(function(reg) {
+          console.log('[MUTU PWA] Service Worker registered with scope:', reg.scope);
+          if (!isControlled && reg.installing) {
+            reg.installing.addEventListener('statechange', function(e) {
+              if (e.target.state === 'activated') {
+                console.log('[MUTU PWA] SW state changed to activated. Controlling page:', Boolean(navigator.serviceWorker.controller));
+              }
+            });
+          }
+        })
+        .catch(function(err) {
+          console.warn('[MUTU PWA] SW registration failed:', err);
+        });
+    }
+
+    if ('serviceWorker' in navigator) {
+      if (document.readyState === 'loading') {
+        window.addEventListener('load', executeSWRegistrationStrategy);
+      } else {
+        executeSWRegistrationStrategy();
+      }
+    }
+
+    // Instant 1-Click Gesture & Banner Handler for ?install=1
     if (window.location.search.includes('install=1')) {
-      var triggered = false;
-      var tryAutoPrompt = function() {
-        if (!triggered && window.__pwaInstallPrompt) {
-          triggered = true;
+      window.addEventListener('DOMContentLoaded', function() {
+        if (!window.__pwaIsStandalone) {
+          var banner = document.getElementById('pwaDirectInstallBanner');
+          if (banner) banner.style.display = 'flex';
+          var btn = document.getElementById('pwaInstallBtn');
+          if (btn) btn.style.display = 'inline-flex';
+        }
+      });
+
+      var promptedOnGesture = false;
+      var onFirstUserGesture = function(evt) {
+        if (promptedOnGesture) return;
+        if (window.__pwaInstallPrompt) {
+          promptedOnGesture = true;
+          window.removeEventListener('click', onFirstUserGesture, true);
+          window.removeEventListener('touchend', onFirstUserGesture, true);
           window.__pwaInstallPrompt.prompt().then(function(choice) {
-            console.log('[MUTU PWA] Auto-install outcome:', choice.outcome);
+            console.log('[MUTU PWA] 1-Click install outcome:', choice ? choice.outcome : '');
           }).catch(function(err) {
-            console.warn('[MUTU PWA] Auto-prompt error:', err);
+            console.warn('[MUTU PWA] 1-Click install error:', err);
           });
         }
       };
-      window.addEventListener('pwa-prompt-ready', function() {
-        setTimeout(tryAutoPrompt, 150);
-      });
-      setTimeout(tryAutoPrompt, 600);
-      setTimeout(tryAutoPrompt, 1500);
+      window.addEventListener('click', onFirstUserGesture, true);
+      window.addEventListener('touchend', onFirstUserGesture, true);
     }
   </script>
 
@@ -178,6 +215,22 @@
       </button>
     </div>
   </header>
+
+  <!-- One-Click Direct Install Top Banner (Displayed when ?install=1) -->
+  <aside id="pwaDirectInstallBanner" class="pwa-direct-install-banner no-print" style="display: none;" aria-label="PWA 1-Click Install Banner">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 19px;" aria-hidden="true">📲</span>
+      <span><strong>MUTU STUDY Studio:</strong> অ্যাপটি আপনার মোবাইল বা কম্পিউটারে ১-ক্লিকে ইনস্টল করুন</span>
+    </div>
+    <button class="ui-btn intro-btn-primary" onclick="triggerPWAInstall()" style="padding: 7px 16px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 14px rgba(0,0,0,0.35); text-decoration: none;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span>⚡ এখনই ইনস্টল করুন</span>
+    </button>
+  </aside>
 
   <!-- ========================================================================
        TABBED SETTINGS STUDIO MODAL (Ultra-Luxury Glassmorphism)
