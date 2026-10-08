@@ -11,7 +11,7 @@ import { DEFAULT_DEMO_CONTENT } from './demo-content.js';
 export const appState = {
   theme: 'light',
   watermarkEnabled: true,
-  watermarkOpacity: 0.04,
+  watermarkOpacity: 0.08,
   
   // Dynamic Header & Footer Metadata
   headerCourse: "English For Today • Classes XI-XII",

@@ -23,6 +23,9 @@ import { DEFAULT_DEMO_CONTENT } from './demo-content.js';
 let deferredInstallPrompt = null;
 let lastThemeToggleTime = 0;
 
+const SUN_SVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+const MOON_SVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+
 /**
  * Explicitly applies and persists selected theme (dark | light)
  * @param {'dark' | 'light'} theme 
@@ -34,16 +37,35 @@ export function setTheme(theme) {
 
   const btnIcon = document.getElementById('themeBtnIcon');
   const btnText = document.getElementById('themeBtnText');
+  const fabIcon = document.getElementById('fabThemeIcon');
+  const fabTooltip = document.getElementById('fabThemeTooltip');
+
   if (theme === 'light') {
-    if (btnIcon) btnIcon.innerText = '🌙';
-    if (btnText) btnText.innerText = 'Switch to Dark Mahogany';
+    if (btnIcon) btnIcon.innerHTML = MOON_SVG;
+    if (btnText) btnText.innerText = 'Dark Mahogany';
+    if (fabIcon) fabIcon.innerHTML = MOON_SVG;
+    if (fabTooltip) fabTooltip.innerText = 'Dark Mahogany';
   } else {
-    if (btnIcon) btnIcon.innerText = '☀️';
-    if (btnText) btnText.innerText = 'Switch to Warm White';
+    if (btnIcon) btnIcon.innerHTML = SUN_SVG;
+    if (btnText) btnText.innerText = 'Warm White';
+    if (fabIcon) fabIcon.innerHTML = SUN_SVG;
+    if (fabTooltip) fabTooltip.innerText = 'Warm White';
   }
 
   localStorage.setItem('mutu_doc_theme', theme);
   setTimeout(() => runAutoPagination(appState), 40);
+}
+
+/**
+ * Toggles the 3D Circular Floating Action Menu (FAB)
+ * @param {Event} [e]
+ */
+export function toggleFabMenu(e) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  const fabMenu = document.getElementById('fabMenu');
+  if (fabMenu) {
+    fabMenu.classList.toggle('active');
+  }
 }
 
 /**
@@ -340,6 +362,14 @@ window.addEventListener('DOMContentLoaded', () => {
       openPWAIntro();
     }, 700);
   }
+
+  // Close FAB circular menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const fabMenu = document.getElementById('fabMenu');
+    if (fabMenu && !fabMenu.contains(e.target)) {
+      fabMenu.classList.remove('active');
+    }
+  });
 });
 
 // Debounced Window Resize Handler for Real-Time Auto-Pagination
@@ -354,6 +384,7 @@ if (typeof window !== 'undefined') {
   window.appState = appState;
   window.setTheme = setTheme;
   window.toggleAcademicTheme = toggleAcademicTheme;
+  window.toggleFabMenu = toggleFabMenu;
   window.openSettingsModal = openSettingsModal;
   window.closeSettingsModal = closeSettingsModal;
   window.switchSettingsTab = switchSettingsTab;

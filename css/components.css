@@ -21,17 +21,51 @@
   background: linear-gradient(90deg, var(--border-color), transparent);
 }
 
+/* Semi-transparent Glass Cards inside A4 Studio — Subtle & Legible */
+.chapter-hero-banner,
+.bilingual-passage-card,
+.sentence-breakdown-card,
+.explanation-card,
+.vocab-card,
+.grammar-analysis-card,
+.teachers-corner-card,
+.editorial-quote-box,
+.mnemonic-ribbon,
+.practice-question-card {
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+@media print {
+  .chapter-hero-banner,
+  .bilingual-passage-card,
+  .sentence-breakdown-card,
+  .explanation-card,
+  .vocab-card,
+  .grammar-analysis-card,
+  .teachers-corner-card,
+  .editorial-quote-box,
+  .mnemonic-ribbon,
+  .practice-question-card,
+  .academic-table td,
+  .academic-table th {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
 /* 2. Chapter Hero Banner */
 .chapter-hero-banner {
   background: var(--surface-card);
   border: 1px solid var(--border-color);
   border-left: 4.5px solid var(--accent-primary);
-  border-radius: 5px;
-  padding: 7px 12px;
+  border-radius: 6px;
+  padding: 8px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 .chapter-hero-banner h1 {
   font-family: var(--font-display);
@@ -56,17 +90,19 @@
   text-align: right;
   font-weight: 600;
   white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* 3. Bilingual Reading Passage Card */
 .bilingual-passage-card {
   background: var(--surface-card);
   border: 1px solid var(--border-color);
-  border-radius: 5px;
-  padding: 8px 12px;
+  border-radius: 6px;
+  padding: 9px 13px;
   display: flex;
   flex-direction: column;
   gap: 5px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 .passage-en {
   font-size: 9.9pt;
@@ -86,11 +122,12 @@
 .sentence-breakdown-card {
   background: var(--surface-card);
   border: 1px solid var(--border-color);
-  border-radius: 5px;
-  padding: 7px 11px;
+  border-radius: 6px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
   gap: 3.5px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 .st-en {
   font-size: 10.4pt;
@@ -108,10 +145,11 @@
 .explanation-card {
   background: var(--surface-card-subtle);
   border: 1px solid var(--border-subtle);
-  border-radius: 5px;
-  padding: 7px 11px;
+  border-radius: 6px;
+  padding: 8px 12px;
   font-size: 9.4pt;
   color: var(--text-english-muted);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .explanation-card strong {
   color: var(--accent-primary);
@@ -127,11 +165,18 @@
 .vocab-card {
   background: var(--surface-card);
   border: 1px solid var(--border-color);
-  border-radius: 4px;
-  padding: 5px 8px;
+  border-radius: 5px;
+  padding: 6px 9px;
   display: flex;
   flex-direction: column;
   gap: 1.5px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 2px 5px rgba(0, 0, 0, 0.02);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.vocab-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent-primary);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 .vocab-top {
   display: flex;

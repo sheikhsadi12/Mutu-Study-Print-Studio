@@ -33,68 +33,140 @@
 </head>
 <body>
 
+  <!-- Ambient 3D Glowing Depth Orbs (Luxury Glassmorphic Backdrop) -->
+  <div class="ambient-glow-orbs no-print" aria-hidden="true">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+    <div class="ambient-orb orb-4"></div>
+  </div>
+
   <!-- Screen Top Control Bar (Hidden in Print Mode) -->
   <header class="screen-control-bar no-print">
-    <div class="ui-brand">
-      <img src="./icons/icon.svg" alt="MUTU Logo" width="28" height="28" style="vertical-align: middle; border-radius: 4px;" />
+    <a href="#" class="ui-brand" aria-label="MUTU STUDY Home">
+      <img src="./icons/icon.svg" alt="MUTU Logo" width="30" height="30" style="vertical-align: middle;" />
       <span>MUTU STUDY A4 Studio</span>
-    </div>
+    </a>
 
     <div class="ui-actions">
       <!-- App Intro Button -->
       <button class="ui-btn" id="openIntroBtn" onclick="openPWAIntro()" title="অ্যাপ পরিচিতি ও ফিচার গাইড">
-        <span>ℹ️</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
         <span>পরিচিতি</span>
       </button>
 
       <!-- PWA Install Action Button (Auto-detects browser / hides if already installed) -->
       <button class="ui-btn pwa-install-btn" id="pwaInstallBtn" style="display: none;" title="Install MUTU STUDY as a desktop or mobile application">
-        <span>📲</span>
-        <span>ইনস্টল অ্যাপ (Install)</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span>ইনস্টল অ্যাপ</span>
       </button>
 
       <!-- Complete Settings Studio Button -->
       <button class="ui-btn" id="openSettingsBtn" onclick="openSettingsModal()">
-        <span>⚙️</span>
-        <span>স্টুডিও সেটিংস (Settings)</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span>স্টুডিও সেটিংস</span>
       </button>
 
-      <!-- Dual Theme Switcher Button (Defaults to Light, click switches to Dark) -->
+      <!-- Dual Theme Switcher Button -->
       <button class="ui-btn" id="themeToggleBtn">
-        <span id="themeBtnIcon">🌙</span>
-        <span id="themeBtnText">Switch to Dark Mahogany</span>
+        <span id="themeBtnIcon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </span>
+        <span id="themeBtnText">Dark Mahogany</span>
       </button>
 
       <!-- Print / Export to PDF Action Button -->
       <button class="ui-btn print-now-btn" id="printNowBtn" onclick="window.print()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="6 9 6 2 18 2 18 9"/>
           <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
           <rect x="6" y="14" width="12" height="8"/>
         </svg>
-        Print / Save as PDF
+        <span>Print / Save as PDF</span>
       </button>
     </div>
   </header>
 
   <!-- ========================================================================
-       TABBED SETTINGS STUDIO MODAL
+       TABBED SETTINGS STUDIO MODAL (Ultra-Luxury Glassmorphism)
        ======================================================================== -->
   <div class="modal-overlay no-print" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
     <div class="settings-modal">
       
       <!-- Modal Header -->
       <div class="modal-header">
-        <h3 id="settingsModalTitle">⚙️ MUTU STUDY পাবলিশিং স্টুডিও সেটিংস</h3>
-        <button class="ui-btn" id="closeSettingsBtn" style="padding: 2px 8px;" onclick="closeSettingsModal()" aria-label="Close settings">&times;</button>
+        <h3 id="settingsModalTitle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"/>
+            <line x1="4" y1="10" x2="4" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12" y2="3"/>
+            <line x1="20" y1="21" x2="20" y2="16"/>
+            <line x1="20" y1="12" x2="20" y2="3"/>
+            <line x1="1" y1="14" x2="7" y2="14"/>
+            <line x1="9" y1="8" x2="15" y2="8"/>
+            <line x1="17" y1="16" x2="23" y2="16"/>
+          </svg>
+          <span>MUTU STUDY পাবলিশিং স্টুডিও সেটিংস</span>
+        </h3>
+        <button class="ui-btn" id="closeSettingsBtn" style="padding: 6px 10px;" onclick="closeSettingsModal()" aria-label="Close settings">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </div>
 
-      <!-- Settings Tabs Navigation -->
+      <!-- Settings Tabs Navigation (Segmented Control Pill Bar) -->
       <nav class="modal-tabs-nav" aria-label="Settings categories">
-        <button class="tab-nav-btn active" data-tab="content" onclick="switchSettingsTab('content')">📝 কন্টেন্ট ম্যানেজার</button>
-        <button class="tab-nav-btn" data-tab="cover" onclick="switchSettingsTab('cover')">🎨 কভার পেজ স্টুডিও</button>
-        <button class="tab-nav-btn" data-tab="typography" onclick="switchSettingsTab('typography')">🔤 ফন্ট ও টাইপোগ্রাফি</button>
-        <button class="tab-nav-btn" data-tab="general" onclick="switchSettingsTab('general')">⚙️ মেটাডাটা ও জলছাপ</button>
+        <button class="tab-nav-btn active" data-tab="content" onclick="switchSettingsTab('content')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>কন্টেন্ট ম্যানেজার</span>
+        </button>
+
+        <button class="tab-nav-btn" data-tab="cover" onclick="switchSettingsTab('cover')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="9" y1="21" x2="9" y2="9"/>
+          </svg>
+          <span>কভার পেজ স্টুডিও</span>
+        </button>
+
+        <button class="tab-nav-btn" data-tab="typography" onclick="switchSettingsTab('typography')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 7 4 4 20 4 20 7"/>
+            <line x1="9" y1="20" x2="15" y2="20"/>
+            <line x1="12" y1="4" x2="12" y2="20"/>
+          </svg>
+          <span>ফন্ট ও টাইপোগ্রাফি</span>
+        </button>
+
+        <button class="tab-nav-btn" data-tab="general" onclick="switchSettingsTab('general')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>মেটাডাটা ও জলছাপ</span>
+        </button>
       </nav>
 
       <!-- Modal Body (Tab Panes) -->
@@ -103,14 +175,26 @@
         <!-- TAB 1: কন্টেন্ট ম্যানেজার (Direct HTML Injection) -->
         <div class="tab-pane active" id="tab-content">
           <div class="settings-group">
-            <div class="settings-group-title">সরাসরি লেকচার কন্টেন্ট পেস্ট করুন (In-System Content Editor)</div>
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              <span>সরাসরি লেকচার কন্টেন্ট পেস্ট করুন (Content Editor)</span>
+            </div>
             <p style="font-size:11.5px; color:var(--text-english-muted); margin-bottom:6px;">
               এআই থেকে জেনারেট করা সেকশন কোডগুলো সরাসরি নিচের বক্সে পেস্ট করুন। কোনো ফাইলে ঢুকে কোড এডিট করতে হবে না; সিস্টেম নিজে থেকেই সম্পূর্ণ ডকুমেন্ট পেজিনেশন করে নেবে।
             </p>
             <textarea id="cfgRawContentInput" class="form-control" style="height: 240px;" placeholder="<section class='chapter-hero-banner'> ... </section>"></textarea>
             
             <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:6px;">
-              <button class="ui-btn" type="button" id="resetContentBtn" onclick="resetDemoContent()">↺ ডেমো কন্টেন্ট রিস্টোর</button>
+              <button class="ui-btn" type="button" id="resetContentBtn" onclick="resetDemoContent()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M3 2v6h6"/>
+                  <path d="M3 13a9 9 0 1 0 3-7.7L3 8"/>
+                </svg>
+                <span>ডেমো কন্টেন্ট রিস্টোর</span>
+              </button>
             </div>
           </div>
         </div>
@@ -118,19 +202,25 @@
         <!-- TAB 2: কভার পেজ স্টুডিও (Themes + Custom HTML) -->
         <div class="tab-pane" id="tab-cover">
           <div class="settings-group">
-            <div class="settings-group-title">কভার পেজ ডিজাইন ও থিম নির্বাচন</div>
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="3" y1="9" x2="21" y2="9"/>
+              </svg>
+              <span>কভার পেজ ডিজাইন ও থিম নির্বাচন</span>
+            </div>
             <div class="toggle-row">
-              <span>কভার পেজ চালু রাখবেন?</span>
+              <span style="font-weight: 500;">কভার পেজ চালু রাখবেন?</span>
               <input type="checkbox" id="cfgCoverToggle">
             </div>
 
             <div class="form-row">
               <label for="cfgCoverTheme">কভার পেজের থিম/টেমপ্লেট সিলেক্ট করুন:</label>
               <select id="cfgCoverTheme" class="form-control" onchange="toggleCustomCoverBox()">
-                <option value="royal">👑 থিম ১: রয়্যাল ক্লাসিক (Royal Classic Frame)</option>
-                <option value="minimal">🖋️ থিম ২: মডার্ন এডিটোরিয়াল (Modern Editorial Split)</option>
-                <option value="seal">🏛️ থিম ৩: গ্র্যান্ড একাডেমিক সিল (Grand Academic Seal)</option>
-                <option value="custom">🛠️ কাস্টম HTML কোড (নিজস্ব ডিজাইন আপলোড)</option>
+                <option value="royal">থিম ১: রয়্যাল ক্লাসিক ফ্রেম (Royal Classic Frame)</option>
+                <option value="minimal">থিম ২: মডার্ন এডিটোরিয়াল স্প্লিট (Modern Editorial Split)</option>
+                <option value="seal">থিম ৩: গ্র্যান্ড একাডেমিক সিল (Grand Academic Seal)</option>
+                <option value="custom">থিম ৪: কাস্টম HTML কোড (Custom HTML Template)</option>
               </select>
             </div>
 
@@ -162,7 +252,14 @@
         <!-- TAB 3: ফন্ট ও টাইপোগ্রাফি স্টুডিও -->
         <div class="tab-pane" id="tab-typography">
           <div class="settings-group">
-            <div class="settings-group-title">ফন্ট কাস্টমাইজেশন (বাংলা ও ইংরেজি)</div>
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polyline points="4 7 4 4 20 4 20 7"/>
+                <line x1="9" y1="20" x2="15" y2="20"/>
+                <line x1="12" y1="4" x2="12" y2="20"/>
+              </svg>
+              <span>ফন্ট কাস্টমাইজেশন (বাংলা ও ইংরেজি)</span>
+            </div>
             
             <div class="form-row">
               <label for="cfgFontEnBody">ইংরেজি মূল বডি ফন্ট (English Body):</label>
@@ -208,7 +305,13 @@
         <!-- TAB 4: মেটাডাটা ও জলছাপ -->
         <div class="tab-pane" id="tab-general">
           <div class="settings-group">
-            <div class="settings-group-title">হেডার ও ফুটার মেটাডাটা</div>
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+              <span>হেডার ও ফুটার মেটাডাটা</span>
+            </div>
             <div class="form-row">
               <label for="cfgHeaderCourse">হেডারের ডানপাশ (বই ও শ্রেণি):</label>
               <input type="text" class="form-control" id="cfgHeaderCourse">
@@ -224,29 +327,43 @@
           </div>
 
           <div class="settings-group">
-            <div class="settings-group-title">ব্র্যান্ড আইকন জলছাপ (Watermark)</div>
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <span>ব্র্যান্ড আইকন জলছাপ (Watermark)</span>
+            </div>
             <div class="toggle-row">
-              <span>আইকন জলছাপ চালু রাখবেন?</span>
+              <span style="font-weight: 500;">আইকন জলছাপ চালু রাখবেন?</span>
               <input type="checkbox" id="cfgWatermarkToggle">
             </div>
             <div class="form-row">
               <div style="display:flex; justify-content:space-between;">
                 <label for="cfgWatermarkOpacity">জলছাপের অস্বচ্ছতা (Opacity):</label>
-                <span id="cfgOpacityVal" style="font-weight:700; color:var(--accent-primary);">4%</span>
+                <span id="cfgOpacityVal" style="font-weight:700; color:var(--accent-primary);">8%</span>
               </div>
-              <input type="range" min="1" max="12" id="cfgWatermarkOpacity" oninput="document.getElementById('cfgOpacityVal').innerText=this.value+'%'">
+              <input type="range" min="1" max="15" value="8" id="cfgWatermarkOpacity" oninput="document.getElementById('cfgOpacityVal').innerText=this.value+'%'">
             </div>
           </div>
 
           <div class="settings-group">
-            <div class="settings-group-title">🔔 PWA নোটিফিকেশন ও স্ট্যাটাস বার ব্যাজ</div>
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              <span>PWA নোটিফিকেশন ও স্ট্যাটাস বার ব্যাজ</span>
+            </div>
             <p style="font-size:11.5px; color:var(--text-english-muted); margin-bottom:4px;">
               নোটিফিকেশন সক্রিয় করলে আপনার মোবাইল বা পিসির স্ট্যাটাস বারে টাইম/ডেটের পাশে আপনার ব্র্যান্ডের সাদা মিনি আইকন প্রদর্শিত হবে।
             </p>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-              <span style="font-size:12px;">সিস্টেম নোটিফিকেশন চেক:</span>
+              <span style="font-size:12px; font-weight:500;">সিস্টেম নোটিফিকেশন চেক:</span>
               <button class="ui-btn" type="button" onclick="requestNotificationPermissionAndSendDemo()">
-                <span>🔔</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
                 <span>নোটিফিকেশন টেস্ট করুন</span>
               </button>
             </div>
@@ -257,20 +374,31 @@
 
       <!-- Modal Footer -->
       <div class="modal-footer">
-        <button class="ui-btn" onclick="closeSettingsModal()">বাতিল</button>
-        <button class="ui-btn print-now-btn" id="saveSettingsBtn" onclick="saveAllSettings()">✓ সেভ ও লাইভ আপডেট করুন</button>
+        <button class="ui-btn" onclick="closeSettingsModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+          <span>বাতিল</span>
+        </button>
+        <button class="ui-btn print-now-btn" id="saveSettingsBtn" onclick="saveAllSettings()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span>সেভ ও লাইভ আপডেট করুন</span>
+        </button>
       </div>
 
     </div>
   </div>
 
   <!-- ========================================================================
-       PWA WELCOME & FEATURE INTRO MODAL
+       PWA WELCOME & FEATURE INTRO MODAL (Ultra-Luxury Glassmorphism)
        ======================================================================== -->
   <div class="modal-overlay no-print" id="pwaIntroModal" role="dialog" aria-modal="true" aria-labelledby="introModalTitle">
     <div class="pwa-intro-dialog">
       <div class="intro-brand-header">
-        <img src="./icons/icon.svg" alt="MUTU STUDY Logo" width="46" height="46" />
+        <img src="./icons/icon.svg" alt="MUTU STUDY Logo" width="48" height="48" />
         <div class="intro-title-wrap">
           <h3 id="introModalTitle">MUTU STUDY A4 Studio</h3>
           <span>Academic Publishing &amp; Auto-Pagination PWA</span>
@@ -283,19 +411,46 @@
 
       <div class="intro-features-grid">
         <div class="intro-feature-card">
-          <strong>📄 নিখুঁত A4 পেজিনেশন</strong>
+          <strong>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <span>নিখুঁত A4 পেজিনেশন</span>
+          </strong>
           <p>স্বয়ংক্রিয় হাইট-মেজারমেন্ট ও ডাইনামিক পেজ কাউন্টার (PAGE 01 / 02)।</p>
         </div>
+
         <div class="intro-feature-card">
-          <strong>🌗 দ্বৈত একাডেমিক থিম</strong>
+          <strong>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <span>দ্বৈত একাডেমিক থিম</span>
+          </strong>
           <p>ডার্ক মেহগনি ও ওয়াম হোয়াইট (লাইট) মোডের সাথে সিঙ্কড ভেক্টর লোগো।</p>
         </div>
+
         <div class="intro-feature-card">
-          <strong>🔤 যুক্তবর্ণ-সুরক্ষিত ফন্ট</strong>
+          <strong>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="4 7 4 4 20 4 20 7"/>
+              <line x1="9" y1="20" x2="15" y2="20"/>
+              <line x1="12" y1="4" x2="12" y2="20"/>
+            </svg>
+            <span>যুক্তবর্ণ-সুরক্ষিত ফন্ট</span>
+          </strong>
           <p>হিন্দ শিলিগুড়ি ও ওপেনটাইপ লিগেচার ফিক্স—কোনো ভাঙা অক্ষর নয়।</p>
         </div>
+
         <div class="intro-feature-card">
-          <strong>⚡ সম্পূর্ণ অফলাইন সাপোর্ট</strong>
+          <strong>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            <span>সম্পূর্ণ অফলাইন সাপোর্ট</span>
+          </strong>
           <p>ক্যাশ মেমোরি ও সার্ভিস ওয়ার্কারের মাধ্যমে ইন্টারনেট ছাড়াই কার্যকর।</p>
         </div>
       </div>
@@ -303,20 +458,32 @@
       <div class="intro-actions">
         <div class="intro-actions-row">
           <button class="intro-btn-primary" onclick="triggerInstallFromIntro()">
-            <span>📲</span>
-            <span>অ্যাপ ইনস্টল করুন (Install)</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>অ্যাপ ইনস্টল করুন</span>
           </button>
           <button class="intro-btn-secondary" onclick="closePWAIntro(false)">
-            <span>🚀</span>
             <span>কাজ শুরু করুন</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
           </button>
         </div>
+
         <div style="display:flex; justify-content:center; margin-top:2px;">
-          <button class="ui-btn" type="button" style="font-size:11.5px; padding:4px 12px;" onclick="requestNotificationPermissionAndSendDemo()">
-            <span>🔔</span>
+          <button class="ui-btn" type="button" style="font-size:11.5px; padding:5px 14px;" onclick="requestNotificationPermissionAndSendDemo()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
             <span>নোটিফিকেশন ও ব্যাজ আইকন টেস্ট করুন</span>
           </button>
         </div>
+
         <label class="intro-dont-show">
           <input type="checkbox" id="introDontShowCheck" onchange="closePWAIntro(this.checked)" />
           <span>পরবর্তীতে এই পরিচিতি বার্তাটি আর প্রদর্শন করবেন না</span>
@@ -326,19 +493,30 @@
   </div>
 
   <!-- ========================================================================
-       iOS SAFARI INSTALLATION GUIDE MODAL (PWA Standard)
+       iOS SAFARI INSTALLATION GUIDE MODAL (Luxury Glass)
        ======================================================================== -->
   <div class="modal-overlay no-print" id="iosInstallModal">
     <div class="ios-install-dialog">
-      <h4>📲 iPhone / iPad-এ ইনস্টল করুন</h4>
-      <p style="font-size: 13px; color: var(--text-english);">
+      <h4>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+          <line x1="12" y1="18" x2="12.01" y2="18"/>
+        </svg>
+        <span>iPhone / iPad-এ ইনস্টল করুন</span>
+      </h4>
+      <p style="font-size: 13px; color: var(--text-english); line-height: 1.55;">
         সাফারি ব্রাউজারে নিচের সহজ ধাপ দুটি অনুসরণ করে অ্যাপটি হোম স্ক্রিনে যোগ করুন:
       </p>
       <ol class="ios-install-steps">
-        <li>সাফারি ব্রাউজারের নিচের টুলবারের <strong>শেয়ার (Share / ⎋)</strong> বাটনে ট্যাপ করুন।</li>
-        <li>মেনু স্ক্রল করে <strong>'Add to Home Screen' (+ / হোম স্ক্রিনে যোগ করুন)</strong> সিলেক্ট করুন।</li>
+        <li>সাফারি ব্রাউজারের নিচের টুলবারের <strong>শেয়ার (Share)</strong> বাটনে ট্যাপ করুন।</li>
+        <li>মেনু স্ক্রল করে <strong>'Add to Home Screen' (হোম স্ক্রিনে যোগ করুন)</strong> সিলেক্ট করুন।</li>
       </ol>
-      <button class="ui-btn print-now-btn" style="margin-top: 8px; justify-content: center;" onclick="closeIOSInstallDialog()">বুঝেছি (Close)</button>
+      <button class="ui-btn print-now-btn" style="margin-top: 8px; justify-content: center;" onclick="closeIOSInstallDialog()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        <span>বুঝেছি (Close)</span>
+      </button>
     </div>
   </div>
 
@@ -353,6 +531,62 @@
        (জাভাস্ক্রিপ্ট অটো-পেজিনেশন ইঞ্জিন স্বয়ংক্রিয়ভাবে পৃষ্ঠাগুলো এখানে রেন্ডার করবে)
        ======================================================================== -->
   <main class="document-stage" id="document-stage"></main>
+
+  <!-- ========================================================================
+       3D CIRCULAR FLOATING ACTION MENU (Luxury Glassmorphic FAB)
+       Quick PDF Export, Theme Toggling & Studio Controls in bottom-right corner
+       ======================================================================== -->
+  <nav class="fab-circular-menu no-print" id="fabMenu" aria-label="Quick Actions">
+    <div class="fab-actions-ring" id="fabActionsRing">
+      <!-- Quick Print / PDF Export Action -->
+      <button class="fab-btn fab-btn-action fab-btn-print" id="fabPrintBtn" onclick="window.print()" title="Print / PDF Export" aria-label="Print or Save as PDF">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"/>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+          <rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        <span class="fab-tooltip">PDF Export / Print</span>
+      </button>
+
+      <!-- Quick Dual Theme Switcher (Dark Mahogany <-> Warm White Light) -->
+      <button class="fab-btn fab-btn-action fab-btn-theme" id="fabThemeBtn" onclick="toggleAcademicTheme(event)" title="Toggle Theme" aria-label="Toggle Theme">
+        <span id="fabThemeIcon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </span>
+        <span class="fab-tooltip" id="fabThemeTooltip">Dark Mahogany</span>
+      </button>
+
+      <!-- Quick Studio Settings Modal Trigger -->
+      <button class="fab-btn fab-btn-action" id="fabSettingsBtn" onclick="openSettingsModal()" title="স্টুডিও সেটিংস" aria-label="Open Studio Settings">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span class="fab-tooltip">স্টুডিও সেটিংস</span>
+      </button>
+
+      <!-- Scroll to Top Action -->
+      <button class="fab-btn fab-btn-action" id="fabTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="পৃষ্ঠার শীর্ষে যান" aria-label="Scroll to Top">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="19" x2="12" y2="5"/>
+          <polyline points="5 12 12 5 19 12"/>
+        </svg>
+        <span class="fab-tooltip">পৃষ্ঠার শীর্ষে</span>
+      </button>
+    </div>
+
+    <!-- Master 3D Circular Trigger Button -->
+    <button class="fab-btn fab-trigger" id="fabTriggerBtn" onclick="toggleFabMenu(event)" aria-label="Quick Actions Menu" title="Quick Actions">
+      <div class="fab-trigger-inner">
+        <svg class="fab-icon-menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </div>
+    </button>
+  </nav>
 
   <!-- Modular JavaScript Engine Entry Point -->
   <script type="module" src="./js/app.js"></script>

@@ -11,33 +11,59 @@
   
   --page-width: 210mm;
   --page-height: 297mm;
-  --watermark-opacity: 0.04;
+  --watermark-opacity: 0.085;
   --global-font-scale: 1;
 }
 
 /* 2. THEME 1: DARK MAHOGANY (Default Royal Academic Dark) */
 html[data-theme="dark"] {
-  --app-stage-bg: #0c0608;
-  --bg-page: #140b0e;
-  --bg-page-gradient: radial-gradient(circle at 50% 15%, #24131a 0%, #140b0e 80%);
-  --surface-card: #201217;
-  --surface-card-subtle: rgba(224, 122, 95, 0.06);
-  --surface-card-strong: #2a1820;
+  --app-stage-bg: #0d0609;
+  --bg-page: #150b0f;
+  --bg-page-gradient: radial-gradient(circle at 50% 12%, #29141e 0%, #150b0f 85%);
+  --surface-card: rgba(35, 18, 26, 0.58);
+  --surface-card-subtle: rgba(224, 122, 95, 0.08);
+  --surface-card-strong: rgba(45, 24, 34, 0.72);
   
+  /* Luxury Crystal Glassmorphism (Dark Mode) */
+  --glass-surface: rgba(32, 16, 23, 0.78);
+  --glass-surface-card: rgba(42, 21, 30, 0.76);
+  --glass-border: rgba(232, 153, 130, 0.28);
+  --glass-border-light: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 18px 50px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 1.5px rgba(255, 255, 255, 0.18);
+  
+  /* Luminous 3D Ambient Orbs */
+  --orb-1: rgba(240, 106, 76, 0.36);
+  --orb-2: rgba(188, 42, 78, 0.32);
+  --orb-3: rgba(248, 185, 65, 0.26);
+  --orb-4: rgba(138, 45, 140, 0.20);
+  
+  /* Modular Glass-Card System */
+  --glass-card-bg: linear-gradient(135deg, rgba(46, 23, 33, 0.75) 0%, rgba(26, 12, 18, 0.85) 100%);
+  --glass-card-border: rgba(232, 153, 130, 0.26);
+  --glass-card-sheen: linear-gradient(90deg, transparent 5%, rgba(255, 215, 205, 0.45) 45%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 215, 205, 0.45) 55%, transparent 95%);
+  --glass-card-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), inset 0 1px 1.2px rgba(255, 255, 255, 0.2), inset 0 -1px 2px rgba(0, 0, 0, 0.45);
+  --glass-card-hover-shadow: 0 14px 38px rgba(0, 0, 0, 0.65), 0 0 20px rgba(224, 122, 95, 0.22), inset 0 1px 1.8px rgba(255, 255, 255, 0.3);
+  --glass-card-hover-border: rgba(255, 192, 170, 0.48);
+
   --accent-primary: #e07a5f;
   --accent-secondary: #e89982;
-  --accent-glow: rgba(224, 122, 95, 0.22);
-  --border-color: rgba(232, 153, 130, 0.22);
-  --border-subtle: rgba(232, 153, 130, 0.12);
-  --border-strong: rgba(232, 153, 130, 0.45);
+  --accent-glow: rgba(224, 122, 95, 0.28);
+  --border-color: rgba(232, 153, 130, 0.24);
+  --border-subtle: rgba(232, 153, 130, 0.14);
+  --border-strong: rgba(232, 153, 130, 0.5);
   
   --text-english: #f6efe9;
   --text-english-muted: #b8aba2;
   --text-bengali: #d1b8c4;
   --text-bengali-secondary: #a38d97;
   --table-stripe: #1c0f14;
-  --app-ui-bg: #1c0e13;
+  --app-ui-bg: rgba(28, 14, 19, 0.86);
   
+  /* Floating Action Menu (FAB) */
+  --fab-bg: linear-gradient(135deg, rgba(46, 23, 33, 0.9) 0%, rgba(24, 11, 16, 0.94) 100%);
+  --fab-border: rgba(255, 180, 160, 0.35);
+  --fab-shadow: 0 14px 36px rgba(0, 0, 0, 0.65), 0 0 18px rgba(224, 122, 95, 0.25), inset 0 1.5px 2px rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+
   /* Logo Theme Colors (Dark Sync) */
   --logo-text-color: #f6efe9;
   --logo-left-1: #e2856c;
@@ -61,13 +87,34 @@ html[data-theme="light"] {
   --app-stage-bg: #EFE9DE;
   --bg-page: #FDFBF7;
   --bg-page-gradient: #FDFBF7;
-  --surface-card: #F4EFE6;
-  --surface-card-subtle: #FAF6EF;
-  --surface-card-strong: #EDE5D8;
+  --surface-card: rgba(244, 239, 230, 0.62);
+  --surface-card-subtle: rgba(250, 246, 239, 0.52);
+  --surface-card-strong: rgba(237, 229, 216, 0.72);
   
+  /* Luxury Crystal Glassmorphism (Light Mode) */
+  --glass-surface: rgba(253, 251, 247, 0.86);
+  --glass-surface-card: rgba(244, 239, 230, 0.82);
+  --glass-border: rgba(226, 218, 200, 0.9);
+  --glass-border-light: rgba(255, 255, 255, 0.95);
+  --glass-shadow: 0 16px 42px rgba(74, 17, 18, 0.08), 0 2px 8px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+  
+  /* 3D Ambient Orbs (Warm Golden Ivory) */
+  --orb-1: rgba(200, 180, 150, 0.42);
+  --orb-2: rgba(220, 168, 68, 0.24);
+  --orb-3: rgba(130, 20, 48, 0.12);
+  --orb-4: rgba(214, 161, 59, 0.2);
+  
+  /* Modular Glass-Card System */
+  --glass-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.84) 0%, rgba(245, 239, 229, 0.74) 100%);
+  --glass-card-border: rgba(255, 255, 255, 0.92);
+  --glass-card-sheen: linear-gradient(90deg, transparent 5%, rgba(255, 255, 255, 0.95) 50%, transparent 95%);
+  --glass-card-shadow: 0 8px 22px rgba(74, 17, 18, 0.06), 0 2px 6px rgba(0, 0, 0, 0.02), inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 1px rgba(113, 14, 41, 0.03);
+  --glass-card-hover-shadow: 0 12px 28px rgba(74, 17, 18, 0.11), 0 0 14px rgba(214, 161, 59, 0.18), inset 0 1px 2px rgba(255, 255, 255, 1);
+  --glass-card-hover-border: rgba(214, 161, 59, 0.5);
+
   --accent-primary: #4A1112;
   --accent-secondary: #7A1D20;
-  --accent-glow: rgba(74, 17, 18, 0.12);
+  --accent-glow: rgba(74, 17, 18, 0.16);
   --border-color: #E2DAC8;
   --border-subtle: #ECE5D8;
   --border-strong: #C9BDA5;
@@ -77,8 +124,13 @@ html[data-theme="light"] {
   --text-bengali: #2D2427;
   --text-bengali-secondary: #6B5E63;
   --table-stripe: #F9F5EC;
-  --app-ui-bg: #EFE9DE;
+  --app-ui-bg: rgba(239, 233, 222, 0.88);
   
+  /* Floating Action Menu (FAB) */
+  --fab-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(246, 240, 230, 0.92) 100%);
+  --fab-border: rgba(255, 255, 255, 0.95);
+  --fab-shadow: 0 14px 34px rgba(74, 17, 18, 0.12), 0 0 18px rgba(214, 161, 59, 0.16), inset 0 1.5px 2px rgba(255, 255, 255, 1), inset 0 -1.5px 2px rgba(74, 17, 18, 0.05);
+
   /* Logo Theme Colors (Original Light Sync) */
   --logo-text-color: #350A0D;
   --logo-left-1: #710E29;
