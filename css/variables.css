@@ -52,10 +52,12 @@ html[data-theme="dark"] {
   --border-subtle: rgba(232, 153, 130, 0.14);
   --border-strong: rgba(232, 153, 130, 0.5);
   
-  --text-english: #f6efe9;
-  --text-english-muted: #b8aba2;
-  --text-bengali: #d1b8c4;
-  --text-bengali-secondary: #a38d97;
+  --text-english: #FFF8ED;
+  --text-english-muted: #F5EAE0;
+  --text-bengali: #FFF8ED;
+  --text-bengali-secondary: #F5EAE0;
+  --text-warm-white: #FFF8ED;
+  --text-warm-white-sub: #F7EFE4;
   --table-stripe: rgba(28, 15, 20, 0.45);
   --app-ui-bg: rgba(28, 14, 19, 0.86);
   
@@ -64,22 +66,53 @@ html[data-theme="dark"] {
   --fab-border: rgba(255, 180, 160, 0.35);
   --fab-shadow: 0 14px 36px rgba(0, 0, 0, 0.65), 0 0 18px rgba(224, 122, 95, 0.25), inset 0 1.5px 2px rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
 
-  /* Logo Theme Colors (Dark Sync) */
-  --logo-text-color: #f6efe9;
-  --logo-left-1: #e2856c;
-  --logo-left-2: #c4583d;
-  --logo-left-3: #8a2415;
-  --logo-center-1: #f0967d;
-  --logo-center-2: #ad462f;
-  --logo-center-3: #63170c;
-  --logo-gold-1: #ffe694;
-  --logo-gold-2: #f3b23e;
-  --logo-gold-3: #cf6f1b;
-  --logo-cap-board-1: #e2856c;
-  --logo-cap-board-2: #a33b24;
-  --logo-cap-board-3: #5e160c;
-  --logo-cap-base: #3d0815;
-  --logo-cap-tassel: #ffe694;
+  /* Logo Theme Colors (Dark Mode Architectural Engine: Warm White + Soft Ivory Shadow + Royal Gold) */
+  --logo-text-color: #FFF8ED;
+  --logo-left-1: #FFFDF8;
+  --logo-left-2: #FFF8ED;
+  --logo-left-3: #EADBCE;
+  --logo-center-1: #FFF8ED;
+  --logo-center-2: #F2E6D8;
+  --logo-center-3: #DFCEBE;
+  --logo-gold-1: #D6A13B;
+  --logo-gold-2: #C7892E;
+  --logo-gold-3: #C1621A;
+  --logo-cap-board-1: #FFFDF8;
+  --logo-cap-board-2: #FFF8ED;
+  --logo-cap-board-3: #E8DACB;
+  --logo-cap-base: #E2D2C2;
+  --logo-cap-edge-left: #EADBCE;
+  --logo-cap-edge-right: #DFCEBE;
+  --logo-cap-ridge: #FFFDF8;
+  --logo-cap-tassel: #D6A13B;
+  --logo-tassel-cord: #C7892E;
+  --logo-knot-circle: #D6A13B;
+}
+
+/* Warm White Academic Engine: In dark mode, stark white is replaced with Warm White (#FFF8ED) */
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6,
+html[data-theme="dark"] strong,
+html[data-theme="dark"] .ui-brand,
+html[data-theme="dark"] .ui-brand-text,
+html[data-theme="dark"] .ui-brand span,
+html[data-theme="dark"] .modal-header h3,
+html[data-theme="dark"] .intro-title-wrap h3,
+html[data-theme="dark"] .setting-label,
+html[data-theme="dark"] .print-now-btn,
+html[data-theme="dark"] .ui-btn-primary,
+html[data-theme="dark"] .tc-tag,
+html[data-theme="dark"] .mnemonic-pill,
+html[data-theme="dark"] .offline-pill,
+html[data-theme="dark"] .toast,
+html[data-theme="dark"] #pwaDirectInstallBanner,
+html[data-theme="dark"] .mobile-tab-btn.active,
+html[data-theme="dark"] .header-subject-tag {
+  color: var(--text-warm-white, #FFF8ED);
 }
 
 /* 3. THEME 2: WARM WHITE / IVORY (Crisp Daylight Academic Light) */
@@ -146,7 +179,12 @@ html[data-theme="light"] {
   --logo-cap-board-2: #3b0918;
   --logo-cap-board-3: #24040c;
   --logo-cap-base: #24040c;
+  --logo-cap-edge-left: #430a19;
+  --logo-cap-edge-right: #24040c;
+  --logo-cap-ridge: #5a1327;
   --logo-cap-tassel: #D6A13B;
+  --logo-tassel-cord: #C7892E;
+  --logo-knot-circle: #D6A13B;
 }
 
 /* 4. Global Baseline Resets */

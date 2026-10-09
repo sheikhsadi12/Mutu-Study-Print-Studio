@@ -129,6 +129,42 @@
 </head>
 <body>
 
+  <!-- Global Master SVG Defs for Dynamic Dual-Theme Architecture (Warm White + Royal Gold in Dark Mode) -->
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
+    <defs>
+      <linearGradient id="m-left-fill" x1="91" y1="46" x2="121" y2="323" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="var(--logo-left-1)"/>
+        <stop offset="49%" stop-color="var(--logo-left-2)"/>
+        <stop offset="100%" stop-color="var(--logo-left-3)"/>
+      </linearGradient>
+      <linearGradient id="m-center-fill" x1="290" y1="105" x2="183" y2="276" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="var(--logo-center-1)"/>
+        <stop offset="52%" stop-color="var(--logo-center-2)"/>
+        <stop offset="100%" stop-color="var(--logo-center-3)"/>
+      </linearGradient>
+      <linearGradient id="m-gold-upper" x1="291" y1="27" x2="243" y2="168" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="var(--logo-gold-1)"/>
+        <stop offset="50%" stop-color="var(--logo-gold-2)"/>
+        <stop offset="100%" stop-color="var(--logo-gold-3)"/>
+      </linearGradient>
+      <linearGradient id="m-gold-lower" x1="190" y1="214" x2="195" y2="283" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="var(--logo-gold-1)"/>
+        <stop offset="50%" stop-color="var(--logo-gold-2)"/>
+        <stop offset="100%" stop-color="var(--logo-gold-3)"/>
+      </linearGradient>
+      <linearGradient id="m-cap-board" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="var(--logo-cap-board-1)"/>
+        <stop offset="50%" stop-color="var(--logo-cap-board-2)"/>
+        <stop offset="100%" stop-color="var(--logo-cap-board-3)"/>
+      </linearGradient>
+      <linearGradient id="m-cap-gold" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="var(--logo-gold-1)"/>
+        <stop offset="50%" stop-color="var(--logo-gold-2)"/>
+        <stop offset="100%" stop-color="var(--logo-gold-3)"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
   <!-- Ambient 3D Glowing Depth Orbs (Luxury Glassmorphic Backdrop) -->
   <div class="ambient-glow-orbs no-print" aria-hidden="true">
     <div class="ambient-orb orb-1"></div>
@@ -140,8 +176,13 @@
   <!-- Screen Top Control Bar (Hidden in Print Mode) -->
   <header class="screen-control-bar no-print">
     <a href="#" class="ui-brand" aria-label="MUTU STUDY Home">
-      <img src="./icons/icon.svg" alt="MUTU Logo" width="30" height="30" style="vertical-align: middle;" />
-      <span>MUTU STUDY A4 Studio</span>
+      <svg class="ui-brand-emblem" viewBox="45 20 260 310" width="30" height="30" aria-hidden="true" style="vertical-align: middle; flex-shrink: 0; display: inline-block;">
+        <path fill="url(#m-left-fill)" d="M 58.05,46.45 L 147.48,97.94 C 162.85,106.75 170.78,120.15 170.78,135.43 L 170.78,322.16 L 75.14,267.86 C 64.14,261.61 58.05,252.95 58.05,240.17 Z"/>
+        <path fill="url(#m-center-fill)" d="M 290.75,104.54 L 199.54,166.45 C 191.19,172.12 186.69,176.00 186.69,183.09 C 186.69,190.18 191.61,195.98 199.66,200.23 L 246.45,224.91 C 257.11,230.52 261.78,238.05 261.78,246.31 C 261.78,254.48 258.67,261.18 249.36,267.17 L 192.14,303.51 C 188.45,305.85 186.74,308.03 186.74,311.14 L 186.74,323.27 L 275.19,269.26 C 285.43,263.01 290.75,254.51 290.75,241.91 Z"/>
+        <path fill="url(#m-gold-upper)" d="M 291.42,26.78 L 210.28,81.46 C 196.41,90.76 188.85,101.12 188.85,116.95 L 188.85,152.66 L 278.07,92.10 C 287.35,85.81 291.42,77.74 291.42,66.92 Z"/>
+        <path fill="url(#m-gold-lower)" d="M 189.52,214.14 L 230.66,235.55 C 235.16,237.89 237.36,240.63 237.36,245.66 C 237.36,250.43 235.55,253.07 231.10,255.96 L 189.52,283.43 Z"/>
+      </svg>
+      <span class="ui-brand-text">MUTU STUDY A4 Studio</span>
     </a>
 
     <div class="ui-actions">
@@ -530,7 +571,12 @@
   <div class="modal-overlay no-print" id="pwaIntroModal" role="dialog" aria-modal="true" aria-labelledby="introModalTitle">
     <div class="pwa-intro-dialog">
       <div class="intro-brand-header">
-        <img src="./icons/icon.svg" alt="MUTU STUDY Logo" width="48" height="48" />
+        <svg class="ui-brand-emblem" viewBox="45 20 260 310" width="48" height="48" aria-hidden="true" style="vertical-align: middle; flex-shrink: 0; display: inline-block;">
+          <path fill="url(#m-left-fill)" d="M 58.05,46.45 L 147.48,97.94 C 162.85,106.75 170.78,120.15 170.78,135.43 L 170.78,322.16 L 75.14,267.86 C 64.14,261.61 58.05,252.95 58.05,240.17 Z"/>
+          <path fill="url(#m-center-fill)" d="M 290.75,104.54 L 199.54,166.45 C 191.19,172.12 186.69,176.00 186.69,183.09 C 186.69,190.18 191.61,195.98 199.66,200.23 L 246.45,224.91 C 257.11,230.52 261.78,238.05 261.78,246.31 C 261.78,254.48 258.67,261.18 249.36,267.17 L 192.14,303.51 C 188.45,305.85 186.74,308.03 186.74,311.14 L 186.74,323.27 L 275.19,269.26 C 285.43,263.01 290.75,254.51 290.75,241.91 Z"/>
+          <path fill="url(#m-gold-upper)" d="M 291.42,26.78 L 210.28,81.46 C 196.41,90.76 188.85,101.12 188.85,116.95 L 188.85,152.66 L 278.07,92.10 C 287.35,85.81 291.42,77.74 291.42,66.92 Z"/>
+          <path fill="url(#m-gold-lower)" d="M 189.52,214.14 L 230.66,235.55 C 235.16,237.89 237.36,240.63 237.36,245.66 C 237.36,250.43 235.55,253.07 231.10,255.96 L 189.52,283.43 Z"/>
+        </svg>
         <div class="intro-title-wrap">
           <h3 id="introModalTitle">MUTU STUDY A4 Studio</h3>
           <span>Academic Publishing &amp; Auto-Pagination PWA</span>
@@ -665,7 +711,12 @@
   <div class="modal-overlay no-print" id="pwaFrameModal" role="dialog" aria-modal="true" aria-labelledby="pwaFrameTitle">
     <div class="pwa-intro-dialog" style="max-width: 480px;">
       <div class="intro-brand-header">
-        <img src="/icons/icon.svg" alt="MUTU STUDY Logo" width="44" height="44" />
+        <svg class="ui-brand-emblem" viewBox="45 20 260 310" width="44" height="44" aria-hidden="true" style="vertical-align: middle; flex-shrink: 0; display: inline-block;">
+          <path fill="url(#m-left-fill)" d="M 58.05,46.45 L 147.48,97.94 C 162.85,106.75 170.78,120.15 170.78,135.43 L 170.78,322.16 L 75.14,267.86 C 64.14,261.61 58.05,252.95 58.05,240.17 Z"/>
+          <path fill="url(#m-center-fill)" d="M 290.75,104.54 L 199.54,166.45 C 191.19,172.12 186.69,176.00 186.69,183.09 C 186.69,190.18 191.61,195.98 199.66,200.23 L 246.45,224.91 C 257.11,230.52 261.78,238.05 261.78,246.31 C 261.78,254.48 258.67,261.18 249.36,267.17 L 192.14,303.51 C 188.45,305.85 186.74,308.03 186.74,311.14 L 186.74,323.27 L 275.19,269.26 C 285.43,263.01 290.75,254.51 290.75,241.91 Z"/>
+          <path fill="url(#m-gold-upper)" d="M 291.42,26.78 L 210.28,81.46 C 196.41,90.76 188.85,101.12 188.85,116.95 L 188.85,152.66 L 278.07,92.10 C 287.35,85.81 291.42,77.74 291.42,66.92 Z"/>
+          <path fill="url(#m-gold-lower)" d="M 189.52,214.14 L 230.66,235.55 C 235.16,237.89 237.36,240.63 237.36,245.66 C 237.36,250.43 235.55,253.07 231.10,255.96 L 189.52,283.43 Z"/>
+        </svg>
         <div class="intro-title-wrap">
           <h3 id="pwaFrameTitle">PWA অ্যাপ ইনস্টলেশন গাইড</h3>
           <span>AI Studio প্রিভিউ ফ্রেম ডিটেকশন</span>
@@ -802,7 +853,7 @@
           </div>
           <div class="dual-card-filename" id="dualLightFileName">Document - Light Theme.pdf</div>
           <div class="dual-card-desc">উজ্জ্বল আইভরি ব্যাকগ্রাউন্ড ও গভীর কালির কন্ট্রাস্ট — সাধারণ প্রিন্টিং ও রিডিংয়ের জন্য আদর্শ।</div>
-          <button class="ui-btn" style="margin-top:auto; justify-content:center; background:linear-gradient(135deg, #7A1D20 0%, #4A1112 100%); color:#fff;" onclick="exportPDF('light')">
+          <button class="ui-btn" style="margin-top:auto; justify-content:center; background:linear-gradient(135deg, #7A1D20 0%, #4A1112 100%); color:var(--text-warm-white, #FFF8ED);" onclick="exportPDF('light')">
             <span>☀️ Export Light PDF</span>
           </button>
         </div>
@@ -833,9 +884,10 @@
   </div>
 
   <!-- Offline Connectivity Indicator -->
-  <div class="offline-pill no-print" id="offlinePill">
+  <div class="offline-pill no-print" id="offlinePill" role="status" aria-live="polite">
     <span class="offline-pill-dot"></span>
     <span>অফলাইন মোড — ক্যাশ মেমোরি থেকে চলছে</span>
+    <button type="button" class="offline-pill-close" onclick="document.getElementById('offlinePill').classList.remove('visible')" title="Close notification" aria-label="Close notification">&times;</button>
   </div>
 
   <!-- ========================================================================

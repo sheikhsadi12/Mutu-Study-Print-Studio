@@ -35,6 +35,18 @@ export function setTheme(theme) {
   appState.theme = theme;
   htmlEl.setAttribute('data-theme', theme);
 
+  // Sync Android / System Status Bar Color
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) {
+    themeMeta.setAttribute('content', theme === 'dark' ? '#180B10' : '#4A1112');
+  }
+
+  // Sync Brand Header Icon with Active Theme Architecture
+  const brandImgs = document.querySelectorAll('.ui-brand img, .intro-brand-header img');
+  brandImgs.forEach(img => {
+    img.src = (theme === 'dark') ? './icons/icon-dark.svg' : './icons/icon.svg';
+  });
+
   const btnIcon = document.getElementById('themeBtnIcon');
   const btnText = document.getElementById('themeBtnText');
   const fabIcon = document.getElementById('fabThemeIcon');
@@ -274,12 +286,44 @@ function initInstallPrompt() {
   });
 }
 
+// Android Pure-App History & Modal State Manager
+let lastBackPressTime = 0;
+
+export function pushModalHistory(modalId) {
+  try {
+    window.history.pushState({ modalId }, document.title);
+  } catch (e) {
+    console.debug('[MUTU PWA] History push failed:', e);
+  }
+}
+
+export function popModalHistory(modalId) {
+  try {
+    if (window.history.state && window.history.state.modalId === modalId) {
+      window.history.back();
+    }
+  } catch (e) {
+    console.debug('[MUTU PWA] History back failed:', e);
+  }
+}
+
 /**
  * Opens PWA Welcome & Intro Dialog
  */
 export function openPWAIntro() {
+  const isStandalone = window.__pwaIsStandalone ||
+                       window.matchMedia('(display-mode: standalone)').matches || 
+                       (window.navigator.standalone === true);
+  if (isStandalone) {
+    // In standalone mode, user is already in installed app
+    localStorage.setItem('mutu_intro_dismissed', 'true');
+    return;
+  }
   const modal = document.getElementById('pwaIntroModal');
-  if (modal) modal.classList.add('open');
+  if (modal) {
+    modal.classList.add('open');
+    pushModalHistory('pwaIntroModal');
+  }
 }
 
 /**
@@ -288,7 +332,10 @@ export function openPWAIntro() {
  */
 export function closePWAIntro(dontShowAgain = false) {
   const modal = document.getElementById('pwaIntroModal');
-  if (modal) modal.classList.remove('open');
+  if (modal) {
+    modal.classList.remove('open');
+    popModalHistory('pwaIntroModal');
+  }
 
   const checkbox = document.getElementById('introDontShowCheck');
   if (dontShowAgain || (checkbox && checkbox.checked)) {
@@ -309,12 +356,18 @@ export async function triggerInstallFromIntro() {
  */
 export function openIOSInstallDialog() {
   const dialog = document.getElementById('iosInstallModal');
-  if (dialog) dialog.classList.add('open');
+  if (dialog) {
+    dialog.classList.add('open');
+    pushModalHistory('iosInstallModal');
+  }
 }
 
 export function closeIOSInstallDialog() {
   const dialog = document.getElementById('iosInstallModal');
-  if (dialog) dialog.classList.remove('open');
+  if (dialog) {
+    dialog.classList.remove('open');
+    popModalHistory('iosInstallModal');
+  }
 }
 
 /**
@@ -326,12 +379,18 @@ export function openPWAFrameModal() {
   if (openBtn) {
     openBtn.href = window.location.origin + window.location.pathname + '?source=pwa&install=1';
   }
-  if (modal) modal.classList.add('open');
+  if (modal) {
+    modal.classList.add('open');
+    pushModalHistory('pwaFrameModal');
+  }
 }
 
 export function closePWAFrameModal() {
   const modal = document.getElementById('pwaFrameModal');
-  if (modal) modal.classList.remove('open');
+  if (modal) {
+    modal.classList.remove('open');
+    popModalHistory('pwaFrameModal');
+  }
 }
 
 /**
@@ -341,6 +400,7 @@ export function openPWADiagnosticModal() {
   const modal = document.getElementById('pwaDiagnosticModal');
   if (!modal) return;
   modal.classList.add('open');
+  pushModalHistory('pwaDiagnosticModal');
 
   const swElem = document.getElementById('diagSWStatus');
   const promptElem = document.getElementById('diagPromptStatus');
@@ -389,7 +449,10 @@ export function openPWADiagnosticModal() {
 
 export function closePWADiagnosticModal() {
   const modal = document.getElementById('pwaDiagnosticModal');
-  if (modal) modal.classList.remove('open');
+  if (modal) {
+    modal.classList.remove('open');
+    popModalHistory('pwaDiagnosticModal');
+  }
 }
 
 export function forceTriggerPWAInstall() {
@@ -451,18 +514,22 @@ export async function requestNotificationPermissionAndSendDemo() {
 function initNetworkStatusListener() {
   const offlinePill = document.getElementById('offlinePill');
   const updateOnlineStatus = () => {
-    if (offlinePill) {
-      if (!navigator.onLine) {
-        offlinePill.classList.add('visible');
-      } else {
-        offlinePill.classList.remove('visible');
-      }
+    if (!offlinePill) return;
+    if (navigator.onLine === false) {
+      offlinePill.classList.add('visible');
+    } else {
+      offlinePill.classList.remove('visible');
     }
   };
 
   window.addEventListener('online', updateOnlineStatus);
   window.addEventListener('offline', updateOnlineStatus);
-  updateOnlineStatus();
+
+  if (navigator.onLine === false) {
+    offlinePill.classList.add('visible');
+  } else if (offlinePill) {
+    offlinePill.classList.remove('visible');
+  }
 }
 
 /**
@@ -526,7 +593,10 @@ export function openDualExportModal() {
   if (lightNameEl) lightNameEl.innerText = `${baseTitle} - Light Theme.pdf`;
   if (darkNameEl) darkNameEl.innerText = `${baseTitle} - Dark Theme.pdf`;
 
-  if (modal) modal.classList.add('open');
+  if (modal) {
+    modal.classList.add('open');
+    pushModalHistory('dualExportModal');
+  }
 }
 
 /**
@@ -534,7 +604,10 @@ export function openDualExportModal() {
  */
 export function closeDualExportModal() {
   const modal = document.getElementById('dualExportModal');
-  if (modal) modal.classList.remove('open');
+  if (modal) {
+    modal.classList.remove('open');
+    popModalHistory('dualExportModal');
+  }
 }
 
 /**
@@ -554,18 +627,46 @@ export function sequentialDualExport() {
 }
 
 /**
+ * Wrapped Settings Modal Openers with Android History Support
+ */
+export function handleOpenSettingsModal() {
+  openSettingsModal();
+  pushModalHistory('settingsModal');
+}
+
+export function handleCloseSettingsModal() {
+  closeSettingsModal();
+  popModalHistory('settingsModal');
+}
+
+/**
  * Updates dynamic responsive scaling on mobile & tablet viewports
+ * Completely fluid across tablet rotation (portrait <-> landscape)
  */
 export function updateResponsivePageScale() {
   const viewportWidth = window.innerWidth;
+  const html = document.documentElement;
 
-  if (viewportWidth <= 860 && !document.documentElement.classList.contains('view-mode-actual')) {
-    const a4PixelWidth = 794; // Standard 210mm in 96dpi CSS px
-    const availableWidth = Math.max(280, viewportWidth - 20);
-    const scale = Math.min(1, availableWidth / a4PixelWidth);
-    document.documentElement.style.setProperty('--doc-preview-scale', scale.toFixed(4));
+  if (html.classList.contains('view-mode-actual')) {
+    html.style.setProperty('--doc-preview-scale', '1');
+    return;
+  }
+
+  const a4PixelWidth = 794; // Standard 210mm in 96dpi CSS px
+  let horizontalPadding = 16;
+  if (viewportWidth >= 1024) {
+    horizontalPadding = 48;
+  } else if (viewportWidth >= 768) {
+    horizontalPadding = 28;
+  }
+
+  const availableWidth = viewportWidth - horizontalPadding;
+
+  if (availableWidth < a4PixelWidth) {
+    const scale = Math.max(0.35, Math.min(1, availableWidth / a4PixelWidth));
+    html.style.setProperty('--doc-preview-scale', scale.toFixed(4));
   } else {
-    document.documentElement.style.setProperty('--doc-preview-scale', '1');
+    html.style.setProperty('--doc-preview-scale', '1');
   }
 }
 
@@ -585,7 +686,7 @@ export function toggleViewMode() {
   } else {
     if (toggleBtnText) toggleBtnText.innerText = '100% Zoom';
     if (fabViewTooltip) fabViewTooltip.innerText = '100% Zoom';
-    showToast("প্রিভিউ মোড: মোবাইল ফিট (স্ক্রিনের মাপে ফিট)");
+    showToast("প্রিভিউ মোড: স্ক্রিন ফিট (ট্যাবলেট/মোবাইলের মাপে ফিট)");
   }
   updateResponsivePageScale();
 }
@@ -606,17 +707,20 @@ function bindUIEventListeners() {
 
   const settingsBtn = document.getElementById('openSettingsBtn');
   if (settingsBtn) {
-    settingsBtn.addEventListener('click', openSettingsModal);
+    settingsBtn.addEventListener('click', handleOpenSettingsModal);
   }
 
   const closeSettingsBtn = document.getElementById('closeSettingsBtn');
   if (closeSettingsBtn) {
-    closeSettingsBtn.addEventListener('click', closeSettingsModal);
+    closeSettingsBtn.addEventListener('click', handleCloseSettingsModal);
   }
 
   const saveSettingsBtn = document.getElementById('saveSettingsBtn');
   if (saveSettingsBtn) {
-    saveSettingsBtn.addEventListener('click', saveAllSettings);
+    saveSettingsBtn.addEventListener('click', () => {
+      saveAllSettings();
+      popModalHistory('settingsModal');
+    });
   }
 
   const resetContentBtn = document.getElementById('resetContentBtn');
@@ -655,12 +759,26 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Check and display PWA Intro on first visit
-  const introDismissed = localStorage.getItem('mutu_intro_dismissed');
-  if (!introDismissed) {
-    setTimeout(() => {
-      openPWAIntro();
-    }, 700);
+  // Pure Native Android PWA Standalone Detection
+  const isStandalone = window.__pwaIsStandalone ||
+                       window.matchMedia('(display-mode: standalone)').matches || 
+                       (window.navigator.standalone === true);
+
+  if (isStandalone) {
+    // In standalone mode, user is already installed and using the native app
+    localStorage.setItem('mutu_intro_dismissed', 'true');
+    const pwaBtn = document.getElementById('pwaInstallBtn');
+    if (pwaBtn) pwaBtn.style.display = 'none';
+    const banner = document.getElementById('pwaDirectInstallBanner');
+    if (banner) banner.style.display = 'none';
+  } else {
+    // Check and display PWA Intro on first browser visit only
+    const introDismissed = localStorage.getItem('mutu_intro_dismissed');
+    if (!introDismissed) {
+      setTimeout(() => {
+        openPWAIntro();
+      }, 700);
+    }
   }
 
   // Close FAB circular menu when clicking outside
@@ -670,18 +788,82 @@ window.addEventListener('DOMContentLoaded', () => {
       fabMenu.classList.remove('active');
     }
   });
+
+  // Base history state for smooth Android back navigation
+  try {
+    if (!window.history.state) {
+      window.history.replaceState({ root: true }, document.title);
+    }
+  } catch (err) {}
+});
+
+// Pure Android Hardware Back Button & Tab Navigation Engine
+window.addEventListener('popstate', () => {
+  // 1. If any modal dialog is open, close the topmost modal
+  const openModals = document.querySelectorAll('.modal-overlay.open');
+  if (openModals.length > 0) {
+    const topModal = openModals[openModals.length - 1];
+    topModal.classList.remove('open');
+    return;
+  }
+
+  // 2. If FAB action menu is open, collapse it
+  const fabMenu = document.getElementById('fabMenu');
+  if (fabMenu && fabMenu.classList.contains('active')) {
+    fabMenu.classList.remove('active');
+    return;
+  }
+
+  // 3. Android Standalone Double-Back Exit Protection
+  const isStandalone = window.__pwaIsStandalone ||
+                       window.matchMedia('(display-mode: standalone)').matches || 
+                       (window.navigator.standalone === true);
+  if (isStandalone) {
+    const now = Date.now();
+    if (now - lastBackPressTime < 2200) {
+      // User tapped back twice quickly: allow system to exit/minimize
+      window.history.back();
+    } else {
+      lastBackPressTime = now;
+      showToast("আর একবার ব্যাক বাটন চাপলে অ্যাপ থেকে বের হবেন", 2200);
+      try {
+        window.history.pushState({ root: true }, document.title);
+      } catch (err) {}
+    }
+  }
+});
+
+// Hardware Keyboard Support for Android Tablets & Cases (Escape / Tab handling)
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const openModals = document.querySelectorAll('.modal-overlay.open');
+    if (openModals.length > 0) {
+      openModals[openModals.length - 1].classList.remove('open');
+      return;
+    }
+    const fabMenu = document.getElementById('fabMenu');
+    if (fabMenu && fabMenu.classList.contains('active')) {
+      fabMenu.classList.remove('active');
+    }
+  }
 });
 
 // Debounced Window Resize & Orientation Change Handler
-let resizeTimer;
+// Fluidly adapts scale without clearing DOM or crashing pagination!
+let scaleDebounceTimer;
 const handleViewportResize = () => {
   updateResponsivePageScale();
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => runAutoPagination(appState), 150);
+  clearTimeout(scaleDebounceTimer);
+  scaleDebounceTimer = setTimeout(() => {
+    updateResponsivePageScale();
+  }, 200);
 };
 
-window.addEventListener('resize', handleViewportResize);
-window.addEventListener('orientationchange', handleViewportResize);
+window.addEventListener('resize', handleViewportResize, { passive: true });
+window.addEventListener('orientationchange', handleViewportResize, { passive: true });
+if (window.screen && window.screen.orientation) {
+  window.screen.orientation.addEventListener('change', handleViewportResize, { passive: true });
+}
 
 // Global Window Exports for direct HTML onclick binding & console access
 if (typeof window !== 'undefined') {
@@ -689,8 +871,8 @@ if (typeof window !== 'undefined') {
   window.setTheme = setTheme;
   window.toggleAcademicTheme = toggleAcademicTheme;
   window.toggleFabMenu = toggleFabMenu;
-  window.openSettingsModal = openSettingsModal;
-  window.closeSettingsModal = closeSettingsModal;
+  window.openSettingsModal = handleOpenSettingsModal;
+  window.closeSettingsModal = handleCloseSettingsModal;
   window.switchSettingsTab = switchSettingsTab;
   window.toggleCustomCoverBox = toggleCustomCoverBox;
   window.saveAllSettings = saveAllSettings;

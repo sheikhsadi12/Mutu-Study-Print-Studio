@@ -241,7 +241,7 @@ export const SVG_DEFS = `
       <stop offset="0%" stop-color="var(--logo-cap-board-1)"/><stop offset="50%" stop-color="var(--logo-cap-board-2)"/><stop offset="100%" stop-color="var(--logo-cap-board-3)"/>
     </linearGradient>
     <linearGradient id="m-cap-gold" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="var(--logo-cap-tassel)"/><stop offset="100%" stop-color="var(--logo-gold-3)"/>
+      <stop offset="0%" stop-color="var(--logo-gold-1)"/><stop offset="50%" stop-color="var(--logo-gold-2)"/><stop offset="100%" stop-color="var(--logo-gold-3)"/>
     </linearGradient>
   </defs>
 `;
@@ -267,12 +267,12 @@ export function getLogoSVG(height = 38) {
       <g transform="translate(448, 16) scale(0.08)">
         <path d="M 460 340 L 1110 340 L 1108 642 C 970 638, 840 622, 730 622 C 610 622, 500 700, 460 760 Z" fill="var(--logo-cap-base)"/>
         <path d="M 160 280 L 800 75 L 1440 280 L 800 490 Z" fill="url(#m-cap-board)"/>
-        <path d="M 160 280 L 800 490 L 800 508 L 160 298 Z" fill="#430a19"/>
-        <path d="M 800 490 L 1440 280 L 1440 298 L 800 508 Z" fill="var(--logo-cap-base)"/>
-        <path d="M 160 280 L 800 490 L 1440 280" stroke="var(--logo-cap-board-1)" stroke-width="4" fill="none"/>
+        <path d="M 160 280 L 800 490 L 800 508 L 160 298 Z" fill="var(--logo-cap-edge-left)"/>
+        <path d="M 800 490 L 1440 280 L 1440 298 L 800 508 Z" fill="var(--logo-cap-edge-right)"/>
+        <path d="M 160 280 L 800 490 L 1440 280" stroke="var(--logo-cap-ridge)" stroke-width="4" fill="none"/>
         <ellipse cx="800" cy="285" rx="42" ry="29" fill="url(#m-cap-gold)"/>
-        <path d="M 800 288 C 670 306 500 348 375 398 C 335 415 322 440 324 472" stroke="var(--logo-gold-2)" stroke-width="20" stroke-linecap="round" fill="none"/>
-        <circle cx="324" cy="475" r="28" fill="var(--logo-cap-tassel)"/>
+        <path d="M 800 288 C 670 306 500 348 375 398 C 335 415 322 440 324 472" stroke="var(--logo-tassel-cord)" stroke-width="20" stroke-linecap="round" fill="none"/>
+        <circle cx="324" cy="475" r="28" fill="var(--logo-knot-circle)"/>
         <path d="M 296 510 L 352 510 L 360 620 L 288 620 Z" fill="url(#m-cap-gold)"/>
       </g>
     </svg>

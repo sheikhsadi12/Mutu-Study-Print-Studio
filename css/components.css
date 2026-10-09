@@ -308,7 +308,7 @@
 .tc-tag {
   font-size: 6.5pt;
   background: var(--accent-primary);
-  color: #fff;
+  color: var(--text-warm-white, #FFF8ED);
   padding: 1px 4.5px;
   border-radius: 2px;
   font-weight: 600;
@@ -361,7 +361,7 @@
 }
 .mnemonic-pill {
   background: var(--accent-primary);
-  color: #fff;
+  color: var(--text-warm-white, #FFF8ED);
   font-size: 7pt;
   font-weight: 700;
   padding: 2px 6px;
