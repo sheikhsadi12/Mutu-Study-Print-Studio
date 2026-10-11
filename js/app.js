@@ -104,8 +104,8 @@ export function toggleAcademicTheme(e) {
  */
 function initServiceWorker() {
   if ('serviceWorker' in navigator) {
-    const swUrl = './sw.js';
-    navigator.serviceWorker.register(swUrl, { scope: './' })
+    const swUrl = '/sw.js';
+    navigator.serviceWorker.register(swUrl, { scope: '/' })
       .then((registration) => {
         console.log('[MUTU PWA] Service Worker registered with scope:', registration.scope);
       })

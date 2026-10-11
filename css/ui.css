@@ -99,11 +99,11 @@ html[data-theme="light"] .ambient-orb {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-family: var(--font-cinzel);
+  font-family: 'Montserrat', 'Outfit', sans-serif;
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--logo-text-color, var(--text-english));
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-decoration: none;
 }
 .ui-brand span,

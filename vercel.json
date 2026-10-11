@@ -1,6 +1,12 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/((?!sw\\.js|manifest\\.json|manifest\\.webmanifest|icons/|css/|js/|favicon\\.ico).*)*",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/sw.js",
@@ -16,11 +22,11 @@
       ]
     },
     {
-      "source": "/manifest.json",
+      "source": "/manifest.(json|webmanifest)",
       "headers": [
         {
           "key": "Content-Type",
-          "value": "application/manifest+json"
+          "value": "application/manifest+json; charset=utf-8"
         },
         {
           "key": "Access-Control-Allow-Origin",

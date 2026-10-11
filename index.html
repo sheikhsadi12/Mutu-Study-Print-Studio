@@ -118,6 +118,53 @@
       window.addEventListener('click', onFirstUserGesture, true);
       window.addEventListener('touchend', onFirstUserGesture, true);
     }
+
+    // Pure Android Native Experience: Hardware Back Button & Modal History
+    window.__pwaModalHistory = [];
+    window.pushModalHistory = function(modalId) {
+      window.__pwaModalHistory.push(modalId);
+      history.pushState({ modalOpen: modalId }, '');
+    };
+
+    window.addEventListener('popstate', function(e) {
+      var modals = [
+        { id: 'settingsModal', closeFn: window.closeSettingsModal },
+        { id: 'introModal', closeFn: window.closePWAIntro },
+        { id: 'dualExportModal', closeFn: window.closeExportModal },
+        { id: 'rawEditorModal', closeFn: window.closeRawEditor }
+      ];
+
+      var handled = false;
+      for (var i = 0; i < modals.length; i++) {
+        var m = modals[i];
+        var el = document.getElementById(m.id);
+        if (el && (el.classList.contains('open') || el.classList.contains('show') || el.style.display === 'flex' || el.style.display === 'block')) {
+          if (typeof m.closeFn === 'function') {
+            m.closeFn();
+          } else {
+            el.classList.remove('open', 'show');
+            el.style.display = 'none';
+          }
+          handled = true;
+          break;
+        }
+      }
+    });
+
+    // Pure Android Experience: Responsive Tablet & Mobile Auto-Rotate Stabilizer
+    var rotateDebounceTimer = null;
+    window.addEventListener('orientationchange', function() {
+      clearTimeout(rotateDebounceTimer);
+      rotateDebounceTimer = setTimeout(function() {
+        console.log('[MUTU PWA] Device orientation changed. Recalibrating stage.');
+        if (typeof window.runAutoPagination === 'function') {
+          window.runAutoPagination();
+        }
+        if (typeof window.updateZoomFromSlider === 'function') {
+          window.updateZoomFromSlider();
+        }
+      }, 200);
+    });
   </script>
 
   <!-- Modular CSS Hierarchy -->
@@ -390,10 +437,13 @@
             <div class="form-row">
               <label for="cfgCoverTheme">কভার পেজের থিম/টেমপ্লেট সিলেক্ট করুন:</label>
               <select id="cfgCoverTheme" class="form-control" onchange="toggleCustomCoverBox()">
-                <option value="royal">থিম ১: রয়্যাল ক্লাসিক ফ্রেম (Royal Classic Frame)</option>
+                <option value="royal">থিম ১: রয়্যাল ক্লাসিক হেরিটেজ ফ্রেম (Royal Classic Heritage)</option>
                 <option value="minimal">থিম ২: মডার্ন এডিটোরিয়াল স্প্লিট (Modern Editorial Split)</option>
                 <option value="seal">থিম ৩: গ্র্যান্ড একাডেমিক সিল (Grand Academic Seal)</option>
-                <option value="custom">থিম ৪: কাস্টম HTML কোড (Custom HTML Template)</option>
+                <option value="sovereign">থিম ৪: সাভারেন লাক্সারি গোল্ড ও ক্রিমসন (Sovereign Luxury Gold)</option>
+                <option value="modernist">থিম ৫: আইভরি মিনিমালিস্ট মডার্ন (Clean Ivory Modernist)</option>
+                <option value="blueprint">থিম ৬: টেকনিক্যাল একাডেমিক ব্লুপ্রিন্ট (Technical Academic Blueprint)</option>
+                <option value="custom">থিম ৭: কাস্টম HTML কোড (Custom HTML Template)</option>
               </select>
             </div>
 
@@ -404,6 +454,14 @@
             </div>
 
             <div class="form-row">
+              <label for="cfgCoverKicker">সিরিজ কিকার ও ব্যান্ড (Top Kicker):</label>
+              <input type="text" class="form-control" id="cfgCoverKicker" placeholder="MUTU STUDY • ACADEMIC EXCELLENCE SERIES">
+            </div>
+            <div class="form-row">
+              <label for="cfgCoverSubject">কভার সাবজেক্ট ব্যাজ (Subject Pill):</label>
+              <input type="text" class="form-control" id="cfgCoverSubject" placeholder="English For Today • Classes XI-XII">
+            </div>
+            <div class="form-row">
               <label for="cfgCoverTitleEn">মূল ইংরেজি শিরোনাম (English Title):</label>
               <input type="text" class="form-control" id="cfgCoverTitleEn">
             </div>
@@ -412,12 +470,28 @@
               <input type="text" class="form-control" id="cfgCoverTitleBn">
             </div>
             <div class="form-row">
-              <label for="cfgCoverInstructor">শিক্ষক / লেকচারার ইনফো:</label>
+              <label for="cfgCoverSubtitle">সাবটাইটেল ও সারসংক্ষেপ (Subtitle / Tagline):</label>
+              <input type="text" class="form-control" id="cfgCoverSubtitle" placeholder="Comprehensive Higher Secondary Academic & Admission Companion">
+            </div>
+            <div class="form-row">
+              <label for="cfgCoverInstructor">শিক্ষক / ইনস্ট্রাক্টর ইনফো:</label>
               <input type="text" class="form-control" id="cfgCoverInstructor">
             </div>
             <div class="form-row">
               <label for="cfgCoverSession">টার্গেট ব্যাচ ও শিক্ষাবর্ষ:</label>
               <input type="text" class="form-control" id="cfgCoverSession">
+            </div>
+            <div class="form-row">
+              <label for="cfgCoverInstitution">বিভাগ ও প্রকাশনা সিরিজ (Institution/Dept):</label>
+              <input type="text" class="form-control" id="cfgCoverInstitution" placeholder="Department of English • MUTU STUDY Press">
+            </div>
+            <div class="form-row">
+              <label for="cfgCoverEdition">সংস্করণ / ভলিউম (Edition):</label>
+              <input type="text" class="form-control" id="cfgCoverEdition" placeholder="First Edition 2026 • Board Exam Special">
+            </div>
+            <div class="form-row">
+              <label for="cfgCoverFooterImprint">কভার ফুটনোট / ইমপ্রিন্ট (Imprint):</label>
+              <input type="text" class="form-control" id="cfgCoverFooterImprint" placeholder="Official Master Study Compendium • All Rights Reserved">
             </div>
           </div>
         </div>

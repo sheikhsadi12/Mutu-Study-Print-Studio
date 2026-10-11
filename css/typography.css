@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* 1. Google Fonts Extended Library */
-@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap');
 
 /* 2. Local Font-Face Fallback */
 @font-face {
@@ -11,6 +11,18 @@
   src: local('Cinzel Decorative Bold'), local('Cinzel Decorative'), url('CinzelDecorative.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
+}
+
+/* Master Brand Font Selectors (M & S are Cinzel Decorative, rest are standard Cinzel) */
+.cinzel-dec {
+  font-family: 'Cinzel Decorative', Georgia, serif !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.cinzel-norm {
+  font-family: 'Cinzel', Georgia, serif !important;
+  font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
 /* 3. Bengali Typography Engine (যুক্তবর্ণ ও ল্যাগেচার ফিক্স - Zero Broken Glyphs) */

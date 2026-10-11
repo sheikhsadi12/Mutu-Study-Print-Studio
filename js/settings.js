@@ -20,14 +20,18 @@ export const appState = {
 
   // Cover Page Configuration
   coverEnabled: true,
-  coverTheme: 'royal', // 'royal' | 'minimal' | 'seal' | 'custom'
+  coverTheme: 'royal', // 'royal' | 'minimal' | 'seal' | 'sovereign' | 'modernist' | 'blueprint' | 'custom'
   coverCustomHtml: '',
+  coverKicker: "MUTU STUDY • ACADEMIC EXCELLENCE SERIES",
   coverSubject: "English For Today • Classes XI-XII",
   coverTitleEn: "AI in The Classroom: Pros, Cons and The Role Of EdTech",
   coverTitleBn: "শ্রেণিকক্ষে কৃত্রিম বুদ্ধিমত্তা: সুবিধা, অসুবিধা এবং এডটেক কোম্পানিগুলোর ভূমিকা",
+  coverSubtitle: "Comprehensive Higher Secondary Academic & Admission Companion",
   coverInstructor: "Olufemi Shonubi / MUTU STUDY Team",
   coverSession: "Classes XI-XII • Academic Session 2026-27",
   coverInstitution: "Department of English • MUTU STUDY Press",
+  coverEdition: "First Edition 2026 • Board Exam Special",
+  coverFooterImprint: "Official Master Study Compendium • All Rights Reserved",
 
   // Dynamic Typography Configuration
   fontEnglishBody: "'Outfit', sans-serif",
@@ -55,6 +59,17 @@ export function loadPersistedState() {
 
   if (!appState.rawContentHtml || !appState.rawContentHtml.trim()) {
     appState.rawContentHtml = DEFAULT_DEMO_CONTENT;
+  }
+}
+
+/**
+ * Saves current application state to LocalStorage
+ */
+export function savePersistedState() {
+  try {
+    localStorage.setItem('mutu_studio_state', JSON.stringify(appState));
+  } catch (e) {
+    console.warn('[MUTU STUDIO] Failed to save state:', e);
   }
 }
 
@@ -111,17 +126,35 @@ export function openSettingsModal() {
   const coverTheme = document.getElementById('cfgCoverTheme');
   if (coverTheme) coverTheme.value = appState.coverTheme;
 
+  const coverKicker = document.getElementById('cfgCoverKicker');
+  if (coverKicker) coverKicker.value = appState.coverKicker;
+
+  const coverSubject = document.getElementById('cfgCoverSubject');
+  if (coverSubject) coverSubject.value = appState.coverSubject;
+
   const coverTitleEn = document.getElementById('cfgCoverTitleEn');
   if (coverTitleEn) coverTitleEn.value = appState.coverTitleEn;
 
   const coverTitleBn = document.getElementById('cfgCoverTitleBn');
   if (coverTitleBn) coverTitleBn.value = appState.coverTitleBn;
 
+  const coverSubtitle = document.getElementById('cfgCoverSubtitle');
+  if (coverSubtitle) coverSubtitle.value = appState.coverSubtitle;
+
   const coverInstructor = document.getElementById('cfgCoverInstructor');
   if (coverInstructor) coverInstructor.value = appState.coverInstructor;
 
   const coverSession = document.getElementById('cfgCoverSession');
   if (coverSession) coverSession.value = appState.coverSession;
+
+  const coverInstitution = document.getElementById('cfgCoverInstitution');
+  if (coverInstitution) coverInstitution.value = appState.coverInstitution;
+
+  const coverEdition = document.getElementById('cfgCoverEdition');
+  if (coverEdition) coverEdition.value = appState.coverEdition;
+
+  const coverFooterImprint = document.getElementById('cfgCoverFooterImprint');
+  if (coverFooterImprint) coverFooterImprint.value = appState.coverFooterImprint;
 
   const coverCustomHtml = document.getElementById('cfgCoverCustomHtml');
   if (coverCustomHtml) coverCustomHtml.value = appState.coverCustomHtml;
@@ -144,6 +177,9 @@ export function openSettingsModal() {
   if (scaleVal) scaleVal.innerText = Math.round(appState.fontScale * 100) + '%';
 
   modal.classList.add('open');
+  if (typeof window !== 'undefined' && typeof window.pushModalHistory === 'function') {
+    window.pushModalHistory('settingsModal');
+  }
 }
 
 /**
@@ -199,17 +235,35 @@ export function saveAllSettings() {
   const coverTheme = document.getElementById('cfgCoverTheme');
   if (coverTheme) appState.coverTheme = coverTheme.value;
 
+  const coverKicker = document.getElementById('cfgCoverKicker');
+  if (coverKicker) appState.coverKicker = coverKicker.value;
+
+  const coverSubject = document.getElementById('cfgCoverSubject');
+  if (coverSubject) appState.coverSubject = coverSubject.value;
+
   const coverTitleEn = document.getElementById('cfgCoverTitleEn');
   if (coverTitleEn) appState.coverTitleEn = coverTitleEn.value;
 
   const coverTitleBn = document.getElementById('cfgCoverTitleBn');
   if (coverTitleBn) appState.coverTitleBn = coverTitleBn.value;
 
+  const coverSubtitle = document.getElementById('cfgCoverSubtitle');
+  if (coverSubtitle) appState.coverSubtitle = coverSubtitle.value;
+
   const coverInstructor = document.getElementById('cfgCoverInstructor');
   if (coverInstructor) appState.coverInstructor = coverInstructor.value;
 
   const coverSession = document.getElementById('cfgCoverSession');
   if (coverSession) appState.coverSession = coverSession.value;
+
+  const coverInstitution = document.getElementById('cfgCoverInstitution');
+  if (coverInstitution) appState.coverInstitution = coverInstitution.value;
+
+  const coverEdition = document.getElementById('cfgCoverEdition');
+  if (coverEdition) appState.coverEdition = coverEdition.value;
+
+  const coverFooterImprint = document.getElementById('cfgCoverFooterImprint');
+  if (coverFooterImprint) appState.coverFooterImprint = coverFooterImprint.value;
 
   const coverCustomHtml = document.getElementById('cfgCoverCustomHtml');
   if (coverCustomHtml) appState.coverCustomHtml = coverCustomHtml.value;
@@ -228,7 +282,7 @@ export function saveAllSettings() {
   if (fontScale) appState.fontScale = Number(fontScale.value) / 100;
 
   // Persist State to LocalStorage
-  localStorage.setItem('mutu_studio_state', JSON.stringify(appState));
+  savePersistedState();
 
   closeSettingsModal();
 
