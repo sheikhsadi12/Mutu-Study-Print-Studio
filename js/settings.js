@@ -5,7 +5,66 @@
  * ============================================================================
  */
 
-import { DEFAULT_DEMO_CONTENT } from './demo-content.js';
+import { DEFAULT_DEMO_CONTENT, SUBJECT_DEMO_TEMPLATES } from './demo-content.js';
+
+// Subject Profiles Metadata Definition
+export const SUBJECT_META = {
+  english: {
+    label: "উচ্চমাধ্যমিক ইংরেজি প্রথম পত্র",
+    title: "উচ্চমাধ্যমিক ইংরেজি প্রথম পত্র",
+    headerCourse: "English For Today • Classes XI-XII",
+    headerUnit: "Unit 1: Education and Life • Lesson 2",
+    coverSubject: "English For Today • Classes XI-XII",
+    coverTitleEn: "AI in The Classroom: Pros, Cons and The Role Of EdTech",
+    coverTitleBn: "শ্রেণিকক্ষে কৃত্রিম বুদ্ধিমত্তা: সুবিধা, অসুবিধা এবং এডটেক কোম্পানিগুলোর ভূমিকা",
+    coverSubtitle: "Comprehensive Higher Secondary Academic & Admission Companion",
+    coverInstitution: "Department of English • MUTU STUDY Press"
+  },
+  physics: {
+    label: "উচ্চমাধ্যমিক পদার্থবিজ্ঞান ১ম ও ২য় পত্র",
+    title: "উচ্চমাধ্যমিক পদার্থবিজ্ঞান • প্রথম ও দ্বিতীয় পত্র",
+    headerCourse: "Physics 1st & 2nd Paper • Classes XI-XII",
+    headerUnit: "অধ্যায় ০২ ও ০৬: ভেক্টর বিশ্লেষণ &bull; বলবিদ্যা ও মহাকর্ষ",
+    coverSubject: "HSC Physics • ১ম ও ২য় পত্র",
+    coverTitleEn: "Vector Mechanics, Gravitation & Quantum Dynamics",
+    coverTitleBn: "ভেক্টর বলবিদ্যা, মহাকর্ষ এবং আধুনিক পদার্থবিজ্ঞানের সূচনা",
+    coverSubtitle: "Mathematical Formulations, Vector Graphs & Board Problem Matrix",
+    coverInstitution: "Department of Physics • MUTU STUDY Press"
+  },
+  chemistry: {
+    label: "উচ্চমাধ্যমিক রসায়ন ১ম ও ২য় পত্র",
+    title: "উচ্চমাধ্যমিক রসায়ন • দ্বিতীয় পত্র",
+    headerCourse: "Chemistry 1st & 2nd Paper • Classes XI-XII",
+    headerUnit: "অধ্যায় ০২: জৈব রসায়ন &bull; অ্যারোমেটিক প্রতিস্থাপন",
+    coverSubject: "HSC Chemistry • জৈব ও অজৈব রসায়ন",
+    coverTitleEn: "Organic Reaction Mechanisms & Industrial Chemistry",
+    coverTitleBn: "জৈব বিক্রিয়া কৌশল, বেনজিন বলয় এবং ইলেক্ট্রোফিলিক প্রতিস্থাপন",
+    coverSubtitle: "Electrophilic Substitution, Reaction Mechanisms & Formula Tables",
+    coverInstitution: "Department of Chemistry • MUTU STUDY Press"
+  },
+  math: {
+    label: "উচ্চমাধ্যমিক উচ্চতর গণিত ১ম ও ২য় পত্র",
+    title: "উচ্চমাধ্যমিক উচ্চতর গণিত • প্রথম ও দ্বিতীয় পত্র",
+    headerCourse: "Higher Mathematics • Classes XI-XII",
+    headerUnit: "অধ্যায় ০৯: অন্তরীকরণ ও মৌলিক উপপাদ্যসমূহ",
+    coverSubject: "HSC Higher Math • ১ম ও ২য় পত্র",
+    coverTitleEn: "Differential Calculus & Integral Formulations",
+    coverTitleBn: "অন্তরীকরণ ও নির্দিষ্ট যোগজীকরণ: গাণিতিক প্রমাণ ও সমাধান",
+    coverSubtitle: "Limits, Chain Rule, Trigonometric Derivatives & Tangent Slopes",
+    coverInstitution: "Department of Mathematics • MUTU STUDY Press"
+  },
+  bangla: {
+    label: "উচ্চমাধ্যমিক বাংলা ১ম ও ২য় পত্র",
+    title: "উচ্চমাধ্যমিক বাংলা • সাহিত্যপাঠ",
+    headerCourse: "সাহিত্যপাঠ ও সহপাঠ • উচ্চমাধ্যমিক বাংলা",
+    headerUnit: "গদ্য: অপরিচিতা — রবীন্দ্রনাথ ঠাকুর &bull; চরিত্র বিশ্লেষণ",
+    coverSubject: "HSC Bangla 1st Paper • সাহিত্যপাঠ",
+    coverTitleEn: "Bangla Sahityapath: Critical Analysis & Creative Matrix",
+    coverTitleBn: "অপরিচিতা, সোনার তরী এবং বিদ্রোহী: পুঙ্খানুপুঙ্খ চরিত্র ও সৃজনশীল বিশ্লেষণ",
+    coverSubtitle: "শব্দার্থ ও টীকা, মূলভাব, চরিত্রচিত্রণ এবং বোর্ড সৃজনশীল প্রশ্ন",
+    coverInstitution: "বাংলা সাহিত্য বিভাগ • MUTU STUDY Press"
+  }
+};
 
 // Master Application State
 export const appState = {
@@ -13,23 +72,40 @@ export const appState = {
   watermarkEnabled: true,
   watermarkOpacity: 0.08,
   
+  // Multi-Subject Configuration
+  currentSubject: 'chemistry', // 'chemistry' | 'physics' | 'math' | 'bangla' | 'english'
+  currentSubjectLabel: "উচ্চমাধ্যমিক রসায়ন",
+  currentSubjectTitle: "উচ্চমাধ্যমিক রসায়ন • দ্বিতীয় পত্র",
+  activeSubject: 'chemistry',
+  activeSubjectTitle: "উচ্চমাধ্যমিক রসায়ন • দ্বিতীয় পত্র",
+  activeSubjectLabel: "উচ্চমাধ্যমিক রসায়ন • দ্বিতীয় পত্র",
+
   // Dynamic Header & Footer Metadata
-  headerCourse: "English For Today • Classes XI-XII",
-  headerUnit: "Unit 1: Education and Life • Lesson 2",
+  headerCourse: "Chemistry 1st & 2nd Paper • Classes XI-XII",
+  headerUnit: "অধ্যায় ০২: জৈব রসায়ন &bull; অ্যারোমেটিক প্রতিস্থাপন",
   footerTagline: "Academic Publishing Series",
+
+  // Subject-specific saved content snippets
+  subjectSnippets: {
+    chemistry: SUBJECT_DEMO_TEMPLATES.chemistry,
+    physics: SUBJECT_DEMO_TEMPLATES.physics,
+    math: SUBJECT_DEMO_TEMPLATES.math,
+    bangla: SUBJECT_DEMO_TEMPLATES.bangla,
+    english: SUBJECT_DEMO_TEMPLATES.english
+  },
 
   // Cover Page Configuration
   coverEnabled: true,
   coverTheme: 'royal', // 'royal' | 'minimal' | 'seal' | 'sovereign' | 'modernist' | 'blueprint' | 'custom'
   coverCustomHtml: '',
   coverKicker: "MUTU STUDY • ACADEMIC EXCELLENCE SERIES",
-  coverSubject: "English For Today • Classes XI-XII",
-  coverTitleEn: "AI in The Classroom: Pros, Cons and The Role Of EdTech",
-  coverTitleBn: "শ্রেণিকক্ষে কৃত্রিম বুদ্ধিমত্তা: সুবিধা, অসুবিধা এবং এডটেক কোম্পানিগুলোর ভূমিকা",
+  coverSubject: "HSC Chemistry • জৈব ও অজৈব রসায়ন",
+  coverTitleEn: "Organic Reaction Mechanisms & Industrial Chemistry",
+  coverTitleBn: "জৈব বিক্রিয়া কৌশল, বেনজিন বলয় এবং ইলেক্ট্রোফিলিক প্রতিস্থাপন",
   coverSubtitle: "Comprehensive Higher Secondary Academic & Admission Companion",
-  coverInstructor: "Olufemi Shonubi / MUTU STUDY Team",
+  coverInstructor: "MUTU STUDY Science Faculty",
   coverSession: "Classes XI-XII • Academic Session 2026-27",
-  coverInstitution: "Department of English • MUTU STUDY Press",
+  coverInstitution: "Department of Chemistry • MUTU STUDY Press",
   coverEdition: "First Edition 2026 • Board Exam Special",
   coverFooterImprint: "Official Master Study Compendium • All Rights Reserved",
 
@@ -57,9 +133,44 @@ export function loadPersistedState() {
     }
   }
 
-  if (!appState.rawContentHtml || !appState.rawContentHtml.trim()) {
-    appState.rawContentHtml = DEFAULT_DEMO_CONTENT;
+  // Ensure subjectSnippets are populated
+  if (!appState.subjectSnippets) {
+    appState.subjectSnippets = { ...SUBJECT_DEMO_TEMPLATES };
+  } else {
+    for (const key of Object.keys(SUBJECT_DEMO_TEMPLATES)) {
+      if (!appState.subjectSnippets[key] || !appState.subjectSnippets[key].trim()) {
+        appState.subjectSnippets[key] = SUBJECT_DEMO_TEMPLATES[key];
+      }
+    }
   }
+
+  // If user is currently stuck on English AI classroom demo or previous session, make sure currentSubject has updated headers & content
+  const curSub = appState.currentSubject || appState.activeSubject || 'physics';
+  appState.currentSubject = curSub;
+  appState.activeSubject = curSub;
+  const meta = SUBJECT_META[curSub] || SUBJECT_META.physics;
+  
+  appState.currentSubjectLabel = meta.title || meta.label;
+  appState.activeSubjectLabel = meta.title || meta.label;
+  appState.activeSubjectTitle = meta.title || meta.label;
+
+  // Clean state migration: if stored raw content is empty or contains legacy English content while curSub is science/math
+  if (!appState.rawContentHtml || !appState.rawContentHtml.trim() || 
+      (curSub !== 'english' && appState.rawContentHtml.includes('AI in The Classroom') && !appState.rawContentHtml.includes('Physics') && !appState.rawContentHtml.includes('Chemistry')) ||
+      (appState.rawContentHtml.includes('AI in The Classroom') && !localStorage.getItem('mutu_user_custom_edited'))) {
+    appState.rawContentHtml = appState.subjectSnippets[curSub] || SUBJECT_DEMO_TEMPLATES[curSub];
+    appState.headerCourse = meta.headerCourse;
+    appState.headerUnit = meta.headerUnit;
+    appState.coverSubject = meta.coverSubject;
+    appState.coverTitleEn = meta.coverTitleEn;
+    appState.coverTitleBn = meta.coverTitleBn;
+    appState.coverSubtitle = meta.coverSubtitle;
+    appState.coverInstitution = meta.coverInstitution;
+  }
+
+  // Sync quick subject dropdown selector in UI
+  const quickSubj = document.getElementById('quickSubjectSelector');
+  if (quickSubj) quickSubj.value = curSub;
 }
 
 /**
@@ -96,6 +207,23 @@ export function switchSettingsTab(tabId) {
 export function openSettingsModal() {
   const modal = document.getElementById('settingsModal');
   if (!modal) return;
+
+  // Subject Selector
+  const curSub = appState.currentSubject || appState.activeSubject || 'chemistry';
+  const subjectSelect = document.getElementById('cfgActiveSubject');
+  if (subjectSelect) subjectSelect.value = curSub;
+  const generalSubject = document.getElementById('cfgGeneralSubject');
+  if (generalSubject) generalSubject.value = curSub;
+
+  // Sync Subject Tab Navigation
+  const tabBtns = document.querySelectorAll('.subject-tab-btn');
+  tabBtns.forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-subject') === curSub);
+  });
+  const badge = document.getElementById('activeSubjectBadge');
+  if (badge && SUBJECT_META[curSub]) {
+    badge.innerText = `বর্তমান: ${SUBJECT_META[curSub].title || SUBJECT_META[curSub].label}`;
+  }
 
   // Tab 1: General & Metadata
   const courseInput = document.getElementById('cfgHeaderCourse');
@@ -215,6 +343,15 @@ export function saveAllSettings() {
   const unitInput = document.getElementById('cfgHeaderUnit');
   if (unitInput) appState.headerUnit = unitInput.value;
 
+  // Subject
+  const subjectSelect = document.getElementById('cfgActiveSubject');
+  if (subjectSelect) {
+    appState.activeSubject = subjectSelect.value;
+    if (SUBJECT_META[subjectSelect.value]) {
+      appState.activeSubjectLabel = SUBJECT_META[subjectSelect.value].label;
+    }
+  }
+
   const footerInput = document.getElementById('cfgFooterTag');
   if (footerInput) appState.footerTagline = footerInput.value;
 
@@ -226,7 +363,12 @@ export function saveAllSettings() {
 
   // Content
   const contentInput = document.getElementById('cfgRawContentInput');
-  if (contentInput) appState.rawContentHtml = contentInput.value;
+  if (contentInput) {
+    appState.rawContentHtml = contentInput.value;
+    const curSub = appState.currentSubject || appState.activeSubject || 'chemistry';
+    if (!appState.subjectSnippets) appState.subjectSnippets = {};
+    appState.subjectSnippets[curSub] = contentInput.value;
+  }
 
   // Cover Page
   const coverToggle = document.getElementById('cfgCoverToggle');
@@ -293,22 +435,158 @@ export function saveAllSettings() {
 }
 
 /**
- * Resets Content Input to Default Lecture Content Pool
+ * Automatically Switches Active Subject Tab, Loads Subject-Specific Snippet & Re-paginates
+ * @param {string} subjectKey - 'chemistry' | 'physics' | 'math' | 'bangla' | 'english'
+ */
+export function switchSubjectTab(subjectKey) {
+  if (!subjectKey || !SUBJECT_META[subjectKey]) return;
+  const meta = SUBJECT_META[subjectKey];
+
+  // 1. Save currently typed content in textarea into previous subject snippet
+  const contentInput = document.getElementById('cfgRawContentInput');
+  const oldSubject = appState.currentSubject || appState.activeSubject;
+  if (contentInput && oldSubject) {
+    if (!appState.subjectSnippets) appState.subjectSnippets = { ...SUBJECT_DEMO_TEMPLATES };
+    appState.subjectSnippets[oldSubject] = contentInput.value;
+  }
+
+  // 2. Set active subject state
+  appState.currentSubject = subjectKey;
+  appState.currentSubjectLabel = meta.title || meta.label;
+  appState.activeSubject = subjectKey;
+  appState.activeSubjectTitle = meta.title || meta.label;
+  appState.activeSubjectLabel = meta.label || meta.title;
+
+  appState.headerCourse = meta.headerCourse;
+  appState.headerUnit = meta.headerUnit;
+  appState.coverSubject = meta.coverSubject;
+  appState.coverTitleEn = meta.coverTitleEn;
+  appState.coverTitleBn = meta.coverTitleBn;
+  appState.coverSubtitle = meta.coverSubtitle;
+  appState.coverInstitution = meta.coverInstitution;
+
+  // 3. Load target subject's saved content snippet
+  if (!appState.subjectSnippets) appState.subjectSnippets = { ...SUBJECT_DEMO_TEMPLATES };
+  const snippet = appState.subjectSnippets[subjectKey] || SUBJECT_DEMO_TEMPLATES[subjectKey] || DEFAULT_DEMO_CONTENT;
+  appState.rawContentHtml = snippet;
+  if (contentInput) {
+    contentInput.value = snippet;
+  }
+
+  // 4. Update UI tab navigation buttons active state
+  const tabBtns = document.querySelectorAll('.subject-tab-btn');
+  tabBtns.forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-subject') === subjectKey);
+  });
+
+  const badge = document.getElementById('activeSubjectBadge');
+  if (badge) {
+    badge.innerText = `বর্তমান: ${meta.title || meta.label}`;
+  }
+
+  // Sync dropdown selectors if present
+  const subj1 = document.getElementById('cfgActiveSubject');
+  if (subj1) subj1.value = subjectKey;
+  const subj2 = document.getElementById('cfgGeneralSubject');
+  if (subj2) subj2.value = subjectKey;
+  const quickSubj = document.getElementById('quickSubjectSelector');
+  if (quickSubj) quickSubj.value = subjectKey;
+
+  const courseInput = document.getElementById('cfgHeaderCourse');
+  if (courseInput) courseInput.value = meta.headerCourse;
+
+  const unitInput = document.getElementById('cfgHeaderUnit');
+  if (unitInput) unitInput.value = meta.headerUnit;
+
+  const covSubj = document.getElementById('cfgCoverSubject');
+  if (covSubj) covSubj.value = meta.coverSubject;
+
+  const covEn = document.getElementById('cfgCoverTitleEn');
+  if (covEn) covEn.value = meta.coverTitleEn;
+
+  const covBn = document.getElementById('cfgCoverTitleBn');
+  if (covBn) covBn.value = meta.coverTitleBn;
+
+  const covSub = document.getElementById('cfgCoverSubtitle');
+  if (covSub) covSub.value = meta.coverSubtitle;
+
+  const covInst = document.getElementById('cfgCoverInstitution');
+  if (covInst) covInst.value = meta.coverInstitution;
+
+  savePersistedState();
+
+  // 5. Trigger auto-pagination
+  if (typeof window !== 'undefined' && typeof window.runAutoPagination === 'function') {
+    window.runAutoPagination();
+  }
+
+  if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+    window.showToast(`স্টাডি বিষয় পরিবর্তন: ${meta.title || meta.label}`);
+  }
+}
+
+/**
+ * Real-time Handler for Raw Content Textarea Input
+ * @param {string} val 
+ */
+export function onContentTextareaInput(val) {
+  appState.rawContentHtml = val;
+  const curSub = appState.currentSubject || appState.activeSubject || 'chemistry';
+  if (!appState.subjectSnippets) appState.subjectSnippets = { ...SUBJECT_DEMO_TEMPLATES };
+  appState.subjectSnippets[curSub] = val;
+  try {
+    localStorage.setItem('mutu_user_custom_edited', 'true');
+  } catch (e) {}
+  savePersistedState();
+}
+
+/**
+ * Switch subject alias requested by user
+ * @param {string} subKey 
+ */
+export function switchSubject(subKey) {
+  switchSubjectTab(subKey);
+}
+
+/**
+ * Dropdown alias for switchSubjectTab
+ */
+export function onSubjectChange(subjectKey) {
+  switchSubjectTab(subjectKey);
+}
+
+/**
+ * Resets Content Input to Active Subject's Default Lecture Template Pool
  */
 export function resetDemoContent() {
+  const currentSubject = appState.currentSubject || appState.activeSubject || 'chemistry';
+  const snippet = SUBJECT_DEMO_TEMPLATES[currentSubject] || DEFAULT_DEMO_CONTENT;
   const input = document.getElementById('cfgRawContentInput');
   if (input) {
-    input.value = DEFAULT_DEMO_CONTENT;
-    appState.rawContentHtml = DEFAULT_DEMO_CONTENT;
-    if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
-      window.showToast("ডেমো কন্টেন্ট সফলভাবে রিস্টোর করা হয়েছে।");
-    }
+    input.value = snippet;
+  }
+  appState.rawContentHtml = snippet;
+  if (!appState.subjectSnippets) appState.subjectSnippets = { ...SUBJECT_DEMO_TEMPLATES };
+  appState.subjectSnippets[currentSubject] = snippet;
+  savePersistedState();
+
+  if (typeof window !== 'undefined' && typeof window.runAutoPagination === 'function') {
+    window.runAutoPagination();
+  }
+
+  if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+    window.showToast("ডেমো কন্টেন্ট সফলভাবে রিস্টোর করা হয়েছে।");
   }
 }
 
 // Global browser window fallback
 if (typeof window !== 'undefined') {
   window.appState = appState;
+  window.SUBJECT_META = SUBJECT_META;
+  window.switchSubjectTab = switchSubjectTab;
+  window.switchSubject = switchSubject;
+  window.onContentTextareaInput = onContentTextareaInput;
+  window.onSubjectChange = onSubjectChange;
   window.loadPersistedState = loadPersistedState;
   window.switchSettingsTab = switchSettingsTab;
   window.openSettingsModal = openSettingsModal;

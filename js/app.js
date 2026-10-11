@@ -13,7 +13,12 @@ import {
   closeSettingsModal, 
   toggleCustomCoverBox, 
   saveAllSettings, 
-  resetDemoContent 
+  resetDemoContent,
+  onSubjectChange,
+  switchSubjectTab,
+  switchSubject,
+  onContentTextareaInput,
+  SUBJECT_META
 } from './settings.js';
 
 import { runAutoPagination, applyTypography } from './paginator.js';
@@ -108,10 +113,19 @@ function initServiceWorker() {
     navigator.serviceWorker.register(swUrl, { scope: '/' })
       .then((registration) => {
         console.log('[MUTU PWA] Service Worker registered with scope:', registration.scope);
+        // Promptly check for SW update and notify clients
+        if (typeof registration.update === 'function') {
+          registration.update().catch(() => {});
+        }
       })
       .catch((error) => {
         console.warn('[MUTU PWA] Service Worker registration failed:', error);
       });
+
+    // When new service worker takes over, reload to apply fresh engine
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      console.log('[MUTU PWA] Service worker updated controller. Refreshing...');
+    });
   }
 }
 
@@ -727,6 +741,14 @@ function bindUIEventListeners() {
   if (resetContentBtn) {
     resetContentBtn.addEventListener('click', resetDemoContent);
   }
+
+  const quickSelector = document.getElementById('quickSubjectSelector');
+  if (quickSelector) {
+    quickSelector.value = appState.currentSubject || 'physics';
+    quickSelector.addEventListener('change', (e) => {
+      switchSubject(e.target.value);
+    });
+  }
 }
 
 // Window Lifecycle Orchestrator
@@ -875,6 +897,11 @@ if (typeof window !== 'undefined') {
   window.closeSettingsModal = handleCloseSettingsModal;
   window.switchSettingsTab = switchSettingsTab;
   window.toggleCustomCoverBox = toggleCustomCoverBox;
+  window.switchSubjectTab = switchSubjectTab;
+  window.switchSubject = switchSubject;
+  window.onContentTextareaInput = onContentTextareaInput;
+  window.onSubjectChange = onSubjectChange;
+  window.SUBJECT_META = SUBJECT_META;
   window.saveAllSettings = saveAllSettings;
   window.resetDemoContent = resetDemoContent;
   window.runAutoPagination = () => runAutoPagination(appState);

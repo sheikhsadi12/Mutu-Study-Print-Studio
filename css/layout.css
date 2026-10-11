@@ -213,7 +213,9 @@ html[data-theme="light"] .a4-page {
 }
 
 .cover-page-content {
+  width: 100%;
   height: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -226,26 +228,48 @@ html[data-theme="light"] .a4-page {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  width: 100%;
+}
+.cover-logo-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6px 0;
+}
+.cover-logo-wrapper svg {
+  display: block;
+  margin: 0 auto;
 }
 .cover-kicker {
-  font-family: 'Montserrat', 'Outfit', sans-serif;
-  font-size: 8.2pt;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 8.5pt;
   font-weight: 700;
   letter-spacing: 0.22em;
   color: var(--accent-secondary);
   text-transform: uppercase;
+  text-align: center;
+  margin: 0 auto;
+  display: block;
 }
 .cover-subject-pill {
   background: var(--surface-card);
   border: 1.2px solid var(--border-color);
-  padding: 4.5px 16px;
+  padding: 5px 22px;
   border-radius: 30px;
-  font-family: 'Outfit', 'Montserrat', sans-serif;
-  font-size: 9.2pt;
-  font-weight: 600;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 9.5pt;
+  font-weight: 700;
   color: var(--text-english);
   letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
 }
 
 /* Live Inline Cover Editable Fields */
@@ -291,23 +315,24 @@ html[data-theme="light"] .a4-page {
 }
 
 .cover-main-en-title {
-  font-family: var(--font-display);
-  font-size: 23pt;
-  line-height: 1.22;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 24pt;
+  line-height: 1.2;
   font-weight: 700;
   color: var(--text-english);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.01em;
 }
 .cover-main-bn-title {
-  font-family: var(--font-bengali);
+  font-family: 'Anek Bangla', 'Noto Serif Bengali', 'Hind Siliguri', sans-serif;
   font-size: 15.5pt;
   line-height: 1.45;
   color: var(--accent-secondary);
   font-weight: 600;
 }
 .cover-subtitle {
-  font-family: var(--font-english);
-  font-size: 9.2pt;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 10.5pt;
+  font-style: italic;
   color: var(--text-english-muted);
   max-width: 80%;
   line-height: 1.4;
@@ -330,11 +355,11 @@ html[data-theme="light"] .a4-page {
 }
 .cover-meta-item strong {
   display: block;
-  font-size: 7.2pt;
+  font-size: 7.5pt;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--accent-secondary);
-  font-family: var(--font-english);
+  font-family: 'Cinzel', Georgia, serif;
   margin-bottom: 2px;
 }
 .cover-meta-item span {
@@ -343,9 +368,9 @@ html[data-theme="light"] .a4-page {
   font-weight: 600;
 }
 .cover-footer-imprint {
-  font-family: 'Montserrat', 'Outfit', sans-serif;
-  font-size: 7.6pt;
-  letter-spacing: 0.18em;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 7.8pt;
+  letter-spacing: 0.2em;
   color: var(--text-english-muted);
   text-transform: uppercase;
   font-weight: 600;

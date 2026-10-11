@@ -57,7 +57,7 @@ export function createCoverPage(state = appState) {
       <div class="cover-page-content">
         <div class="cover-top-badge-row">
           ${brandKickerHtml}
-          <div style="margin: 8px 0;">
+          <div class="cover-logo-wrapper">
             ${getLogoSVG(52)}
           </div>
           <div class="cover-subject-pill cover-editable-field" data-cover-field="coverSubject" contenteditable="true" spellcheck="false" title="ক্লিক করে এডিট করুন">${subject}</div>
@@ -218,7 +218,7 @@ export function createCoverPage(state = appState) {
           <div class="cover-sovereign-ribbon">
             ${brandKickerHtml}
           </div>
-          <div style="margin: 12px 0;">
+          <div class="cover-logo-wrapper" style="margin: 10px 0;">
             ${getLogoSVG(56)}
           </div>
           <div class="cover-subject-pill cover-editable-field" data-cover-field="coverSubject" contenteditable="true" spellcheck="false" title="ক্লিক করে এডিট করুন" style="border-color:#D6A13B;">${subject}</div>
@@ -327,7 +327,7 @@ export function createCoverPage(state = appState) {
             ${brandKickerHtml}
             <span style="font-family:monospace; font-size:7.5pt; color:var(--accent-secondary); font-weight:700;">DOCUMENT REF: MS-2026-A4</span>
           </div>
-          <div style="margin: 12px 0;">
+          <div class="cover-logo-wrapper" style="margin: 10px 0;">
             ${getLogoSVG(50)}
           </div>
           <div class="cover-subject-pill cover-editable-field" data-cover-field="coverSubject" contenteditable="true" spellcheck="false" title="ক্লিক করে এডিট করুন" style="font-family:monospace; letter-spacing:0.08em;">${subject}</div>

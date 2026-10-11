@@ -299,10 +299,544 @@ export function getWatermarkSVG() {
   `;
 }
 
+// Multi-Subject Templates Pool (Physics, Chemistry, Math, Bangla, English)
+export const SUBJECT_DEMO_TEMPLATES = {
+  english: DEFAULT_DEMO_CONTENT,
+
+  physics: `
+  <section class="chapter-hero-banner">
+    <div>
+      <h1>Physics 1st Paper &bull; Vector Mechanics &amp; Gravitation</h1>
+      <div class="bn-sub">অধ্যায় ০২ ও ০৬: ভেক্টর বিশ্লেষণ, গতিসূত্র এবং নিউটনীয় মহাকর্ষ বলবিদ্যা</div>
+    </div>
+    <div class="chapter-meta-pill">
+      <span>HSC Academic Core</span><br>
+      <span>Physics Department</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Kinematics &amp; Motion &bull; প্রক্ষেপক বা প্রাসের গতিবিদ্যা (Projectile Motion)</div>
+    <div class="physics-diagram-card">
+      <div class="physics-diagram-header">
+        <span class="physics-diagram-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>প্রক্ষেপকের পরাবৃত্তাকার গতিপথ (Parabolic Trajectory Diagram)</span>
+        </span>
+        <span class="physics-diagram-badge">অধ্যায় ০৩: গতিবিদ্যা</span>
+      </div>
+
+      <div class="physics-diagram-svg-wrap">
+        <svg viewBox="0 0 520 225" xmlns="http://www.w3.org/2000/svg" aria-label="Projectile Motion Vector Diagram">
+          <defs>
+            <marker id="arrow-ax" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="var(--text-english-muted)" />
+            </marker>
+            <marker id="arrow-v0" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L0,7 L8,3.5 z" fill="var(--accent-primary)" />
+            </marker>
+            <marker id="arrow-comp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="var(--accent-secondary)" />
+            </marker>
+            <linearGradient id="traj-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="var(--accent-primary)" />
+              <stop offset="50%" stop-color="#D6A13B" />
+              <stop offset="100%" stop-color="var(--accent-secondary)" />
+            </linearGradient>
+          </defs>
+
+          <!-- Axes -->
+          <line x1="40" y1="180" x2="480" y2="180" stroke="var(--border-color)" stroke-width="2" marker-end="url(#arrow-ax)" />
+          <line x1="50" y1="190" x2="50" y2="25" stroke="var(--border-color)" stroke-width="2" marker-end="url(#arrow-ax)" />
+          <text x="485" y="184" font-size="11" font-weight="700" fill="var(--text-english)">x (m)</text>
+          <text x="45" y="20" font-size="11" font-weight="700" fill="var(--text-english)">y (m)</text>
+          <text x="32" y="196" font-size="11" fill="var(--text-english-muted)">O(0,0)</text>
+
+          <!-- Parabolic Trajectory -->
+          <path d="M 50 180 Q 250 10 450 180" fill="none" stroke="url(#traj-grad)" stroke-width="3" stroke-linecap="round" />
+          
+          <!-- Launch Vector v0 -->
+          <line x1="50" y1="180" x2="135" y2="95" stroke="var(--accent-primary)" stroke-width="2.6" marker-end="url(#arrow-v0)" />
+          <text x="138" y="92" font-size="12" font-weight="800" fill="var(--accent-primary)">v&#8320;</text>
+
+          <!-- Component Vectors at Launch -->
+          <line x1="50" y1="180" x2="130" y2="180" stroke="var(--accent-secondary)" stroke-width="2" stroke-dasharray="3,2" marker-end="url(#arrow-comp)" />
+          <text x="80" y="195" font-size="9.5" font-weight="600" fill="var(--accent-secondary)">v&#8320;&#8339; = v&#8320;cos&theta;&#8320;</text>
+          <line x1="50" y1="180" x2="50" y2="105" stroke="var(--accent-secondary)" stroke-width="2" stroke-dasharray="3,2" marker-end="url(#arrow-comp)" />
+          <text x="56" y="115" font-size="9.5" font-weight="600" fill="var(--accent-secondary)">v&#8320;&#7522; = v&#8320;sin&theta;&#8320;</text>
+
+          <!-- Angle Arc -->
+          <path d="M 85 180 A 35 35 0 0 0 75 155" fill="none" stroke="#D6A13B" stroke-width="2" />
+          <text x="92" y="168" font-size="11" font-weight="700" fill="#D6A13B">&theta;&#8320;</text>
+
+          <!-- Max Height Peak H (Point P) -->
+          <circle cx="250" cy="95" r="4.5" fill="#D6A13B" stroke="var(--accent-primary)" stroke-width="2" />
+          <line x1="250" y1="95" x2="250" y2="180" stroke="var(--text-english-muted)" stroke-width="1.4" stroke-dasharray="4,3" />
+          <!-- Peak Horizontal Velocity -->
+          <line x1="250" y1="95" x2="310" y2="95" stroke="var(--accent-primary)" stroke-width="2" marker-end="url(#arrow-v0)" />
+          <text x="315" y="98" font-size="9.5" font-weight="600" fill="var(--accent-primary)">v&#8339; = v&#8320;cos&theta;&#8320; (v&#7522; = 0)</text>
+          <text x="210" y="140" font-size="11" font-weight="700" fill="#D6A13B">H&#7522;&#8336;&#8339;</text>
+
+          <!-- Landing Point (Range R) -->
+          <circle cx="450" cy="180" r="4.5" fill="var(--accent-secondary)" />
+          <text x="440" y="200" font-size="10.5" font-weight="700" fill="var(--accent-secondary)">(R, 0)</text>
+
+          <!-- Range Measurement Line below -->
+          <line x1="50" y1="210" x2="450" y2="210" stroke="var(--accent-secondary)" stroke-width="1.5" />
+          <line x1="50" y1="205" x2="50" y2="215" stroke="var(--accent-secondary)" stroke-width="1.5" />
+          <line x1="450" y1="205" x2="450" y2="215" stroke="var(--accent-secondary)" stroke-width="1.5" />
+          <text x="230" y="218" font-size="10.5" font-weight="700" fill="var(--accent-secondary)">অনুভূমিক পাল্লা (Range, R)</text>
+        </svg>
+      </div>
+
+      <div class="physics-diagram-caption">
+        <strong>চিত্র ৩.১:</strong> প্রক্ষেপকের পরাবৃত্তাকার গতিপথ (Parabolic Trajectory), সর্বোচ্চ উচ্চতা $H$ এবং অনুভূমিক পাল্লা $R$ এর চিত্ররূপ।
+      </div>
+
+      <div class="physics-formula-legend-grid">
+        <div class="physics-legend-item">
+          <strong>সর্বোচ্চ উচ্চতা ($H$):</strong><br>
+          $H = \\frac{v_0^2 \\sin^2\\theta_0}{2g}$
+        </div>
+        <div class="physics-legend-item">
+          <strong>উড্ডয়নকাল ($T$):</strong><br>
+          $T = \\frac{2v_0 \\sin\\theta_0}{g}$
+        </div>
+        <div class="physics-legend-item">
+          <strong>অনুভূমিক পাল্লা ($R$):</strong><br>
+          $R = \\frac{v_0^2 \\sin 2\\theta_0}{g}$
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Scientific Law &bull; নিউটনীয় মহাকর্ষ সূত্র ও ভেক্টর রূপ</div>
+    <div class="law-callout-box">
+      <div class="law-header">
+        <span class="law-badge">মহাকর্ষ সূত্র</span>
+        <span class="law-source">Sir Isaac Newton (1687)</span>
+      </div>
+      <div class="law-text">
+        মহাবিশ্বের প্রতিটি বস্তুকণা একে অপরকে নিজের দিকে আকর্ষণ করে এবং এই আকর্ষণ বলের মান বস্তুকণাদ্বয়ের ভরের গুণফলের সমানুপাতিক, এদের মধ্যকার দূরত্বের বর্গের ব্যস্তানুপাতিক এবং এই বল এদের সংযোজক সরলরেখা বরাবর ক্রিয়া করে।
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Mathematical Formulation &bull; গাণিতিক প্রতিপাদন ও সমীকরণ</div>
+    <div class="math-formula-box">
+      <div class="formula-badge">Gravitational Vector Law</div>
+      <div class="formula-equation">
+        $$\\vec{F}_{12} = -G \\frac{m_1 m_2}{r^2} \\hat{r}_{12}$$
+      </div>
+      <div class="formula-legend">
+        <span>এখানে, $G = 6.673 \\times 10^{-11} \\text{ N}\\cdot\\text{m}^2\\text{/kg}^2$ (সর্বজনীন মহাকর্ষীয় ধ্রুবক)</span>
+        <span>$\\hat{r}_{12}$ হলো একক ভেক্টর এবং ঋনাত্মক চিহ্ন নির্দেশ করে বলটি সর্বদা আকর্ষণধর্মী।</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Vector Resolution &amp; Diagram &bull; ভেক্টর বিভাজন ও লব্ধি বিশ্লেষণ</div>
+    <div class="science-concept-card">
+      <div class="concept-title">
+        <span>সামান্তরিক সূত্র (Parallelogram Law of Vectors)</span>
+        <span class="concept-tag">বলবিদ্যা</span>
+      </div>
+      <div class="concept-body">
+        যদি কোনো কণার ওপর একই সময়ে ক্রিয়ারত দুটি ভেক্টরকে $\\vec{P}$ ও $\\vec{Q}$ দ্বারা নির্দেশ করা হয় এবং তাদের মধ্যবর্তী কোণ $\\alpha$ হয়, তবে তাদের লব্ধির মান $R$ হবে:
+        $$R = \\sqrt{P^2 + Q^2 + 2PQ \\cos\\alpha}$$
+        এবং লব্ধির দিক $\\theta$:
+        $$\\tan\\theta = \\frac{Q \\sin\\alpha}{P + Q \\cos\\alpha}$$
+      </div>
+    </div>
+
+    <div class="diagram-svg-container">
+      <svg viewBox="0 0 460 170" class="diagram-svg" aria-label="Vector Parallelogram Diagram">
+        <!-- Grid baseline -->
+        <line x1="40" y1="130" x2="420" y2="130" stroke="var(--border-color)" stroke-dasharray="3,3" />
+        <!-- P vector -->
+        <line x1="60" y1="130" x2="240" y2="130" stroke="var(--accent-primary)" stroke-width="2.5" marker-end="url(#arrow)" />
+        <text x="140" y="150" fill="var(--accent-primary)" font-weight="700" font-size="12">P (ভেক্টর)</text>
+        <!-- Q vector -->
+        <line x1="60" y1="130" x2="160" y2="40" stroke="var(--accent-secondary)" stroke-width="2.5" />
+        <text x="85" y="75" fill="var(--accent-secondary)" font-weight="700" font-size="12">Q (ভেক্টর)</text>
+        <!-- Parallelogram dotted lines -->
+        <line x1="240" y1="130" x2="340" y2="40" stroke="var(--text-english-muted)" stroke-dasharray="4,4" />
+        <line x1="160" y1="40" x2="340" y2="40" stroke="var(--text-english-muted)" stroke-dasharray="4,4" />
+        <!-- Resultant R vector -->
+        <line x1="60" y1="130" x2="340" y2="40" stroke="#C1621A" stroke-width="3" />
+        <text x="220" y="70" fill="#C1621A" font-weight="800" font-size="13">R (লব্ধি ভেক্টর)</text>
+        <!-- Angle arc -->
+        <path d="M 100 130 A 40 40 0 0 0 88 105" fill="none" stroke="var(--text-bengali)" stroke-width="1.5" />
+        <text x="106" y="118" fill="var(--text-bengali)" font-size="11">&alpha;</text>
+      </svg>
+      <div class="diagram-caption">চিত্র ২.১: সামান্তরিক সূত্রে ভেক্টর $\\vec{P}$ ও $\\vec{Q}$-এর লব্ধি $\\vec{R}$ নির্ধারণ।</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Analytical Application &bull; বোর্ড ও ভর্তি পরীক্ষার গাণিতিক সমস্যা</div>
+    <div class="practice-question-card">
+      <div class="pq-title">বোর্ড স্ট্যান্ডার্ড সৃজনশীল প্রশ্ন (ঢাকা বোর্ড ২০২৪)</div>
+      <div class="pq-content">
+        দুটি সমান বলের লব্ধির বর্গ তাদের গুণফলের ৩ গুণ হলে বলদ্বয়ের মধ্যবর্তী কোণ $\\alpha$ এর মান নির্ণয় করো।
+      </div>
+      <div class="pq-answer">
+        <strong>সমাধান:</strong> ধরি বলদ্বয় $P = Q$। প্রশ্নমতে, $R^2 = 3P \\cdot P = 3P^2$।<br>
+        সূত্রমতে: $R^2 = P^2 + P^2 + 2P^2\\cos\\alpha \\implies 3P^2 = 2P^2(1 + \\cos\\alpha) \\implies 1 + \\cos\\alpha = \\frac{3}{2} \\implies \\cos\\alpha = \\frac{1}{2}$।<br>
+        $\\therefore \\alpha = \\cos^{-1}(0.5) = 60^\\circ$। <em>(উত্তর: ৬০ ডিগ্রি)</em>
+      </div>
+    </div>
+  </section>
+  `,
+
+  chemistry: `
+  <section class="chapter-hero-banner">
+    <div>
+      <h1>Chemistry 2nd Paper &bull; Organic Electrophilic Substitution</h1>
+      <div class="bn-sub">অধ্যায় ০২: জৈব রসায়ন &bull; বেনজিন বলয় এবং ইলেক্ট্রোফিলিক প্রতিস্থাপন কৌশল</div>
+    </div>
+    <div class="chapter-meta-pill">
+      <span>HSC Academic Core</span><br>
+      <span>Department of Chemistry</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Reaction Profile &bull; বেনজিনের নাইট্রেশন বিক্রিয়া (Nitration of Benzene)</div>
+    <div class="chem-reaction-row">
+      <span><strong>বিক্রিয়ক:</strong> C<sub>6</sub>H<sub>6</sub> + HNO<sub>3</sub></span>
+      <span style="font-size:16px; color:var(--accent-primary);">&rarr; [গাঢ় H<sub>2</sub>SO<sub>4</sub>, ৫৫°C] &rarr;</span>
+      <span><strong>উৎপাদ:</strong> C<sub>6</sub>H<sub>5</sub>NO<sub>2</sub> + H<sub>2</sub>O</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Structural Grid &bull; গুরুত্বপূর্ণ অ্যারোমেটিক যৌগসমূহের আণবিক গঠন</div>
+    <div class="chem-grid">
+      <div class="chem-box">
+        <svg viewBox="0 0 100 110" style="width: 72px; height: 80px;">
+          <!-- Benzene Ring -->
+          <polygon points="50,20 80,38 80,72 50,90 20,72 20,38" fill="none" stroke="var(--accent-primary)" stroke-width="2.2"/>
+          <circle cx="50" cy="55" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8" stroke-dasharray="3,2"/>
+        </svg>
+        <div class="title">বেনজিন (Benzene)</div>
+        <div class="formula">C<sub>6</sub>H<sub>6</sub></div>
+      </div>
+
+      <div class="chem-box">
+        <svg viewBox="0 0 100 110" style="width: 72px; height: 80px;">
+          <!-- Toluene -->
+          <line x1="50" y1="20" x2="50" y2="5" stroke="var(--accent-primary)" stroke-width="2.2"/>
+          <text x="50" y="5" font-size="10" font-weight="700" fill="var(--text-english)" text-anchor="middle">CH&#8323;</text>
+          <polygon points="50,28 80,45 80,78 50,95 20,78 20,45" fill="none" stroke="var(--accent-primary)" stroke-width="2.2"/>
+          <circle cx="50" cy="62" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8"/>
+        </svg>
+        <div class="title">টলুইন (Toluene)</div>
+        <div class="formula">C<sub>7</sub>H<sub>8</sub></div>
+      </div>
+
+      <div class="chem-box">
+        <svg viewBox="0 0 100 110" style="width: 72px; height: 80px;">
+          <!-- Phenol -->
+          <line x1="50" y1="20" x2="50" y2="5" stroke="var(--accent-primary)" stroke-width="2.2"/>
+          <text x="50" y="5" font-size="10" font-weight="700" fill="var(--accent-secondary)" text-anchor="middle">OH</text>
+          <polygon points="50,28 80,45 80,78 50,95 20,78 20,45" fill="none" stroke="var(--accent-primary)" stroke-width="2.2"/>
+          <circle cx="50" cy="62" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8"/>
+        </svg>
+        <div class="title">ফেনল (Phenol)</div>
+        <div class="formula">C<sub>6</sub>H<sub>5</sub>OH</div>
+      </div>
+
+      <div class="chem-box">
+        <svg viewBox="0 0 100 110" style="width: 72px; height: 80px;">
+          <!-- Nitrobenzene -->
+          <line x1="50" y1="20" x2="50" y2="5" stroke="var(--accent-primary)" stroke-width="2.2"/>
+          <text x="50" y="5" font-size="10" font-weight="700" fill="#C1621A" text-anchor="middle">NO&#8322;</text>
+          <polygon points="50,28 80,45 80,78 50,95 20,78 20,45" fill="none" stroke="var(--accent-primary)" stroke-width="2.2"/>
+          <circle cx="50" cy="62" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8"/>
+        </svg>
+        <div class="title">নাইট্রোবেনজিন</div>
+        <div class="formula">C<sub>6</sub>H<sub>5</sub>NO<sub>2</sub></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Mechanism Steps &bull; তিন-ধাপের বিক্রিয়া কৌশল</div>
+    <div class="science-card">
+      <div style="font-weight:700; color:var(--accent-primary); margin-bottom:4px;">ইলেক্ট্রোফিলিক প্রতিস্থাপন কৌশল (Step-by-Step)</div>
+      <div style="font-size:9.2pt; line-height:1.55; color:var(--text-bengali);">
+        <strong>ধাপ ১ (ইলেক্ট্রোফাইল সৃষ্টি):</strong> $\\text{HNO}_3 + 2\\text{H}_2\\text{SO}_4 \\rightleftharpoons \\text{NO}_2^+ + \\text{H}_3\\text{O}^+ + 2\\text{HSO}_4^-$<br>
+        <strong>ধাপ ২ (কার্বোক্যাটায়ন মধ্যবর্তী গঠন):</strong> $\\text{C}_6\\text{H}_6 + \\text{NO}_2^+ \\rightarrow [\\text{C}_6\\text{H}_6\\text{NO}_2]^+$ (ধীরগতির হার-নির্ধারক ধাপ)<br>
+        <strong>ধাপ ৩ (প্রোটন ত্যাগ ও রেজোন্যান্স পুনরুদ্ধার):</strong> মধ্যবর্তী বলয় ক্ষারীয় $\\text{HSO}_4^-$ এর কাছে প্রোটন ($H^+$) স্থানান্তর করে সুস্থিতি ফিরিয়ে আনে।
+      </div>
+    </div>
+  </section>
+  `,
+
+  math: `
+  <section class="chapter-hero-banner">
+    <div>
+      <h1>Higher Mathematics &bull; Differential &amp; Integral Calculus</h1>
+      <div class="bn-sub">উচ্চতর গণিত ১ম পত্র &bull; অধ্যায় ০৯: অন্তরীকরণ ও মৌলিক উপপাদ্যসমূহ</div>
+    </div>
+    <div class="chapter-meta-pill">
+      <span>Classes XI-XII</span><br>
+      <span>Mathematics Studio</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Fundamental Theorem &bull; অন্তরীকরণের মূল সংজ্ঞার্থ ও সীমা</div>
+    <div class="law-callout-box">
+      <div class="law-header">
+        <span class="law-badge">অন্তরজের মূল সংজ্ঞা</span>
+        <span class="law-source">Definition of Derivative</span>
+      </div>
+      <div class="law-text">
+        কোনো ফাংশন $f(x)$ এর জন্য $x$ বিন্দুতে প্রথম অন্তরজ $f'(x)$ বা $\\frac{dy}{dx}$ হলো:
+        $$\\frac{dy}{dx} = \\lim_{h \\to 0} \\frac{f(x + h) - f(x)}{h}$$
+        যদি এই সীমার বাস্তব ও নির্দিষ্ট মান বিদ্যমান থাকে।
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Essential Formula Box &bull; ত্রিকোণমিতিক ও সূচকীয় অন্তরজ সূত্রাবলী</div>
+    <div class="math-formula-box">
+      <div class="formula-badge">Calculus Core Identities</div>
+      <div class="formula-equation">
+        $$\\frac{d}{dx}(\\sin x) = \\cos x, \\quad \\frac{d}{dx}(\\cos x) = -\\sin x, \\quad \\frac{d}{dx}(e^{ax}) = a e^{ax}$$
+      </div>
+      <div class="formula-legend">
+        <span><strong>গুণনের নিয়ম (Product Rule):</strong> $\\frac{d}{dx}[u \\cdot v] = u \\frac{dv}{dx} + v \\frac{du}{dx}$</span>
+        <span><strong>ভাগের নিয়ম (Quotient Rule):</strong> $\\frac{d}{dx}\\left[\\frac{u}{v}\\right] = \\frac{v \\frac{du}{dx} - u \\frac{dv}{dx}}{v^2}$</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Geometric Interpretation &bull; জ্যামিতিক তাৎপর্য ও স্পর্শকের ঢাল</div>
+    <div class="science-concept-card">
+      <div class="concept-title">
+        <span>বক্ররেখার স্পর্শকের ঢাল (Slope of Tangent)</span>
+        <span class="concept-tag">জ্যামিতি</span>
+      </div>
+      <div class="concept-body">
+        বক্ররেখা $y = f(x)$ এর ওপর $(x_1, y_1)$ বিন্দুতে স্পর্শকের ঢাল $m = \\left(\\frac{dy}{dx}\\right)_{(x_1, y_1)}$।<br>
+        উক্ত বিন্দুতে স্পর্শকের সরলরেখা সমীকরণ:
+        $$y - y_1 = m(x - x_1)$$
+      </div>
+    </div>
+
+    <div class="diagram-svg-container">
+      <svg viewBox="0 0 440 160" class="diagram-svg" aria-label="Calculus Curve and Tangent Line">
+        <!-- Axes -->
+        <line x1="30" y1="140" x2="410" y2="140" stroke="var(--border-color)" stroke-width="1.8" />
+        <line x1="40" y1="150" x2="40" y2="15" stroke="var(--border-color)" stroke-width="1.8" />
+        <text x="415" y="145" font-size="11" fill="var(--text-english)">x</text>
+        <text x="35" y="15" font-size="11" fill="var(--text-english)">y</text>
+        <!-- Curve f(x) -->
+        <path d="M 50 120 Q 180 115 280 40 T 400 20" fill="none" stroke="var(--accent-primary)" stroke-width="3" />
+        <text x="360" y="35" font-size="12" font-weight="700" fill="var(--accent-primary)">y = f(x)</text>
+        <!-- Tangent Line -->
+        <line x1="120" y1="135" x2="350" y2="15" stroke="#C1621A" stroke-width="2.2" stroke-dasharray="5,2" />
+        <!-- Tangent Point P -->
+        <circle cx="230" cy="74" r="5" fill="#D6A13B" stroke="var(--accent-primary)" stroke-width="2" />
+        <text x="240" y="80" font-size="11" font-weight="700" fill="var(--text-english)">P(x&#8321;, y&#8321;)</text>
+        <text x="280" y="55" font-size="10.5" font-weight="600" fill="#C1621A">ঢাল m = tan&theta;</text>
+      </svg>
+      <div class="diagram-caption">চিত্র ৯.১: বক্ররেখার নির্দিষ্ট বিন্দুতে স্পর্শক ও তাৎক্ষণিক ঢাল বিশ্লেষণ।</div>
+    </div>
+  </section>
+  `,
+
+  bangla: `
+  <section class="chapter-hero-banner">
+    <div>
+      <h1>উচ্চমাধ্যমিক বাংলা সাহিত্যপাঠ &bull; রবীন্দ্রনাথ ঠাকুর</h1>
+      <div class="bn-sub">গদ্য অংশ: 'অপরিচিতা' &bull; যৌতুকবিরোধী চেতনা, আত্মমর্যাদাবোধ ও নারীজাগরণ</div>
+    </div>
+    <div class="chapter-meta-pill">
+      <span>HSC Bangla 1st Paper</span><br>
+      <span>সাহিত্য ও ভাষা বিভাগ</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Theme Analysis &bull; গল্পের মূলভাব ও প্রেক্ষাপট</div>
+    <div class="explanation-card">
+      <strong>মূলভাব:</strong> 'অপরিচিতা' রবীন্দ্রনাথ ঠাকুরের এক অনবদ্য ছোটগল্প, যেখানে বিশ শতকের প্রথম দশকের বাঙালি সমাজের যৌতুকপ্রথার কুৎসিত রূপ এবং পুরুষের কাপুরুষতার বিপরীতে এক আত্মমর্যাদাসম্পন্ন নারীর প্রতিবাদী অবস্থান ফুটে উঠেছে। কল্যাণী চরিত্রটির মাধ্যমে লেখক এমন এক নবযুগের নারীর প্রতীক এঁকেছেন, যে বিবাহিত জীবনের কৃত্রিম মোহ উপেক্ষা করে সমাজকল্যাণ ও শিক্ষার ব্রতে নিজেকে উৎসর্গ করেছে।
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Character Matrix &bull; চরিত্রচিত্রণ ও তুলনামূলক রূপরেখা</div>
+    <div class="academic-table-wrap">
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th>চরিত্র</th>
+            <th>মূল বৈশিষ্ট্য</th>
+            <th>আচরণের সামাজিক তাৎপর্য</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>অনুপম</strong></td>
+            <td>পরনির্ভরশীল, ভীরু, সুন্দর অথচ ব্যক্তিত্বহীন</td>
+            <td>অভিভাবকের নিয়ন্ত্রণে থাকা তৎকালীন অসচেতন যুবসমাজের প্রতীক।</td>
+          </tr>
+          <tr>
+            <td><strong>কল্যাণী</strong></td>
+            <td>দৃঢ়চেতা, আত্মমর্যাদাসম্পন্ন, আধুনিক</td>
+            <td>যৌতুকের বিরুদ্ধে রুখে দাঁড়ানো সংগ্রামী নারীশক্তির প্রথম অগ্রদূত।</td>
+          </tr>
+          <tr>
+            <td><strong>শম্ভুনাথ সেন</strong></td>
+            <td>কর্তব্যপরায়ণ, আত্মসম্মানবোধে আপসহীন</td>
+            <td>মেয়ের মর্যাদা রক্ষায় সমাজের প্রচলিত প্রথা ভেঙে দেওয়া সাহসী পিতা।</td>
+          </tr>
+          <tr>
+            <td><strong>মামাবাবু</strong></td>
+            <td>লোভী, কর্তৃত্বকামী, সংকীর্ণমনা</td>
+            <td>পিতৃতান্ত্রিক সমাজের স্বার্থপর ও বিবেকহীন অভিভাবকত্বের চিত্র।</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="module-heading">Vocabulary &amp; Annotations &bull; গুরুত্বপূর্ণ শব্দার্থ ও টীকা</div>
+    <div class="vocab-matrix-grid">
+      <div class="vocab-card">
+        <div class="vocab-top"><span class="vocab-en-term">অণ্ডজ</span><span class="vocab-badge">বিশেষণ</span></div>
+        <div class="vocab-bn-meaning">ডিম থেকে জন্ম যার</div>
+        <div class="vocab-synonym">প্রসঙ্গ: অনুপমের নবীন বয়সের তুলনা</div>
+      </div>
+      <div class="vocab-card">
+        <div class="vocab-top"><span class="vocab-en-term">গণ্ডুষ</span><span class="vocab-badge">বিশেষ্য</span></div>
+        <div class="vocab-bn-meaning">এক অঞ্জলি / এক আঁজলা জল</div>
+        <div class="vocab-synonym">প্রসঙ্গ: যৎসামান্য দান গ্রহণ</div>
+      </div>
+      <div class="vocab-card">
+        <div class="vocab-top"><span class="vocab-en-term">মকরমুখো</span><span class="vocab-badge">বিশেষণ</span></div>
+        <div class="vocab-bn-meaning">কুমিরের মুখের মতো গড়নবিশিষ্ট</div>
+        <div class="vocab-synonym">প্রসঙ্গ: গয়নার বিশেষ অলংকরণ</div>
+      </div>
+    </div>
+  </section>
+  `
+};
+
+// Reusable Projectile Motion SVG Diagram Component Generator
+export function getProjectileMotionDiagramSVG() {
+  return `
+    <div class="physics-diagram-card projectile-motion-diagram physics-svg-container">
+      <div class="physics-diagram-header">
+        <span class="physics-diagram-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>প্রক্ষেপকের পরাবৃত্তাকার গতিপথ (Parabolic Trajectory Diagram)</span>
+        </span>
+        <span class="physics-diagram-badge">অধ্যায় ০৩: গতিবিদ্যা</span>
+      </div>
+
+      <div class="physics-diagram-svg-wrap">
+        <svg viewBox="0 0 520 225" xmlns="http://www.w3.org/2000/svg" aria-label="Projectile Motion Vector Diagram">
+          <defs>
+            <marker id="arrow-ax" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="var(--text-english-muted)" />
+            </marker>
+            <marker id="arrow-v0" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L0,7 L8,3.5 z" fill="var(--accent-primary)" />
+            </marker>
+            <marker id="arrow-comp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="var(--accent-secondary)" />
+            </marker>
+            <linearGradient id="traj-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="var(--accent-primary)" />
+              <stop offset="50%" stop-color="#D6A13B" />
+              <stop offset="100%" stop-color="var(--accent-secondary)" />
+            </linearGradient>
+          </defs>
+
+          <!-- Axes -->
+          <line x1="40" y1="180" x2="480" y2="180" stroke="var(--border-color)" stroke-width="2" marker-end="url(#arrow-ax)" />
+          <line x1="50" y1="190" x2="50" y2="25" stroke="var(--border-color)" stroke-width="2" marker-end="url(#arrow-ax)" />
+          <text x="485" y="184" font-size="11" font-weight="700" fill="var(--text-english)">x (m)</text>
+          <text x="45" y="20" font-size="11" font-weight="700" fill="var(--text-english)">y (m)</text>
+          <text x="32" y="196" font-size="11" fill="var(--text-english-muted)">O(0,0)</text>
+
+          <!-- Parabolic Trajectory -->
+          <path d="M 50 180 Q 250 10 450 180" fill="none" stroke="url(#traj-grad)" stroke-width="3" stroke-linecap="round" />
+          
+          <!-- Launch Vector v0 -->
+          <line x1="50" y1="180" x2="135" y2="95" stroke="var(--accent-primary)" stroke-width="2.6" marker-end="url(#arrow-v0)" />
+          <text x="138" y="92" font-size="12" font-weight="800" fill="var(--accent-primary)">v&#8320;</text>
+
+          <!-- Component Vectors at Launch -->
+          <line x1="50" y1="180" x2="130" y2="180" stroke="var(--accent-secondary)" stroke-width="2" stroke-dasharray="3,2" marker-end="url(#arrow-comp)" />
+          <text x="80" y="195" font-size="9.5" font-weight="600" fill="var(--accent-secondary)">v&#8320;&#8339; = v&#8320;cos&theta;&#8320;</text>
+          <line x1="50" y1="180" x2="50" y2="105" stroke="var(--accent-secondary)" stroke-width="2" stroke-dasharray="3,2" marker-end="url(#arrow-comp)" />
+          <text x="56" y="115" font-size="9.5" font-weight="600" fill="var(--accent-secondary)">v&#8320;&#7522; = v&#8320;sin&theta;&#8320;</text>
+
+          <!-- Angle Arc -->
+          <path d="M 85 180 A 35 35 0 0 0 75 155" fill="none" stroke="#D6A13B" stroke-width="2" />
+          <text x="92" y="168" font-size="11" font-weight="700" fill="#D6A13B">&theta;&#8320;</text>
+
+          <!-- Max Height Peak H (Point P) -->
+          <circle cx="250" cy="95" r="4.5" fill="#D6A13B" stroke="var(--accent-primary)" stroke-width="2" />
+          <line x1="250" y1="95" x2="250" y2="180" stroke="var(--text-english-muted)" stroke-width="1.4" stroke-dasharray="4,3" />
+          <!-- Peak Horizontal Velocity -->
+          <line x1="250" y1="95" x2="310" y2="95" stroke="var(--accent-primary)" stroke-width="2" marker-end="url(#arrow-v0)" />
+          <text x="315" y="98" font-size="9.5" font-weight="600" fill="var(--accent-primary)">v&#8339; = v&#8320;cos&theta;&#8320; (v&#7522; = 0)</text>
+          <text x="210" y="140" font-size="11" font-weight="700" fill="#D6A13B">H&#7522;&#8336;&#8339;</text>
+
+          <!-- Landing Point (Range R) -->
+          <circle cx="450" cy="180" r="4.5" fill="var(--accent-secondary)" />
+          <text x="440" y="200" font-size="10.5" font-weight="700" fill="var(--accent-secondary)">(R, 0)</text>
+
+          <!-- Range Measurement Line below -->
+          <line x1="50" y1="210" x2="450" y2="210" stroke="var(--accent-secondary)" stroke-width="1.5" />
+          <line x1="50" y1="205" x2="50" y2="215" stroke="var(--accent-secondary)" stroke-width="1.5" />
+          <line x1="450" y1="205" x2="450" y2="215" stroke="var(--accent-secondary)" stroke-width="1.5" />
+          <text x="230" y="218" font-size="10.5" font-weight="700" fill="var(--accent-secondary)">অনুভূমিক পাল্লা (Range, R)</text>
+        </svg>
+      </div>
+
+      <div class="physics-diagram-caption">
+        <strong>চিত্র ৩.১:</strong> প্রক্ষেপকের পরাবৃত্তাকার গতিপথ (Parabolic Trajectory), সর্বোচ্চ উচ্চতা $H$ এবং অনুভূমিক পাল্লা $R$ এর চিত্ররূপ।
+      </div>
+
+      <div class="physics-formula-legend-grid">
+        <div class="physics-legend-item">
+          <strong>সর্বোচ্চ উচ্চতা ($H$):</strong><br>
+          $H = \\frac{v_0^2 \\sin^2\\theta_0}{2g}$
+        </div>
+        <div class="physics-legend-item">
+          <strong>উড্ডয়নকাল ($T$):</strong><br>
+          $T = \\frac{2v_0 \\sin\\theta_0}{g}$
+        </div>
+        <div class="physics-legend-item">
+          <strong>অনুভূমিক পাল্লা ($R$):</strong><br>
+          $R = \\frac{v_0^2 \\sin 2\\theta_0}{g}$
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // Global browser window fallback
 if (typeof window !== 'undefined') {
   window.DEFAULT_DEMO_CONTENT = DEFAULT_DEMO_CONTENT;
+  window.SUBJECT_DEMO_TEMPLATES = SUBJECT_DEMO_TEMPLATES;
+  window.getProjectileMotionDiagramSVG = getProjectileMotionDiagramSVG;
   window.SVG_DEFS = SVG_DEFS;
   window.getLogoSVG = getLogoSVG;
   window.getWatermarkSVG = getWatermarkSVG;
 }
+

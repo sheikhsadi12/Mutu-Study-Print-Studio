@@ -5,7 +5,7 @@
  * ============================================================================
  */
 
-const CACHE_NAME = 'mutu-study-v1.2.0';
+const CACHE_NAME = 'mutu-study-v2.3.0-vendor-katex';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -18,6 +18,9 @@ const PRECACHE_ASSETS = [
   '/css/components.css',
   '/css/ui.css',
   '/css/style.css',
+  '/vendor/katex/katex.min.css',
+  '/vendor/katex/katex.min.js',
+  '/vendor/katex/auto-render.min.js',
   '/js/app.js',
   '/js/paginator.js',
   '/js/cover-studio.js',

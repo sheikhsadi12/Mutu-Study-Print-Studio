@@ -31,7 +31,18 @@
 .teachers-corner-card,
 .editorial-quote-box,
 .mnemonic-ribbon,
-.practice-question-card {
+.practice-question-card,
+.science-card,
+.science-concept-card,
+.math-formula-box,
+.law-ribbon,
+.chem-reaction-card,
+.chem-reaction-row,
+.chem-structure-card,
+.chem-box,
+.diagram-container,
+.diagram-svg-container,
+.law-callout-box {
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
 }
@@ -47,6 +58,17 @@
   .editorial-quote-box,
   .mnemonic-ribbon,
   .practice-question-card,
+  .science-card,
+  .science-concept-card,
+  .math-formula-box,
+  .law-ribbon,
+  .chem-reaction-card,
+  .chem-reaction-row,
+  .chem-structure-card,
+  .chem-box,
+  .diagram-container,
+  .diagram-svg-container,
+  .law-callout-box,
   .academic-table td,
   .academic-table th {
     backdrop-filter: none !important;
@@ -406,4 +428,496 @@
   padding: 2px 6px;
   border-radius: 3px;
   margin-top: 1.5px;
+}
+
+/* ==========================================================================
+   MULTI-SUBJECT SCIENCE & MATH COMPONENT LIBRARY
+   ========================================================================== */
+
+/* 13. Science Concept Card (Physics / Chemistry / Biology) */
+.science-concept-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-left: 4.5px solid var(--accent-primary);
+  border-radius: 6px;
+  padding: 8px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+.concept-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 8.8pt;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+.concept-tag {
+  background: var(--surface-card-subtle);
+  border: 1px solid var(--border-color);
+  padding: 1.5px 7px;
+  border-radius: 3px;
+  font-size: 7.2pt;
+  color: var(--accent-secondary);
+  font-weight: 600;
+}
+.concept-body {
+  font-size: 9.2pt;
+  line-height: 1.55;
+  color: var(--text-bengali);
+}
+
+/* 14. Math Formula Box (LaTeX Equation Block) */
+.math-formula-box {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 9px 14px;
+  position: relative;
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  margin-bottom: 5px;
+}
+.formula-badge {
+  position: absolute;
+  top: -8px;
+  left: 14px;
+  background: var(--accent-primary);
+  color: #FFF8ED;
+  font-size: 6.8pt;
+  font-weight: 700;
+  padding: 1.5px 7px;
+  border-radius: 3px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.formula-equation {
+  font-size: 11pt;
+  padding: 6px 0;
+  overflow-x: auto;
+  color: var(--text-english);
+}
+.formula-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+  text-align: left;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 5px;
+  margin-top: 4px;
+  font-size: 8.2pt;
+  color: var(--text-bengali-secondary);
+  line-height: 1.45;
+}
+
+/* 15. Chemical Reaction Card (Organic / Inorganic Reactions) */
+.chem-reaction-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-left: 4.5px solid var(--accent-secondary);
+  border-radius: 6px;
+  padding: 8px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+.chem-reaction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chem-badge {
+  font-size: 7.2pt;
+  font-weight: 700;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.chem-temp {
+  font-size: 7.2pt;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  background: var(--surface-card-subtle);
+  padding: 1.5px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--border-color);
+}
+.chem-equation-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 6px 10px;
+  background: var(--surface-card-subtle);
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+}
+.chem-arrow {
+  font-size: 14pt;
+  color: var(--accent-primary);
+  line-height: 1;
+}
+.chem-catalyst-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 7.2pt;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  line-height: 1.2;
+}
+.chem-notes {
+  font-size: 8.6pt;
+  color: var(--text-bengali);
+  line-height: 1.45;
+}
+
+/* 16. Chemical Structure Grid (Aromatic Rings & Functional Groups) */
+.chem-structure-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.chem-structure-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.chem-structure-svg {
+  width: 72px;
+  height: 80px;
+}
+.structure-name {
+  font-size: 7.8pt;
+  font-weight: 700;
+  color: var(--accent-primary);
+  margin-top: 3px;
+}
+.structure-formula {
+  font-size: 7.2pt;
+  color: var(--text-english-muted);
+  font-family: var(--font-english);
+}
+
+/* 17. Scientific Diagram SVG Container (Physics & Mathematics) */
+.diagram-svg-container {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 5px;
+}
+.diagram-svg {
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  max-height: 160px;
+}
+.diagram-caption {
+  font-size: 7.8pt;
+  font-weight: 600;
+  color: var(--text-english-muted);
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+}
+
+/* 18. Scientific Law Callout Box (Postulates, Theorems & Axioms) */
+.law-callout-box {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-left: 4.5px solid #D6A13B;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: inset 0 1px 0 rgba(214, 161, 59, 0.2);
+  margin-bottom: 5px;
+}
+.law-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.law-badge {
+  background: #D6A13B;
+  color: #320310;
+  font-size: 7.2pt;
+  font-weight: 800;
+  padding: 1.5px 7px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.law-source {
+  font-size: 7.4pt;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  font-style: italic;
+}
+.law-text {
+  font-size: 9.3pt;
+  line-height: 1.55;
+  color: var(--text-bengali);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   DEDICATED SCIENCE, MATH & CHEMISTRY COMPONENT STYLING
+   ========================================================================== */
+
+/* Science & Math Concept Card */
+.science-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-left: 4.5px solid var(--accent-primary);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+/* Chemistry Structure Grid */
+.chem-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 8px;
+  margin: 10px 0;
+}
+@media (max-width: 600px) {
+  .chem-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* Chemistry Individual Molecule Box */
+.chem-box {
+  background: var(--surface-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 4px;
+  text-align: center;
+}
+.chem-box .title { font-weight: 700; font-size: 8.8pt; color: var(--text-bengali); margin-bottom: 3px; }
+.chem-box .formula { font-size: 7.8pt; color: var(--text-english-muted); font-family: monospace; }
+.chem-box svg { display: block; margin: 4px auto; max-width: 100%; height: auto; }
+
+/* Formula & Equation Highlight Box */
+.math-formula-box {
+  background: var(--surface-card-subtle);
+  border: 1px dashed var(--border-strong);
+  border-radius: 6px;
+  padding: 10px;
+  margin: 8px 0;
+  text-align: center;
+  font-size: 11pt;
+}
+
+/* Law, Principle & Postulate Ribbon */
+.law-ribbon {
+  background: rgba(234, 179, 8, 0.12);
+  border-left: 4px solid #eab308;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin: 6px 0;
+}
+
+/* Chemical Reaction Flow Box */
+.chem-reaction-row {
+  background: var(--surface-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Scalable Vector Diagram Container (Physics & Math) */
+.diagram-container {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+.diagram-container svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Subject Switcher Tab Buttons inside Content Editor */
+.subject-tab-btn {
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  border: 1.5px solid var(--border-color) !important;
+  background: var(--surface-card) !important;
+  color: var(--text-english) !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.subject-tab-btn:hover {
+  border-color: var(--accent-primary) !important;
+  background: var(--surface-card-subtle) !important;
+}
+.subject-tab-btn.active {
+  background: var(--accent-primary) !important;
+  border-color: var(--accent-primary) !important;
+  color: #FFF8ED !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ==========================================================================
+   PHYSICS SVG DIAGRAM COMPONENTS
+   ========================================================================== */
+
+.physics-diagram-card {
+  background: var(--surface-card);
+  border: 1.2px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.physics-diagram-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 4px;
+}
+
+.physics-diagram-title {
+  font-size: 8.8pt;
+  font-weight: 700;
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.physics-diagram-badge {
+  font-size: 7pt;
+  font-weight: 700;
+  padding: 1.5px 6px;
+  border-radius: 3px;
+  background: var(--surface-card-subtle);
+  color: var(--accent-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.physics-diagram-svg-wrap {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  margin: 6px 0;
+}
+
+.physics-diagram-svg-wrap svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.physics-diagram-caption {
+  font-size: 8pt;
+  color: var(--text-english-muted);
+  text-align: center;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.physics-formula-legend-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-color);
+  font-size: 7.8pt;
+  color: var(--text-bengali);
+}
+@media (max-width: 600px) {
+  .physics-formula-legend-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.physics-legend-item {
+  background: var(--surface-card-subtle);
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+/* Dedicated Modular Physics SVG Diagram Component */
+.physics-diagram-component,
+.physics-svg-container,
+.projectile-motion-diagram {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  margin: 8px auto;
+  padding: 8px 10px;
+  background: var(--surface-card);
+  border: 1.2px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  text-align: center;
+}
+
+.physics-vector-arrow {
+  stroke: var(--accent-primary);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.physics-trajectory-path {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-dasharray: none;
+}
+
+.physics-axis-line {
+  stroke: var(--border-color);
+  stroke-width: 1.8;
+}
+
+.physics-annotation-text {
+  font-family: var(--font-english), -apple-system, sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  fill: var(--text-english);
+}
+
+.physics-annotation-bn {
+  font-family: var(--font-bengali), 'Hind Siliguri', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--text-bengali);
 }

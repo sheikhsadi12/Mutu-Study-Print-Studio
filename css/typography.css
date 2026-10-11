@@ -26,19 +26,59 @@
 }
 
 /* 3. Bengali Typography Engine (যুক্তবর্ণ ও ল্যাগেচার ফিক্স - Zero Broken Glyphs) */
+.a4-page,
+.page-content-area,
+.science-card,
+.science-concept-card,
+.module-heading,
+.law-ribbon,
+.law-callout-box,
+.chem-box,
+.chem-reaction-row,
+.chem-reaction-card,
+.math-formula-box,
+.chapter-hero-banner,
+.explanation-card {
+  font-family: 'Hind Siliguri', 'Kalpurush', -apple-system, sans-serif !important;
+}
+
+/* Preserve Mathematical Typography & Fonts (KaTeX & MathJax) */
+.katex,
+.katex * {
+  font-family: KaTeX_Main, 'Times New Roman', serif !important;
+}
+.katex .mathnormal,
+.katex .mathdefault {
+  font-family: KaTeX_Math, 'Times New Roman', serif !important;
+  font-style: italic;
+}
+.katex .mathbf {
+  font-family: KaTeX_Main, 'Times New Roman', serif !important;
+  font-weight: bold;
+}
+.katex .amsrm {
+  font-family: KaTeX_AMS, 'Times New Roman', serif !important;
+}
+.MathJax,
+.MathJax * {
+  font-family: inherit;
+}
+mjx-container {
+  font-family: inherit;
+}
+
 .bn-text, 
 [lang="bn"], 
 .passage-bn, 
 .st-bn, 
 .vocab-bn-meaning, 
 .grammar-explanation, 
-.explanation-card, 
 .bn-cell, 
 .quote-bn, 
 .mnemonic-text, 
 .pq-answer, 
 .bn-sub {
-  font-family: var(--font-bengali) !important;
+  font-family: 'Hind Siliguri', 'Kalpurush', -apple-system, sans-serif !important;
   letter-spacing: normal !important;
   word-spacing: normal;
   line-height: 1.62 !important;
