@@ -84,13 +84,34 @@ export async function renderAllMathInElement(container) {
 
 /**
  * Applies Dynamic Typography Styles via CSS Custom Properties
+ * Ensures English text ALWAYS renders in selected English font, and Bengali ALWAYS renders in Hind Siliguri!
  * @param {object} [state=appState] - Application state object
  */
 export function applyTypography(state = appState) {
   const root = document.documentElement;
-  root.style.setProperty('--font-english', state.fontEnglishBody);
-  root.style.setProperty('--font-display', state.fontEnglishHeading);
-  root.style.setProperty('--font-bengali', state.fontBengali);
+
+  // Extract pure primary English font names (stripping any trailing generic fallbacks)
+  const rawEnBody = state.fontEnglishBody || "'Outfit'";
+  const rawEnHead = state.fontEnglishHeading || "'Playfair Display'";
+  const rawBn = state.fontBengali || "'Hind Siliguri'";
+
+  const enBodyName = rawEnBody.split(',')[0].trim().replace(/['"]/g, '');
+  const enHeadName = rawEnHead.split(',')[0].trim().replace(/['"]/g, '');
+  const bnName = rawBn.split(',')[0].trim().replace(/['"]/g, '');
+
+  const primaryEnBody = `'${enBodyName}'`;
+  const primaryEnHead = `'${enHeadName}'`;
+  const primaryBn = `'${bnName}'`;
+
+  // Set individual and composite font design tokens
+  root.style.setProperty('--font-english-primary', primaryEnBody);
+  root.style.setProperty('--font-heading-primary', primaryEnHead);
+  root.style.setProperty('--font-bengali-primary', primaryBn);
+
+  // Cascade: Primary English font matches Latin ASCII first; Bengali glyphs fall back to Hind Siliguri
+  root.style.setProperty('--font-english', `${primaryEnBody}, ${primaryBn}, 'Kalpurush', sans-serif`);
+  root.style.setProperty('--font-display', `${primaryEnHead}, ${primaryBn}, 'Kalpurush', serif`);
+  root.style.setProperty('--font-bengali', `${primaryEnBody}, ${primaryBn}, 'Kalpurush', sans-serif`);
   root.style.setProperty('--global-font-scale', state.fontScale);
 }
 

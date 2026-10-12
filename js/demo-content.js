@@ -517,46 +517,46 @@ export const SUBJECT_DEMO_TEMPLATES = {
     <div class="module-heading">Structural Grid &bull; গুরুত্বপূর্ণ অ্যারোমেটিক যৌগসমূহের আণবিক গঠন</div>
     <div class="chem-grid">
       <div class="chem-box">
-        <svg viewBox="0 0 100 110" style="width: 72px; height: 80px;">
+        <svg viewBox="0 0 100 120" style="width: 82px; height: 96px; overflow: visible;">
           <!-- Benzene Ring -->
-          <polygon points="50,20 80,38 80,72 50,90 20,72 20,38" fill="none" stroke="var(--accent-primary)" stroke-width="2.2"/>
-          <circle cx="50" cy="55" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8" stroke-dasharray="3,2"/>
+          <polygon points="50,26 80,43 80,77 50,94 20,77 20,43" fill="none" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linejoin="round"/>
+          <circle cx="50" cy="60" r="20" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8" stroke-dasharray="3.5,2"/>
         </svg>
         <div class="title">বেনজিন (Benzene)</div>
         <div class="formula">C<sub>6</sub>H<sub>6</sub></div>
       </div>
 
       <div class="chem-box">
-        <svg viewBox="0 0 100 110" style="width: 72px; height: 80px;">
+        <svg viewBox="0 0 100 120" style="width: 82px; height: 96px; overflow: visible;">
           <!-- Toluene -->
-          <line x1="50" y1="20" x2="50" y2="5" stroke="var(--accent-primary)" stroke-width="2.2"/>
-          <text x="50" y="5" font-size="10" font-weight="700" fill="var(--text-english)" text-anchor="middle">CH&#8323;</text>
-          <polygon points="50,28 80,45 80,78 50,95 20,78 20,45" fill="none" stroke="var(--accent-primary)" stroke-width="2.2"/>
-          <circle cx="50" cy="62" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8"/>
+          <text x="50" y="14" font-size="12" font-weight="700" fill="var(--text-english)" text-anchor="middle" dominant-baseline="central">CH&#8323;</text>
+          <line x1="50" y1="22" x2="50" y2="36" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linecap="round"/>
+          <polygon points="50,36 78,52 78,84 50,100 22,84 22,52" fill="none" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linejoin="round"/>
+          <circle cx="50" cy="68" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8"/>
         </svg>
         <div class="title">টলুইন (Toluene)</div>
         <div class="formula">C<sub>7</sub>H<sub>8</sub></div>
       </div>
 
       <div class="chem-box">
-        <svg viewBox="0 0 100 110" style="width: 72px; height: 80px;">
+        <svg viewBox="0 0 100 120" style="width: 82px; height: 96px; overflow: visible;">
           <!-- Phenol -->
-          <line x1="50" y1="20" x2="50" y2="5" stroke="var(--accent-primary)" stroke-width="2.2"/>
-          <text x="50" y="5" font-size="10" font-weight="700" fill="var(--accent-secondary)" text-anchor="middle">OH</text>
-          <polygon points="50,28 80,45 80,78 50,95 20,78 20,45" fill="none" stroke="var(--accent-primary)" stroke-width="2.2"/>
-          <circle cx="50" cy="62" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8"/>
+          <text x="50" y="14" font-size="12" font-weight="700" fill="var(--accent-secondary)" text-anchor="middle" dominant-baseline="central">OH</text>
+          <line x1="50" y1="22" x2="50" y2="36" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linecap="round"/>
+          <polygon points="50,36 78,52 78,84 50,100 22,84 22,52" fill="none" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linejoin="round"/>
+          <circle cx="50" cy="68" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8"/>
         </svg>
         <div class="title">ফেনল (Phenol)</div>
         <div class="formula">C<sub>6</sub>H<sub>5</sub>OH</div>
       </div>
 
       <div class="chem-box">
-        <svg viewBox="0 0 100 110" style="width: 72px; height: 80px;">
+        <svg viewBox="0 0 100 120" style="width: 82px; height: 96px; overflow: visible;">
           <!-- Nitrobenzene -->
-          <line x1="50" y1="20" x2="50" y2="5" stroke="var(--accent-primary)" stroke-width="2.2"/>
-          <text x="50" y="5" font-size="10" font-weight="700" fill="#C1621A" text-anchor="middle">NO&#8322;</text>
-          <polygon points="50,28 80,45 80,78 50,95 20,78 20,45" fill="none" stroke="var(--accent-primary)" stroke-width="2.2"/>
-          <circle cx="50" cy="62" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8"/>
+          <text x="50" y="14" font-size="12" font-weight="700" fill="#C1621A" text-anchor="middle" dominant-baseline="central">NO&#8322;</text>
+          <line x1="50" y1="22" x2="50" y2="36" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linecap="round"/>
+          <polygon points="50,36 78,52 78,84 50,100 22,84 22,52" fill="none" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linejoin="round"/>
+          <circle cx="50" cy="68" r="18" fill="none" stroke="var(--accent-secondary)" stroke-width="1.8"/>
         </svg>
         <div class="title">নাইট্রোবেনজিন</div>
         <div class="formula">C<sub>6</sub>H<sub>5</sub>NO<sub>2</sub></div>

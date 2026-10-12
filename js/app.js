@@ -108,6 +108,13 @@ export function toggleAcademicTheme(e) {
  * Initializes PWA Service Worker Registration immediately
  */
 function initServiceWorker() {
+  // If running inside an iframe (like Google AI Studio preview sandbox), DO NOT register service worker
+  // This guarantees live preview never freezes or serves stale cached files!
+  if (window.self !== window.top) {
+    console.log('[MUTU PWA] In preview iframe: service worker registration bypassed for instant live updates.');
+    return;
+  }
+
   if ('serviceWorker' in navigator) {
     const swUrl = '/sw.js';
     navigator.serviceWorker.register(swUrl, { scope: '/' })
@@ -119,12 +126,12 @@ function initServiceWorker() {
         }
       })
       .catch((error) => {
-        console.warn('[MUTU PWA] Service Worker registration failed:', error);
+        console.warn('[MUTU PWA] Service Worker registration notice:', error);
       });
 
     // When new service worker takes over, reload to apply fresh engine
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('[MUTU PWA] Service worker updated controller. Refreshing...');
+      console.log('[MUTU PWA] Service worker updated controller.');
     });
   }
 }
@@ -625,6 +632,14 @@ export function closeDualExportModal() {
 }
 
 /**
+ * 1-Click Single PDF Export (Current Active Theme)
+ */
+export function exportCurrentSinglePDF() {
+  closeDualExportModal();
+  exportPDF();
+}
+
+/**
  * Sequential One-Click Dual PDF Export Flow
  */
 export function sequentialDualExport() {
@@ -653,19 +668,20 @@ export function handleCloseSettingsModal() {
   popModalHistory('settingsModal');
 }
 
+/* ============================================================================
+   FLUID HAND-OPERATED PINCH-TO-ZOOM ENGINE (Pure Multi-Touch & Trackpad Gestures)
+   Natural zoom of document content only — top control bar remains stationary!
+   ============================================================================ */
+
+let currentDocScale = 1;
+let initialPinchDistance = 0;
+let pinchStartScale = 1;
+
 /**
- * Updates dynamic responsive scaling on mobile & tablet viewports
- * Completely fluid across tablet rotation (portrait <-> landscape)
+ * Calculates responsive default fit scale based on viewport width
  */
-export function updateResponsivePageScale() {
+export function calculateFitScale() {
   const viewportWidth = window.innerWidth;
-  const html = document.documentElement;
-
-  if (html.classList.contains('view-mode-actual')) {
-    html.style.setProperty('--doc-preview-scale', '1');
-    return;
-  }
-
   const a4PixelWidth = 794; // Standard 210mm in 96dpi CSS px
   let horizontalPadding = 16;
   if (viewportWidth >= 1024) {
@@ -675,34 +691,115 @@ export function updateResponsivePageScale() {
   }
 
   const availableWidth = viewportWidth - horizontalPadding;
-
   if (availableWidth < a4PixelWidth) {
-    const scale = Math.max(0.35, Math.min(1, availableWidth / a4PixelWidth));
-    html.style.setProperty('--doc-preview-scale', scale.toFixed(4));
-  } else {
-    html.style.setProperty('--doc-preview-scale', '1');
+    return Math.max(0.35, Math.min(1, availableWidth / a4PixelWidth));
+  }
+  return 1;
+}
+
+/**
+ * Applies smooth scale to the A4 document pages
+ * @param {number} scale 
+ */
+export function setDocumentScale(scale) {
+  currentDocScale = Math.max(0.35, Math.min(3.5, scale));
+  document.documentElement.style.setProperty('--doc-preview-scale', currentDocScale.toFixed(4));
+}
+
+/**
+ * Updates dynamic responsive scaling on mobile & tablet viewports
+ */
+export function updateResponsivePageScale() {
+  // If user hasn't zoomed manually beyond fit, adapt fluidly to screen
+  if (currentDocScale <= 1.05) {
+    setDocumentScale(calculateFitScale());
   }
 }
 
 /**
- * Toggles between "Fit to Screen" (scaled mobile preview) and "100% Print View"
+ * Initializes natural touch pinch-to-zoom & desktop trackpad zoom engine.
+ * Hand-operated, fluid, unrestricted zooming of document content only.
+ * The top bar remains fixed and crisp.
  */
-export function toggleViewMode() {
-  const html = document.documentElement;
-  const isActual = html.classList.toggle('view-mode-actual');
-  const toggleBtnText = document.getElementById('viewModeBtnText');
-  const fabViewTooltip = document.getElementById('fabViewTooltip');
+export function initFluidPinchToZoom() {
+  const stage = document.getElementById('document-stage');
+  if (!stage) return;
 
-  if (isActual) {
-    if (toggleBtnText) toggleBtnText.innerText = 'Fit to Screen';
-    if (fabViewTooltip) fabViewTooltip.innerText = 'Fit to Screen';
-    showToast("প্রিভিউ মোড: ১০০% আসল প্রিন্ট সাইজ (হরাইজন্টাল প্যানিং চালু)");
-  } else {
-    if (toggleBtnText) toggleBtnText.innerText = '100% Zoom';
-    if (fabViewTooltip) fabViewTooltip.innerText = '100% Zoom';
-    showToast("প্রিভিউ মোড: স্ক্রিন ফিট (ট্যাবলেট/মোবাইলের মাপে ফিট)");
+  // Set initial comfortable scale
+  setDocumentScale(calculateFitScale());
+
+  // 1. Fluid Multi-Touch Two-Finger Pinch-to-Zoom (Isolates zoom to document only!)
+  stage.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault(); // Stops Chrome Android from triggering whole-page browser zoom
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      initialPinchDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      pinchStartScale = currentDocScale;
+    }
+  }, { passive: false });
+
+  stage.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault(); // Stops Chrome Android from zooming the top control bar!
+      if (initialPinchDistance > 0) {
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        const currentDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+        const ratio = currentDist / initialPinchDistance;
+        setDocumentScale(pinchStartScale * ratio);
+      }
+    }
+  }, { passive: false });
+
+  stage.addEventListener('touchend', (e) => {
+    if (e.touches.length < 2) {
+      initialPinchDistance = 0;
+    }
+  }, { passive: true });
+
+  // Protect fixed top header from any touch pinch events
+  const headerBar = document.querySelector('.screen-control-bar');
+  if (headerBar) {
+    headerBar.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+    headerBar.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
   }
-  updateResponsivePageScale();
+
+  // Prevent iOS / Safari gesture zoom on the app shell
+  window.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+  window.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+
+  // 2. Desktop Trackpad Pinch or Ctrl + Mouse Wheel Zoom
+  stage.addEventListener('wheel', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      const zoomStep = -e.deltaY * 0.0035;
+      setDocumentScale(currentDocScale + zoomStep);
+    }
+  }, { passive: false });
+
+  // 3. Double-tap with finger to smoothly toggle between auto-fit and zoomed in (1.25x)
+  let lastTapTime = 0;
+  stage.addEventListener('touchend', (e) => {
+    if (e.changedTouches.length === 1 && e.touches.length === 0) {
+      const now = Date.now();
+      if (now - lastTapTime < 320) {
+        const fit = calculateFitScale();
+        if (Math.abs(currentDocScale - fit) < 0.08) {
+          setDocumentScale(1.25);
+        } else {
+          setDocumentScale(fit);
+        }
+        lastTapTime = 0;
+      } else {
+        lastTapTime = now;
+      }
+    }
+  }, { passive: true });
 }
 
 /**
@@ -714,9 +811,10 @@ function bindUIEventListeners() {
     themeBtn.addEventListener('click', toggleAcademicTheme);
   }
 
+  // Print button opens the unified 1 vs 2 PDF options modal
   const printBtn = document.getElementById('printNowBtn');
   if (printBtn) {
-    printBtn.addEventListener('click', () => exportPDF());
+    printBtn.addEventListener('click', openDualExportModal);
   }
 
   const settingsBtn = document.getElementById('openSettingsBtn');
@@ -769,14 +867,13 @@ window.addEventListener('DOMContentLoaded', () => {
   initInstallPrompt();
   initNetworkStatusListener();
 
-  // Initial Responsive Sizing & Auto-Pagination
-  updateResponsivePageScale();
+  // Initial Responsive Sizing, Pinch Zoom Engine & Auto-Pagination
+  initFluidPinchToZoom();
   runAutoPagination(appState);
 
   // Re-run once web fonts finish loading to prevent layout shifts
   if (document.fonts) {
     document.fonts.ready.then(() => {
-      updateResponsivePageScale();
       runAutoPagination(appState);
     });
   }
@@ -920,9 +1017,11 @@ if (typeof window !== 'undefined') {
   window.showToast = showToast;
   window.getDocumentBaseTitle = getDocumentBaseTitle;
   window.exportPDF = exportPDF;
+  window.exportCurrentSinglePDF = exportCurrentSinglePDF;
   window.openDualExportModal = openDualExportModal;
   window.closeDualExportModal = closeDualExportModal;
   window.sequentialDualExport = sequentialDualExport;
   window.updateResponsivePageScale = updateResponsivePageScale;
-  window.toggleViewMode = toggleViewMode;
+  window.setDocumentScale = setDocumentScale;
+  window.calculateFitScale = calculateFitScale;
 }

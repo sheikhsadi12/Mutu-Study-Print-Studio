@@ -677,7 +677,7 @@
 }
 
 /* ==========================================================================
-   DEDICATED SCIENCE, MATH & CHEMISTRY COMPONENT STYLING
+   DEDICATED SCIENCE, MATH & CHEMISTRY COMPONENT STYLING (INTRINSIC SIZING)
    ========================================================================== */
 
 /* Science & Math Concept Card */
@@ -690,38 +690,125 @@
   margin-bottom: 8px;
 }
 
-/* Chemistry Structure Grid */
+/* Chemistry Structure Grid: Natural Centered Layout */
 .chem-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr) !important;
-  gap: 8px;
-  margin: 10px 0;
-}
-@media (max-width: 600px) {
-  .chem-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+  gap: 12px !important;
+  margin: 12px auto !important;
+  width: 100% !important;
 }
 
-/* Chemistry Individual Molecule Box */
-.chem-box {
+/* Chemistry Individual Molecule Box: Intrinsic Proportionate Box */
+.chem-box,
+.chem-structure-card {
+  background: var(--surface-card-subtle);
+  border: 1.2px solid var(--border-color);
+  border-radius: 9px;
+  padding: 12px 16px;
+  text-align: center;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 1 auto;
+  min-width: 128px;
+  max-width: 180px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  box-sizing: border-box;
+}
+.chem-box:hover,
+.chem-structure-card:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+.chem-box .title,
+.chem-structure-card .title { 
+  font-weight: 700; 
+  font-size: 9pt; 
+  color: var(--text-bengali); 
+  margin-top: 6px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', sans-serif;
+  line-height: 1.35;
+}
+.chem-box .formula,
+.chem-structure-card .formula { 
+  font-size: 8.2pt; 
+  color: var(--accent-secondary); 
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', monospace;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.chem-box svg,
+.chem-structure-card svg { 
+  display: block; 
+  margin: 0 auto; 
+  max-width: 100%; 
+  height: auto; 
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+/* Standalone Benzene Ring / Chemical Structure Centered Frame */
+.chem-structure-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 10px auto;
+  padding: 8px 14px;
   background: var(--surface-card-subtle);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 8px 4px;
-  text-align: center;
+  border-radius: 8px;
 }
-.chem-box .title { font-weight: 700; font-size: 8.8pt; color: var(--text-bengali); margin-bottom: 3px; }
-.chem-box .formula { font-size: 7.8pt; color: var(--text-english-muted); font-family: monospace; }
-.chem-box svg { display: block; margin: 4px auto; max-width: 100%; height: auto; }
+.chem-structure-wrap svg {
+  display: block;
+  margin: 0 auto;
+  height: auto;
+}
 
-/* Formula & Equation Highlight Box */
+/* Proportional Diagram Presets: Small, Medium, Large, Full */
+.diagram-sm, .fig-sm {
+  width: fit-content !important;
+  max-width: 160px !important;
+  margin: 8px auto !important;
+}
+.diagram-md, .fig-md {
+  width: fit-content !important;
+  max-width: 320px !important;
+  margin: 10px auto !important;
+}
+.diagram-lg, .fig-lg {
+  width: fit-content !important;
+  max-width: 480px !important;
+  margin: 12px auto !important;
+}
+.diagram-full, .fig-full {
+  width: 100% !important;
+  margin: 12px auto !important;
+}
+
+/* Formula & Equation Highlight Box: Proportionate & Centered */
 .math-formula-box {
   background: var(--surface-card-subtle);
-  border: 1px dashed var(--border-strong);
-  border-radius: 6px;
-  padding: 10px;
-  margin: 8px 0;
+  border: 1.2px dashed var(--border-strong);
+  border-radius: 8px;
+  padding: 10px 22px;
+  margin: 10px auto;
   text-align: center;
   font-size: 11pt;
+  display: block;
+  width: fit-content;
+  min-width: 240px;
+  max-width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 /* Law, Principle & Postulate Ribbon */
@@ -733,27 +820,45 @@
   margin: 6px 0;
 }
 
-/* Chemical Reaction Flow Box */
+/* Chemical Reaction Flow Box: Intrinsic Natural Centering */
 .chem-reaction-row {
   background: var(--surface-card-subtle);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin: 6px 0;
+  border-radius: 8px;
+  padding: 8px 18px;
+  margin: 8px auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: fit-content;
+  max-width: 100%;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 /* Scalable Vector Diagram Container (Physics & Math) */
-.diagram-container {
+.diagram-container,
+.diagram-svg-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin: 8px 0;
+  width: fit-content;
+  max-width: 100%;
+  margin: 10px auto;
+  padding: 10px 16px;
+  background: var(--surface-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-sizing: border-box;
 }
-.diagram-container svg {
+.diagram-container svg,
+.diagram-svg-container svg {
   max-width: 100%;
   height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
 /* Subject Switcher Tab Buttons inside Content Editor */

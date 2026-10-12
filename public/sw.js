@@ -78,13 +78,19 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// 4. Fetch Handler: 100% Network-First
-// Always fetch from network so code changes & version changes reflect instantly!
+// 4. Fetch Handler: 100% Network-First with Live Dev Bypass
+// On development hosts (like Google AI Studio preview .run.app / localhost), bypass cache to avoid preview freezes!
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+
+  const isDevHost = url.hostname.includes('run.app') || url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+  if (isDevHost) {
+    event.respondWith(fetch(request).catch(() => caches.match(request)));
+    return;
+  }
 
   event.respondWith(
     fetch(request)

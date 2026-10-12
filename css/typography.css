@@ -5,7 +5,7 @@
 /* 1. Google Fonts Extended Library */
 @import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap');
 
-/* 2. Local Font-Face Fallback */
+/* 2. Local Font-Face Fallback & Universal Bengali Route */
 @font-face {
   font-family: 'Cinzel Decorative';
   src: local('Cinzel Decorative Bold'), local('Cinzel Decorative'), url('CinzelDecorative.otf') format('opentype');
@@ -13,20 +13,30 @@
   font-style: normal;
 }
 
+/* Universal Bengali Unicode Fallback Engine:
+   Forces any Bengali glyph (U+0980-09FF) in mixed lines, badges or equations to render in Hind Siliguri */
+@font-face {
+  font-family: 'UniversalBengali';
+  src: local('Hind Siliguri'), local('HindSiliguri-Regular'),
+       url('https://fonts.gstatic.com/s/hindsiliguri/v12/ijwOs5juQtsyLLR5jN4cxC2J8Au5.woff2') format('woff2');
+  unicode-range: U+0980-09FF, U+200C-200D;
+}
+
 /* Master Brand Font Selectors (M & S are Cinzel Decorative, rest are standard Cinzel) */
 .cinzel-dec {
-  font-family: 'Cinzel Decorative', Georgia, serif !important;
+  font-family: 'Cinzel Decorative', 'Hind Siliguri', 'Kalpurush', Georgia, serif !important;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
 .cinzel-norm {
-  font-family: 'Cinzel', Georgia, serif !important;
+  font-family: 'Cinzel', 'Hind Siliguri', 'Kalpurush', Georgia, serif !important;
   font-weight: 700;
   letter-spacing: 0.05em;
 }
 
 /* 3. Bengali Typography Engine (যুক্তবর্ণ ও ল্যাগেচার ফিক্স - Zero Broken Glyphs) */
 .a4-page,
+.a4-cover-page,
 .page-content-area,
 .science-card,
 .science-concept-card,
@@ -38,33 +48,53 @@
 .chem-reaction-card,
 .math-formula-box,
 .chapter-hero-banner,
-.explanation-card {
-  font-family: 'Hind Siliguri', 'Kalpurush', -apple-system, sans-serif !important;
+.explanation-card,
+.cover-subject-pill,
+.cover-kicker,
+.cover-main-en-title,
+.cover-main-bn-title,
+.cover-subtitle,
+.cover-meta-item,
+.cover-footer-imprint {
+  font-family: var(--font-english), 'Hind Siliguri', 'Kalpurush', -apple-system, sans-serif !important;
 }
 
-/* Preserve Mathematical Typography & Fonts (KaTeX & MathJax) */
+/* Preserve Mathematical Typography & Fonts with Bengali Ligature Support (KaTeX & MathJax) */
 .katex,
 .katex * {
-  font-family: KaTeX_Main, 'Times New Roman', serif !important;
+  font-family: KaTeX_Main, var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', 'Times New Roman', serif;
 }
 .katex .mathnormal,
 .katex .mathdefault {
-  font-family: KaTeX_Math, 'Times New Roman', serif !important;
+  font-family: KaTeX_Math, var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', 'Times New Roman', serif;
   font-style: italic;
 }
 .katex .mathbf {
-  font-family: KaTeX_Main, 'Times New Roman', serif !important;
+  font-family: KaTeX_Main, var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', 'Times New Roman', serif;
   font-weight: bold;
 }
 .katex .amsrm {
-  font-family: KaTeX_AMS, 'Times New Roman', serif !important;
+  font-family: KaTeX_AMS, var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', 'Times New Roman', serif;
+}
+.katex .text,
+.katex .mtext,
+.katex-display .mtext,
+.katex .mord.text,
+.katex .katex-error {
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', sans-serif !important;
+  font-style: normal !important;
+  color: inherit !important;
+  border: none !important;
+  background: transparent !important;
 }
 .MathJax,
 .MathJax * {
-  font-family: inherit;
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', inherit;
 }
-mjx-container {
-  font-family: inherit;
+mjx-container,
+mjx-container [class*="mtext"],
+mjx-container text {
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', sans-serif !important;
 }
 
 .bn-text, 
@@ -78,7 +108,7 @@ mjx-container {
 .mnemonic-text, 
 .pq-answer, 
 .bn-sub {
-  font-family: 'Hind Siliguri', 'Kalpurush', -apple-system, sans-serif !important;
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', -apple-system, sans-serif !important;
   letter-spacing: normal !important;
   word-spacing: normal;
   line-height: 1.62 !important;

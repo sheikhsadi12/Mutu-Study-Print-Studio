@@ -4,10 +4,14 @@
 
 /* 1. Global Dimensions & Design Tokens */
 :root {
-  --font-cinzel: 'Cinzel Decorative', Georgia, serif;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-english: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-bengali: 'Hind Siliguri', 'Kalpurush', sans-serif;
+  --font-english-primary: 'Outfit';
+  --font-heading-primary: 'Playfair Display';
+  --font-bengali-primary: 'Hind Siliguri';
+
+  --font-cinzel: 'Cinzel Decorative', 'Cinzel', 'Hind Siliguri', 'Kalpurush', serif;
+  --font-display: 'Playfair Display', 'Cinzel', 'Hind Siliguri', 'Kalpurush', serif;
+  --font-english: 'Outfit', 'Hind Siliguri', 'Kalpurush', sans-serif;
+  --font-bengali: 'Outfit', 'Hind Siliguri', 'Kalpurush', sans-serif;
   
   --page-width: 210mm;
   --page-height: 297mm;

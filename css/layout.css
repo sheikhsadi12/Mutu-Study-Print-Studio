@@ -12,18 +12,22 @@
   flex-direction: column;
   align-items: center;
   gap: 28px;
-  padding: 20px 0 75px 0;
+  padding: 20px 0 85px 0;
   width: 100%;
   max-width: 100vw;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
+  touch-action: pan-x pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
 }
 
 .a4-page {
   transform: scale(var(--doc-preview-scale, 1));
   transform-origin: top center;
   margin-bottom: calc((var(--page-height) * (var(--doc-preview-scale, 1) - 1)) + 22px);
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), margin-bottom 0.22s ease;
+  transition: transform 0.08s ease-out, margin-bottom 0.08s ease-out;
+  touch-action: pan-x pan-y pinch-zoom;
 }
 
 /* Responsive Document Viewport Adaptations for Mobile & Tablet */
@@ -87,7 +91,17 @@ html[data-theme="light"] .a4-page {
     inset 0 1px 1.5px rgba(255, 255, 255, 0.95);
 }
 
-/* 3. Subtle Anti-Piracy Watermark */
+@media screen {
+  .a4-page {
+    border-radius: 8px;
+  }
+}
+@media print {
+  .a4-page {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}
 .page-watermark {
   position: absolute;
   top: 50%; 
@@ -245,7 +259,7 @@ html[data-theme="light"] .a4-page {
   margin: 0 auto;
 }
 .cover-kicker {
-  font-family: 'Cinzel', Georgia, serif;
+  font-family: 'Cinzel', 'Hind Siliguri', 'Kalpurush', Georgia, serif;
   font-size: 8.5pt;
   font-weight: 700;
   letter-spacing: 0.22em;
@@ -260,7 +274,7 @@ html[data-theme="light"] .a4-page {
   border: 1.2px solid var(--border-color);
   padding: 5px 22px;
   border-radius: 30px;
-  font-family: 'Cinzel', Georgia, serif;
+  font-family: 'Cinzel', 'Hind Siliguri', 'Kalpurush', sans-serif;
   font-size: 9.5pt;
   font-weight: 700;
   color: var(--text-english);
@@ -315,7 +329,7 @@ html[data-theme="light"] .a4-page {
 }
 
 .cover-main-en-title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Cormorant Garamond', 'Hind Siliguri', 'Kalpurush', Georgia, serif;
   font-size: 24pt;
   line-height: 1.2;
   font-weight: 700;
@@ -323,14 +337,14 @@ html[data-theme="light"] .a4-page {
   letter-spacing: 0.01em;
 }
 .cover-main-bn-title {
-  font-family: 'Anek Bangla', 'Noto Serif Bengali', 'Hind Siliguri', sans-serif;
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', sans-serif;
   font-size: 15.5pt;
   line-height: 1.45;
   color: var(--accent-secondary);
   font-weight: 600;
 }
 .cover-subtitle {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Cormorant Garamond', 'Hind Siliguri', 'Kalpurush', Georgia, serif;
   font-size: 10.5pt;
   font-style: italic;
   color: var(--text-english-muted);
@@ -359,7 +373,7 @@ html[data-theme="light"] .a4-page {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--accent-secondary);
-  font-family: 'Cinzel', Georgia, serif;
+  font-family: 'Cinzel', 'Hind Siliguri', 'Kalpurush', Georgia, serif;
   margin-bottom: 2px;
 }
 .cover-meta-item span {
@@ -368,7 +382,7 @@ html[data-theme="light"] .a4-page {
   font-weight: 600;
 }
 .cover-footer-imprint {
-  font-family: 'Cinzel', Georgia, serif;
+  font-family: 'Cinzel', 'Hind Siliguri', 'Kalpurush', Georgia, serif;
   font-size: 7.8pt;
   letter-spacing: 0.2em;
   color: var(--text-english-muted);
