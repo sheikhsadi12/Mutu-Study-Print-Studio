@@ -25,10 +25,45 @@
   <link rel="alternate icon" type="image/png" href="/icons/icon-192.png" />
 
   <script>
+    // Self-Healing Stale Cache & Version Recovery Engine
+    (function() {
+      try {
+        // If user changed versions or requests reset, purge stuck service worker & caches
+        if (window.location.search.includes('reset=1') || window.location.search.includes('clear=1')) {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(regs) {
+              for (var i = 0; i < regs.length; i++) { regs[i].unregister(); }
+            });
+          }
+          if ('caches' in window) {
+            caches.keys().then(function(keys) {
+              return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+            }).then(function() {
+              window.location.href = window.location.pathname;
+            });
+          }
+        }
+
+        // Auto-purge obsolete caches from older versions
+        if ('caches' in window) {
+          caches.keys().then(function(keys) {
+            for (var i = 0; i < keys.length; i++) {
+              if (keys[i].indexOf('v3.1.0') === -1) {
+                console.log('[MUTU Auto-Recovery] Purging obsolete cache:', keys[i]);
+                caches.delete(keys[i]);
+              }
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('[MUTU Auto-Recovery]', err);
+      }
+    })();
+
     // Ultra-Early PWA Lifecycle Handler
     window.__pwaInstallPrompt = null;
-    window.__pwaIsStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                               (window.navigator.standalone === true);
+    window.__pwaIsStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || 
+                               (window.navigator && window.navigator.standalone === true) || false;
 
     // Capture beforeinstallprompt event immediately with highest priority
     window.addEventListener('beforeinstallprompt', function(e) {
@@ -277,6 +312,16 @@
         </select>
       </div>
 
+      <!-- Live Sync / Fresh Cache Flush Button -->
+      <button class="ui-btn" id="syncPreviewBtn" onclick="syncAndForceRefreshPreview()" title="ব্রাউজার ক্যাশ রিসেট ও ইনস্ট্যান্ট প্রিভিউ সিঙ্ক">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+        <span>🔄 লাইভ সিঙ্ক</span>
+      </button>
+
       <!-- App Intro Button -->
       <button class="ui-btn" id="openIntroBtn" onclick="openPWAIntro()" title="অ্যাপ পরিচিতি ও ফিচার গাইড">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -365,27 +410,25 @@
   </aside>
 
   <!-- ========================================================================
-       TABBED SETTINGS STUDIO MODAL (Ultra-Luxury Glassmorphism)
+       MODULAR SETTINGS STUDIO (Glossy Dashboard Hub & Dedicated Subpages)
        ======================================================================== -->
   <div class="modal-overlay no-print" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
     <div class="settings-modal">
       
-      <!-- Modal Header -->
+      <!-- Modal Header with Dynamic Breadcrumb -->
       <div class="modal-header">
-        <h3 id="settingsModalTitle">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" y1="21" x2="4" y2="14"/>
-            <line x1="4" y1="10" x2="4" y2="3"/>
-            <line x1="12" y1="21" x2="12" y2="12"/>
-            <line x1="12" y1="8" x2="12" y2="3"/>
-            <line x1="20" y1="21" x2="20" y2="16"/>
-            <line x1="20" y1="12" x2="20" y2="3"/>
-            <line x1="1" y1="14" x2="7" y2="14"/>
-            <line x1="9" y1="8" x2="15" y2="8"/>
-            <line x1="17" y1="16" x2="23" y2="16"/>
-          </svg>
-          <span>MUTU STUDY পাবলিশিং স্টুডিও সেটিংস</span>
-        </h3>
+        <div>
+          <h3 id="settingsModalTitle" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span>MUTU STUDY পাবলিশিং স্টুডিও</span>
+          </h3>
+          <div class="settings-breadcrumb">
+            <span>হোম</span> &rsaquo; <span>সেটিংস</span> &rsaquo; <span class="active" id="settingsActiveBreadcrumb">স্টুডিও ড্যাশবোর্ড</span>
+          </div>
+        </div>
         <button class="ui-btn" id="closeSettingsBtn" style="padding: 6px 10px;" onclick="closeSettingsModal()" aria-label="Close settings">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"/>
@@ -394,135 +437,276 @@
         </button>
       </div>
 
-      <!-- Settings Tabs Navigation (Segmented Control Pill Bar) -->
-      <nav class="modal-tabs-nav" aria-label="Settings categories">
-        <button class="tab-nav-btn active" data-tab="content" onclick="switchSettingsTab('content')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-            <polyline points="10 9 9 9 8 9"/>
-          </svg>
-          <span>কন্টেন্ট ম্যানেজার</span>
-        </button>
-
-        <button class="tab-nav-btn" data-tab="cover" onclick="switchSettingsTab('cover')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <line x1="3" y1="9" x2="21" y2="9"/>
-            <line x1="9" y1="21" x2="9" y2="9"/>
-          </svg>
-          <span>কভার পেজ স্টুডিও</span>
-        </button>
-
-        <button class="tab-nav-btn" data-tab="typography" onclick="switchSettingsTab('typography')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="4 7 4 4 20 4 20 7"/>
-            <line x1="9" y1="20" x2="15" y2="20"/>
-            <line x1="12" y1="4" x2="12" y2="20"/>
-          </svg>
-          <span>ফন্ট ও টাইপোগ্রাফি</span>
-        </button>
-
-        <button class="tab-nav-btn" data-tab="general" onclick="switchSettingsTab('general')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-          <span>মেটাডাটা ও জলছাপ</span>
-        </button>
-      </nav>
-
-      <!-- Modal Body (Tab Panes) -->
+      <!-- Modal Body -->
       <div class="modal-body">
 
-        <!-- TAB 1: কন্টেন্ট ম্যানেজার (Direct HTML Injection) -->
-        <div class="tab-pane active" id="tab-content">
+        <!-- ==================================================================
+             VIEW 1: SETTINGS DASHBOARD HUB (Glossy Cards Menu)
+             ================================================================== -->
+        <div id="settingsViewHub">
+          <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+            <p style="font-size: 12.5px; color: var(--text-english-muted); margin: 0;">
+              নিচের যেকোনো সেকশনে ক্লিক করে ডেডিকেটেড পেজে কাস্টমাইজেশন সম্পন্ন করুন:
+            </p>
+            <span style="font-size: 11px; font-weight: 700; color: var(--accent-primary); background: rgba(0,0,0,0.05); padding: 3px 10px; border-radius: 999px;">
+              A4 প্রকাশনা ইঞ্জিন v3.0
+            </span>
+          </div>
+
+          <div class="settings-hub-grid">
+            <!-- Card 1: Content Studio -->
+            <div class="settings-hub-card" onclick="navigateToSettingsPage('content')" role="button" tabindex="0">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div class="settings-card-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="settings-card-title">কন্টেন্ট ম্যানেজার</div>
+                  <div class="settings-card-desc">৫টি বিষয়ভিত্তিক লেকচার নোটস, সমীকরণ ও ডায়াগ্রাম</div>
+                </div>
+              </div>
+              <div class="settings-card-badge">⚡ রসায়ন, পদার্থ, গণিত, বাংলা, ইংরেজি &rarr;</div>
+            </div>
+
+            <!-- Card 2: Cover Studio -->
+            <div class="settings-hub-card" onclick="navigateToSettingsPage('cover')" role="button" tabindex="0">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div class="settings-card-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="3" y1="9" x2="21" y2="9"/>
+                    <line x1="9" y1="21" x2="9" y2="9"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="settings-card-title">কভার পেজ স্টুডিও</div>
+                  <div class="settings-card-desc">লাক্সারি রয়্যাল ও মিনিমালিস্ট কভার ডিজাইন ও লোগো</div>
+                </div>
+              </div>
+              <div class="settings-card-badge">✨ ৭টি আর্কিটেকচারাল থিম &rarr;</div>
+            </div>
+
+            <!-- Card 3: Typography Studio -->
+            <div class="settings-hub-card" onclick="navigateToSettingsPage('typography')" role="button" tabindex="0">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div class="settings-card-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <polyline points="4 7 4 4 20 4 20 7"/>
+                    <line x1="9" y1="20" x2="15" y2="20"/>
+                    <line x1="12" y1="4" x2="12" y2="20"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="settings-card-title">ফন্ট ও টাইপোগ্রাফি</div>
+                  <div class="settings-card-desc">হিন্দ শিলিগুড়ি, কালপুরুষ, আউটফিট ও ফন্ট স্কেলিং</div>
+                </div>
+              </div>
+              <div class="settings-card-badge">🔤 বাইলিঙ্গুয়াল টাইপোগ্রাফি &rarr;</div>
+            </div>
+
+            <!-- Card 4: Layout & Margins -->
+            <div class="settings-hub-card" onclick="navigateToSettingsPage('layout')" role="button" tabindex="0">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div class="settings-card-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="4" y="4" width="16" height="16" rx="2"/>
+                    <line x1="9" y1="4" x2="9" y2="20"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="settings-card-title">পেজ সেটআপ ও মার্জিন</div>
+                  <div class="settings-card-desc">A4 প্রিন্ট মার্জিন (টপ, বটম, লেফট, রাইট) ও লেআউট</div>
+                </div>
+              </div>
+              <div class="settings-card-badge">📐 A4 স্ট্যান্ডার্ড প্রিন্ট &rarr;</div>
+            </div>
+
+            <!-- Card 5: Metadata & Watermark -->
+            <div class="settings-hub-card" onclick="navigateToSettingsPage('metadata')" role="button" tabindex="0">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div class="settings-card-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="settings-card-title">মেটাডাটা ও জলছাপ</div>
+                  <div class="settings-card-desc">রানিং হেডার টেক্সট, ফুটার এবং ব্র্যান্ড জলছাপ</div>
+                </div>
+              </div>
+              <div class="settings-card-badge">🛡️ সিকিউর ব্র্যান্ডিং &rarr;</div>
+            </div>
+
+            <!-- Card 6: System & Live Sync -->
+            <div class="settings-hub-card" onclick="navigateToSettingsPage('system')" role="button" tabindex="0">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div class="settings-card-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="settings-card-title">সিস্টেম, ব্যাকআপ ও সিঙ্ক</div>
+                  <div class="settings-card-desc">ইনস্ট্যান্ট প্রিভিউ সিঙ্ক, JSON ব্যাকআপ ও ফ্যাক্টরি রিসেট</div>
+                </div>
+              </div>
+              <div class="settings-card-badge">⚡ অফলাইন PWA ইঞ্জিন &rarr;</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             SUBPAGE 1: কন্টেন্ট ও বিষয় ম্যানেজার (Dedicated Content Manager Page)
+             ================================================================== -->
+        <div class="settings-subpage" id="settingsSubpage-content">
+          <div class="settings-subpage-topbar">
+            <button type="button" class="ui-btn settings-back-btn" onclick="navigateToSettingsHub()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+              </svg>
+              <span>⬅ সেটিংস মেনুতে ফিরে যান</span>
+            </button>
+            <span style="font-weight: 700; color: var(--accent-primary); font-size: 13px;">📝 বিষয়ভিত্তিক কন্টেন্ট ও সমীকরণ স্টুডিও</span>
+          </div>
+
+          <!-- Subject Selection Buttons -->
           <div class="settings-group">
             <div class="settings-group-title">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
               </svg>
-              <span>বিষয় নির্বাচন (Multi-Subject Studio)</span>
+              <span>১. বিষয় নির্বাচন করুন (Subject Section):</span>
             </div>
-            <!-- Multi-Subject Switching Tabs -->
-            <div class="subject-tabs-container" style="margin-bottom: 14px;">
-              <div style="font-weight: 700; font-size: 11.5px; color: var(--accent-primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; justify-content: space-between;">
-                <span>বিষয় নির্বাচন করুন (Subject Section):</span>
-                <span id="activeSubjectBadge" style="font-size: 11px; color: var(--text-english-muted); font-weight: normal;">বর্তমান: উচ্চমাধ্যমিক রসায়ন</span>
-              </div>
-              <div class="subject-tabs-nav" id="subjectTabsNav" style="display: flex; gap: 6px; flex-wrap: wrap;">
-                <button type="button" class="ui-btn subject-tab-btn active" data-subject="chemistry" onclick="switchSubjectTab('chemistry')">
-                  <span>🧪 রসায়ন (Chemistry)</span>
-                </button>
-                <button type="button" class="ui-btn subject-tab-btn" data-subject="physics" onclick="switchSubjectTab('physics')">
-                  <span>⚡ পদার্থবিজ্ঞান (Physics)</span>
-                </button>
-                <button type="button" class="ui-btn subject-tab-btn" data-subject="math" onclick="switchSubjectTab('math')">
-                  <span>📐 উচ্চতর গণিত (Higher Math)</span>
-                </button>
-                <button type="button" class="ui-btn subject-tab-btn" data-subject="bangla" onclick="switchSubjectTab('bangla')">
-                  <span>📖 বাংলা (Bangla)</span>
-                </button>
-                <button type="button" class="ui-btn subject-tab-btn" data-subject="english" onclick="switchSubjectTab('english')">
-                  <span>🌐 ইংরেজি (English)</span>
-                </button>
-              </div>
+            
+            <div class="subject-tabs-nav" id="subjectTabsNav" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="ui-btn subject-tab-btn active" data-subject="chemistry" onclick="switchSubjectTab('chemistry')">
+                <span>🧪 রসায়ন (Chemistry)</span>
+              </button>
+              <button type="button" class="ui-btn subject-tab-btn" data-subject="physics" onclick="switchSubjectTab('physics')">
+                <span>⚡ পদার্থবিজ্ঞান (Physics)</span>
+              </button>
+              <button type="button" class="ui-btn subject-tab-btn" data-subject="math" onclick="switchSubjectTab('math')">
+                <span>📐 উচ্চতর গণিত (Higher Math)</span>
+              </button>
+              <button type="button" class="ui-btn subject-tab-btn" data-subject="bangla" onclick="switchSubjectTab('bangla')">
+                <span>📖 বাংলা (Bangla)</span>
+              </button>
+              <button type="button" class="ui-btn subject-tab-btn" data-subject="english" onclick="switchSubjectTab('english')">
+                <span>🌐 ইংরেজি (English)</span>
+              </button>
             </div>
 
-            <div class="form-row" style="margin-bottom: 12px; background: var(--surface-card); padding: 8px 12px; border-radius: 8px; border: 1.2px solid var(--border-color); display: none;">
-              <label for="cfgActiveSubject" style="font-weight: 700; color: var(--accent-primary); margin-bottom: 4px;">ড্রপডাউন নির্বাচন:</label>
-              <select id="cfgActiveSubject" class="form-control" onchange="switchSubjectTab(this.value)">
-                <option value="chemistry">🧪 Chemistry (রসায়ন)</option>
-                <option value="physics">⚡ Physics (পদার্থবিজ্ঞান)</option>
-                <option value="math">📐 Higher Math (উচ্চতর গণিত)</option>
-                <option value="bangla">📖 Bangla (বাংলা)</option>
-                <option value="english">🌐 English (ইংরেজি)</option>
+            <div style="margin-top: 4px; display: flex; align-items: center; justify-content: space-between;">
+              <span id="activeSubjectBadge" style="font-size: 11.5px; font-weight: 600; color: var(--accent-primary);">
+                বর্তমান বিষয়: উচ্চমাধ্যমিক রসায়ন
+              </span>
+              <!-- Hidden fallback selector for compatibility -->
+              <select id="cfgActiveSubject" style="display:none;" onchange="switchSubjectTab(this.value)">
+                <option value="chemistry">Chemistry</option>
+                <option value="physics">Physics</option>
+                <option value="math">Higher Math</option>
+                <option value="bangla">Bangla</option>
+                <option value="english">English</option>
               </select>
             </div>
+          </div>
 
+          <!-- Quick Math & Science Formula Insertion Chips -->
+          <div class="settings-group">
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polyline points="4 7 4 4 20 4 20 7"/>
+                <line x1="9" y1="20" x2="15" y2="20"/>
+                <line x1="12" y1="4" x2="12" y2="20"/>
+              </svg>
+              <span>২. কুইক সমীকরণ ও স্নিপেট ইনসার্ট টুলবার (১-ক্লিক ইনসার্ট):</span>
+            </div>
+            <div class="formula-insert-bar">
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('inline-math')" title="ইনলাইন সমীকরণ">$inline$</button>
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('display-math')" title="ডিসপ্লে সমীকরণ">$$Block Math$$</button>
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('fraction')" title="ভগ্নাংশ সূত্র">$$\frac{a}{b}$$</button>
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('limit')" title="লিমিট সূত্র">$$\lim_{x\to 0}$$</button>
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('chem-benzene')" title="বেনজিন বলয় ডায়াগ্রাম">⬡ বেনজিন বলয়</button>
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('chem-reaction')" title="রাসায়নিক বিক্রিয়া রো">⚗️ কেমিস্ট্রি বিক্রিয়া</button>
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('concept-box')" title="কনসেপ্ট কার্ড">💡 কনসেপ্ট বক্স</button>
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('academic-table')" title="একাডেমিক টেবিল">📊 সায়েন্স টেবিল</button>
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('mnemonic-box')" title="মনে রাখার শর্টকাট রিবন">⭐ শর্টকাট রিবন</button>
+            </div>
+          </div>
+
+          <!-- Content Editor Textarea -->
+          <div class="settings-group">
             <div class="settings-group-title">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
               </svg>
-              <span>সরাসরি লেকচার কন্টেন্ট পেস্ট করুন (Content Editor)</span>
+              <span>৩. লেকচার কন্টেন্ট এডিটর (HTML / LaTeX / KaTeX):</span>
             </div>
-            <p style="font-size:11.5px; color:var(--text-english-muted); margin-bottom:6px;">
-              নির্বাচিত বিষয়ের জন্য এআই থেকে জেনারেট করা সেকশন কোডগুলো নিচে পেস্ট করুন। সিস্টেম নিজে থেকেই সম্পূর্ণ ডকুমেন্ট পেজিনেশন এবং ম্যাথ ফর্মুলা রেন্ডার করবে।
-            </p>
-            <textarea id="cfgRawContentInput" class="form-control" style="height: 240px;" placeholder="<section class='chapter-hero-banner'> ... </section>" oninput="onContentTextareaInput(this.value)"></textarea>
+            <textarea id="cfgRawContentInput" class="form-control" style="height: 220px;" placeholder="<section class='chapter-hero-banner'> ... </section>" oninput="onContentTextareaInput(this.value)"></textarea>
             
-            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:6px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; flex-wrap:wrap; gap:8px;">
               <button class="ui-btn" type="button" id="resetContentBtn" onclick="resetDemoContent()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                   <path d="M3 2v6h6"/>
                   <path d="M3 13a9 9 0 1 0 3-7.7L3 8"/>
                 </svg>
-                <span>ডেমো কন্টেন্ট রিস্টোর</span>
+                <span>ডিফল্ট ডেমো রিস্টোর</span>
+              </button>
+
+              <button class="ui-btn print-now-btn" type="button" onclick="applyContentAndRepaginate()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>⚡ প্রিভিউতে কন্টেন্ট লোড ও রেন্ডার করুন</span>
               </button>
             </div>
           </div>
+
+          <!-- Mathematical Pure Rendering Guide -->
+          <div class="guide-box">
+            <div style="font-weight:700; color:var(--accent-primary); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <span>📘 কীভাবে কন্টেন্ট লিখলে শতভাগ পিওরলি রেন্ডার হবে?</span>
+            </div>
+            <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px;">
+              <li><strong>ইনলাইন সমীকরণ:</strong> লেখার মাঝে সমীকরণ লিখতে সিঙ্গেল ডলার ব্যবহার করুন: <code>$v = u + at$</code> বা <code>$E = mc^2$</code></li>
+              <li><strong>ডিসপ্লে / ব্লক সমীকরণ:</strong> আলাদা লাইনে বড় সমীকরণ লিখতে ডাবল ডলার ব্যবহার করুন: <code>$$\int_{a}^{b} f(x)\,dx$$</code></li>
+              <li><strong>ভগ্নাংশ ও ঘাত:</strong> <code>$$\frac{x^2 + 1}{\sqrt{y}}$$</code> এবং ভেক্টর: <code>$\vec{F} = m\vec{a}$</code></li>
+              <li><strong>রাসায়নিক বিক্রিয়া ও যৌগ:</strong> <code>&lt;div class="chem-reaction-card"&gt;...&lt;/div&gt;</code> বা <code>&lt;div class="chem-structure-card"&gt;</code> ক্লাস ব্যবহার করুন।</li>
+            </ul>
+          </div>
         </div>
 
-        <!-- TAB 2: কভার পেজ স্টুডিও (Themes + Custom HTML) -->
-        <div class="tab-pane" id="tab-cover">
-          <div class="settings-group">
-            <div class="settings-group-title">
+        <!-- ==================================================================
+             SUBPAGE 2: কভার পেজ স্টুডিও (Dedicated Cover Page Studio Page)
+             ================================================================== -->
+        <div class="settings-subpage" id="settingsSubpage-cover">
+          <div class="settings-subpage-topbar">
+            <button type="button" class="ui-btn settings-back-btn" onclick="navigateToSettingsHub()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <line x1="3" y1="9" x2="21" y2="9"/>
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
               </svg>
-              <span>কভার পেজ ডিজাইন ও থিম নির্বাচন</span>
-            </div>
+              <span>⬅ সেটিংস মেনুতে ফিরে যান</span>
+            </button>
+            <span style="font-weight: 700; color: var(--accent-primary); font-size: 13px;">🎨 কভার পেজ আর্কিটেকচার ও ডিজাইন</span>
+          </div>
+
+          <div class="settings-group">
             <div class="toggle-row">
-              <span style="font-weight: 500;">কভার পেজ চালু রাখবেন?</span>
+              <span style="font-weight: 700; color: var(--accent-primary);">কভার পেজ চালু রাখবেন?</span>
               <input type="checkbox" id="cfgCoverToggle">
             </div>
 
             <div class="form-row">
-              <label for="cfgCoverTheme">কভার পেজের থিম/টেমপ্লেট সিলেক্ট করুন:</label>
+              <label for="cfgCoverTheme">কভার পেজের থিম / আর্কিটেকচারাল ফ্রেম:</label>
               <select id="cfgCoverTheme" class="form-control" onchange="toggleCustomCoverBox()">
                 <option value="royal">থিম ১: রয়্যাল ক্লাসিক হেরিটেজ ফ্রেম (Royal Classic Heritage)</option>
                 <option value="minimal">থিম ২: মডার্ন এডিটোরিয়াল স্প্লিট (Modern Editorial Split)</option>
@@ -534,7 +718,6 @@
               </select>
             </div>
 
-            <!-- Custom Cover Code Textarea -->
             <div class="form-row" id="customCoverCodeRow" style="display:none;">
               <label for="cfgCoverCustomHtml" style="color:var(--accent-primary); font-weight:700;">কাস্টম কভার পেজের HTML কোড পেস্ট করুন:</label>
               <textarea id="cfgCoverCustomHtml" class="form-control" style="height: 140px;" placeholder="<div class='custom-cover-wrap'> ... </div>"></textarea>
@@ -558,7 +741,7 @@
             </div>
             <div class="form-row">
               <label for="cfgCoverSubtitle">সাবটাইটেল ও সারসংক্ষেপ (Subtitle / Tagline):</label>
-              <input type="text" class="form-control" id="cfgCoverSubtitle" placeholder="Comprehensive Higher Secondary Academic & Admission Companion">
+              <input type="text" class="form-control" id="cfgCoverSubtitle">
             </div>
             <div class="form-row">
               <label for="cfgCoverInstructor">শিক্ষক / ইনস্ট্রাক্টর ইনফো:</label>
@@ -570,31 +753,35 @@
             </div>
             <div class="form-row">
               <label for="cfgCoverInstitution">বিভাগ ও প্রকাশনা সিরিজ (Institution/Dept):</label>
-              <input type="text" class="form-control" id="cfgCoverInstitution" placeholder="Department of English • MUTU STUDY Press">
+              <input type="text" class="form-control" id="cfgCoverInstitution">
             </div>
             <div class="form-row">
               <label for="cfgCoverEdition">সংস্করণ / ভলিউম (Edition):</label>
-              <input type="text" class="form-control" id="cfgCoverEdition" placeholder="First Edition 2026 • Board Exam Special">
+              <input type="text" class="form-control" id="cfgCoverEdition">
             </div>
             <div class="form-row">
               <label for="cfgCoverFooterImprint">কভার ফুটনোট / ইমপ্রিন্ট (Imprint):</label>
-              <input type="text" class="form-control" id="cfgCoverFooterImprint" placeholder="Official Master Study Compendium • All Rights Reserved">
+              <input type="text" class="form-control" id="cfgCoverFooterImprint">
             </div>
           </div>
         </div>
 
-        <!-- TAB 3: ফন্ট ও টাইপোগ্রাফি স্টুডিও -->
-        <div class="tab-pane" id="tab-typography">
-          <div class="settings-group">
-            <div class="settings-group-title">
+        <!-- ==================================================================
+             SUBPAGE 3: ফন্ট ও টাইপোগ্রাফি (Dedicated Typography Studio Page)
+             ================================================================== -->
+        <div class="settings-subpage" id="settingsSubpage-typography">
+          <div class="settings-subpage-topbar">
+            <button type="button" class="ui-btn settings-back-btn" onclick="navigateToSettingsHub()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <polyline points="4 7 4 4 20 4 20 7"/>
-                <line x1="9" y1="20" x2="15" y2="20"/>
-                <line x1="12" y1="4" x2="12" y2="20"/>
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
               </svg>
-              <span>ফন্ট কাস্টমাইজেশন (বাংলা ও ইংরেজি)</span>
-            </div>
-            
+              <span>⬅ সেটিংস মেনুতে ফিরে যান</span>
+            </button>
+            <span style="font-weight: 700; color: var(--accent-primary); font-size: 13px;">✍️ ফন্ট ও টাইপোগ্রাফি কাস্টমাইজেশন</span>
+          </div>
+
+          <div class="settings-group">
             <div class="form-row">
               <label for="cfgFontEnBody">ইংরেজি মূল বডি ফন্ট (English Body):</label>
               <select id="cfgFontEnBody" class="form-control">
@@ -636,24 +823,83 @@
           </div>
         </div>
 
-        <!-- TAB 4: মেটাডাটা ও জলছাপ -->
-        <div class="tab-pane" id="tab-general">
+        <!-- ==================================================================
+             SUBPAGE 4: পেজ সেটআপ ও মার্জিন (Dedicated Page Setup Page)
+             ================================================================== -->
+        <div class="settings-subpage" id="settingsSubpage-layout">
+          <div class="settings-subpage-topbar">
+            <button type="button" class="ui-btn settings-back-btn" onclick="navigateToSettingsHub()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+              </svg>
+              <span>⬅ সেটিংস মেনুতে ফিরে যান</span>
+            </button>
+            <span style="font-weight: 700; color: var(--accent-primary); font-size: 13px;">📄 A4 পেজ সেটআপ ও প্রিন্ট মার্জিন</span>
+          </div>
+
+          <div class="settings-group">
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="4" y="4" width="16" height="16" rx="2"/>
+              </svg>
+              <span>A4 পেজ মার্জিন পরিমাপ (স্ট্যান্ডার্ড প্রকাশনা মাপ):</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-row">
+                <label>টপ মার্জিন (Top Margin):</label>
+                <input type="text" class="form-control" value="12mm" readonly style="opacity: 0.85;">
+              </div>
+              <div class="form-row">
+                <label>বটম মার্জিন (Bottom Margin):</label>
+                <input type="text" class="form-control" value="12mm" readonly style="opacity: 0.85;">
+              </div>
+              <div class="form-row">
+                <label>লেফট মার্জিন (Left Margin):</label>
+                <input type="text" class="form-control" value="14mm" readonly style="opacity: 0.85;">
+              </div>
+              <div class="form-row">
+                <label>রাইট মার্জিন (Right Margin):</label>
+                <input type="text" class="form-control" value="14mm" readonly style="opacity: 0.85;">
+              </div>
+            </div>
+
+            <p style="font-size:11.5px; color:var(--text-english-muted); margin-top:4px;">
+              * নোট: সিস্টেম নিজে থেকেই A4 সাইজের 210mm &times; 297mm প্রিসিশন বাউন্ডারির সাথে টেক্সটের বাউন্ডিং বক্স রিয়েল-টাইমে পরিমাপ করে অটো-ব্রেক নিয়ন্ত্রণ করে।
+            </p>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             SUBPAGE 5: মেটাডাটা ও জলছাপ (Dedicated Metadata Page)
+             ================================================================== -->
+        <div class="settings-subpage" id="settingsSubpage-metadata">
+          <div class="settings-subpage-topbar">
+            <button type="button" class="ui-btn settings-back-btn" onclick="navigateToSettingsHub()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+              </svg>
+              <span>⬅ সেটিংস মেনুতে ফিরে যান</span>
+            </button>
+            <span style="font-weight: 700; color: var(--accent-primary); font-size: 13px;">🏷️ হেডার, ফুটার ও সিকিউর জলছাপ</span>
+          </div>
+
           <div class="settings-group">
             <div class="settings-group-title">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
               </svg>
-              <span>হেডার ও ফুটার মেটাডাটা</span>
+              <span>রানিং হেডার ও ফুটার মেটাডাটা</span>
             </div>
-            <div class="form-row">
-              <label for="cfgGeneralSubject" style="font-weight: 700; color: var(--accent-primary);">Select Subject / বিষয় নির্বাচন:</label>
-              <select id="cfgGeneralSubject" class="form-control" onchange="onSubjectChange(this.value)" style="font-weight: 600;">
-                <option value="english">Higher Secondary English (উচ্চমাধ্যমিক ইংরেজি)</option>
-                <option value="physics">Physics (পদার্থবিজ্ঞান)</option>
-                <option value="chemistry">Chemistry (রসায়ন)</option>
-                <option value="math">Higher Mathematics (উচ্চতর গণিত)</option>
-                <option value="bangla">Bangla (বাংলা)</option>
+            <div class="form-row" style="display:none;">
+              <select id="cfgGeneralSubject" class="form-control" onchange="onSubjectChange(this.value)">
+                <option value="chemistry">Chemistry</option>
+                <option value="physics">Physics</option>
+                <option value="math">Higher Math</option>
+                <option value="bangla">Bangla</option>
+                <option value="english">English</option>
               </select>
             </div>
             <div class="form-row">
@@ -661,11 +907,11 @@
               <input type="text" class="form-control" id="cfgHeaderCourse">
             </div>
             <div class="form-row">
-              <label for="cfgHeaderUnit">হেডারের ডানপাশ (ইউনিট ও লেসন):</label>
+              <label for="cfgHeaderUnit">হেডারের ডানপাশ (অধ্যায় ও বিষয়):</label>
               <input type="text" class="form-control" id="cfgHeaderUnit">
             </div>
             <div class="form-row">
-              <label for="cfgFooterTag">ফুটারের বামপাশ (ট্যাগলাইন / সিরিজ নাম):</label>
+              <label for="cfgFooterTag">ফুটারের বামপাশ (ট্যাগলাইন / প্রকাশনা সিরিজ):</label>
               <input type="text" class="form-control" id="cfgFooterTag">
             </div>
           </div>
@@ -689,28 +935,87 @@
               <input type="range" min="1" max="25" value="9" id="cfgWatermarkOpacity" oninput="document.getElementById('cfgOpacityVal').innerText=this.value+'%'; document.documentElement.style.setProperty('--watermark-opacity', (this.value/100));">
             </div>
           </div>
+        </div>
+
+        <!-- ==================================================================
+             SUBPAGE 6: সিস্টেম, ব্যাকআপ ও লাইভ সিঙ্ক (Dedicated System Page)
+             ================================================================== -->
+        <div class="settings-subpage" id="settingsSubpage-system">
+          <div class="settings-subpage-topbar">
+            <button type="button" class="ui-btn settings-back-btn" onclick="navigateToSettingsHub()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+              </svg>
+              <span>⬅ সেটিংস মেনুতে ফিরে যান</span>
+            </button>
+            <span style="font-weight: 700; color: var(--accent-primary); font-size: 13px;">⚙️ সিস্টেম কন্ট্রোল, ক্যাশ সিঙ্ক ও ব্যাকআপ</span>
+          </div>
 
           <div class="settings-group">
             <div class="settings-group-title">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
               </svg>
-              <span>PWA নোটিফিকেশন ও স্ট্যাটাস বার ব্যাজ</span>
+              <span>১. ইনস্ট্যান্ট প্রিভিউ সিঙ্ক ও ক্যাশ ফ্লাশ (Live Preview Flush):</span>
             </div>
-            <p style="font-size:11.5px; color:var(--text-english-muted); margin-bottom:4px;">
-              নোটিফিকেশন সক্রিয় করলে আপনার মোবাইল বা পিসির স্ট্যাটাস বারে টাইম/ডেটের পাশে আপনার ব্র্যান্ডের সাদা মিনি আইকন প্রদর্শিত হবে।
+            <p style="font-size:11.5px; color:var(--text-english-muted); margin-bottom:8px;">
+              যদি ব্রাউজার কোনো পুরোনো ক্যাশ ধরে রাখে, তবে এই বাটনে ১-ক্লিকেই সমস্ত সার্ভিস ওয়ার্কার ক্যাশ ক্লিন হয়ে ফ্রেশ প্রিভিউ রেন্ডার হবে।
             </p>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-              <span style="font-size:12px; font-weight:500;">সিস্টেম নোটিফিকেশন চেক:</span>
-              <button class="ui-btn" type="button" onclick="requestNotificationPermissionAndSendDemo()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                </svg>
-                <span>নোটিফিকেশন টেস্ট করুন</span>
-              </button>
+            <button class="ui-btn print-now-btn" type="button" onclick="syncAndForceRefreshPreview()" style="align-self: flex-start;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polyline points="23 4 23 10 17 10"/>
+                <polyline points="1 20 1 14 7 14"/>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              <span>🔄 ব্রাউজার ক্যাশ রিসেট ও ইনস্ট্যান্ট সিঙ্ক</span>
+            </button>
+          </div>
+
+          <div class="settings-group">
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>২. প্রজেক্ট ব্যাকআপ ও রিস্টোর (JSON Data):</span>
             </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="ui-btn" type="button" onclick="exportProjectBackup()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>📥 সম্পূর্ণ ব্যাকআপ ডাউনলোড (JSON)</span>
+              </button>
+
+              <label class="ui-btn" style="cursor: pointer; margin: 0;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>📤 ব্যাকআপ রিস্টোর করুন</span>
+                <input type="file" accept=".json" style="display:none;" onchange="importProjectBackup(this)">
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-group" style="border-color: rgba(239, 68, 68, 0.3);">
+            <div class="settings-group-title" style="color: #ef4444;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              <span>৩. ফ্যাক্টরি রিসেট (সকল ডেটা ও কাস্টমাইজেশন ক্লিয়ার):</span>
+            </div>
+            <p style="font-size:11.5px; color:var(--text-english-muted); margin-bottom:8px;">
+              অ্যাপটিকে সম্পূর্ণ নতুন ইনস্টল করা ফ্যাক্টরি অবস্থায় ফিরিয়ে নিতে চান?
+            </p>
+            <button class="ui-btn" type="button" onclick="resetFactoryDefaults()" style="color:#ef4444; border-color:#ef4444; align-self: flex-start;">
+              <span>🧹 ফ্যাক্টরি রিসেট করুন</span>
+            </button>
           </div>
         </div>
 
@@ -723,7 +1028,7 @@
             <line x1="18" y1="6" x2="6" y2="18"/>
             <line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
-          <span>বাতিল</span>
+          <span>বন্ধ করুন</span>
         </button>
         <button class="ui-btn print-now-btn" id="saveSettingsBtn" onclick="saveAllSettings()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">

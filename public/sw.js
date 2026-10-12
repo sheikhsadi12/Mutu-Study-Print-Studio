@@ -1,11 +1,11 @@
 /**
  * ============================================================================
- * MUTU STUDY A4 STUDIO — PRODUCTION SERVICE WORKER (public/sw.js)
- * Resilient Offline App Shell, Universal SPA Navigation & PWA Notification Hub
+ * MUTU STUDY A4 STUDIO — BULLETPROOF PWA SERVICE WORKER (sw.js)
+ * True Network-First Architecture: Never freezes preview across versions!
  * ============================================================================
  */
 
-const CACHE_NAME = 'mutu-study-v1.2.0';
+const CACHE_NAME = 'mutu-study-v3.1.0-live-sync';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -18,6 +18,9 @@ const PRECACHE_ASSETS = [
   '/css/components.css',
   '/css/ui.css',
   '/css/style.css',
+  '/vendor/katex/katex.min.css',
+  '/vendor/katex/katex.min.js',
+  '/vendor/katex/auto-render.min.js',
   '/js/app.js',
   '/js/paginator.js',
   '/js/cover-studio.js',
@@ -28,44 +31,37 @@ const PRECACHE_ASSETS = [
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/maskable-icon-512.png',
-  '/icons/apple-touch-icon.png',
-  '/icons/badge-72x72.png',
-  '/icons/badge-96x96.png'
+  '/icons/apple-touch-icon.png'
 ];
 
-// Service Worker Installation
+// 1. Install Event: Activate immediately
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('[MUTU PWA SW] Precaching core application assets...');
-        return Promise.allSettled(
-          PRECACHE_ASSETS.map((url) =>
-            fetch(url, { cache: 'no-cache' })
-              .then((response) => {
-                if (response.ok) {
-                  return cache.put(url, response);
-                }
-              })
-              .catch((err) => {
-                console.warn('[MUTU PWA SW] Failed to precache asset:', url, err);
-              })
-          )
-        );
-      })
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('[MUTU PWA SW] Caching app shell assets...');
+      return Promise.allSettled(
+        PRECACHE_ASSETS.map((url) =>
+          fetch(url, { cache: 'no-cache' })
+            .then((res) => {
+              if (res.ok) return cache.put(url, res);
+            })
+            .catch(() => {})
+        )
+      );
+    })
   );
 });
 
-// Service Worker Activation & Cache Cleanup
+// 2. Activate Event: Purge ALL previous caches and take control
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        cacheNames.map((name) => {
-          if (name !== CACHE_NAME) {
-            console.log('[MUTU PWA SW] Purging outdated cache store:', name);
-            return caches.delete(name);
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            console.log('[MUTU PWA SW] Deleting obsolete cache:', key);
+            return caches.delete(key);
           }
         })
       );
@@ -73,93 +69,49 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Strategy: SPA Navigation Fallback + Stale-While-Revalidate
+// 3. Message handler: Allow instant cache purge
+self.addEventListener('message', (event) => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
+  } else if (event.data === 'clearCache') {
+    caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))));
+  }
+});
+
+// 4. Fetch Handler: 100% Network-First
+// Always fetch from network so code changes & version changes reflect instantly!
 self.addEventListener('fetch', (event) => {
   const request = event.request;
-
-  if (request.method !== 'GET' || !request.url.startsWith('http')) {
-    return;
-  }
-
+  if (request.method !== 'GET') return;
   const url = new URL(request.url);
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
 
-  // 1. Google Fonts: Cache-First
-  if (url.origin === 'https://fonts.googleapis.com' || url.origin === 'https://fonts.gstatic.com') {
-    event.respondWith(
-      caches.open(CACHE_NAME).then((cache) => {
-        return cache.match(request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
-          return fetch(request).then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              cache.put(request, networkResponse.clone());
-            }
-            return networkResponse;
-          }).catch(() => cachedResponse);
-        });
-      })
-    );
-    return;
-  }
-
-  // 2. Navigation Requests (PWA launch, deep-links, app icon click, standalone window)
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((networkResponse) => {
-          if (networkResponse && (networkResponse.status === 200 || networkResponse.type === 'opaque')) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put('/index.html', responseClone);
-            });
-            return networkResponse;
-          }
-          return caches.match('/index.html', { ignoreSearch: true })
-            .then((cached) => cached || caches.match('/', { ignoreSearch: true }))
-            .then((cached) => cached || networkResponse);
-        })
-        .catch(async () => {
-          const cached = await caches.match('/index.html', { ignoreSearch: true });
-          if (cached) return cached;
-          const cachedRoot = await caches.match('/', { ignoreSearch: true });
-          if (cachedRoot) return cachedRoot;
-          return new Response('MUTU STUDY Studio Offline', {
-            status: 200,
-            headers: { 'Content-Type': 'text/html; charset=utf-8' }
-          });
-        })
-    );
-    return;
-  }
-
-  // 3. Static Assets: Stale-While-Revalidate with ignoreSearch
   event.respondWith(
-    caches.match(request, { ignoreSearch: true }).then((cachedResponse) => {
-      const fetchPromise = fetch(request)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseClone);
-            });
-          }
-          return networkResponse;
-        })
-        .catch(() => cachedResponse);
-
-      return cachedResponse || fetchPromise;
-    })
+    fetch(request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(request, clone));
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // Fallback to cache ONLY when completely offline
+        return caches.match(request, { ignoreSearch: true })
+          .then((cached) => cached || (request.mode === 'navigate' ? caches.match('/index.html') : null));
+      })
   );
 });
 
-// Notification Click Event Listener
+// 5. Notification Click
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const targetUrl = event.notification.data && event.notification.data.url ? event.notification.data.url : '/';
+  const targetUrl = (event.notification.data && event.notification.data.url) ? event.notification.data.url : '/';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      for (const client of windowClients) {
-        if ('focus' in client) {
+      for (let client of windowClients) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
           return client.focus();
         }
       }
@@ -168,34 +120,4 @@ self.addEventListener('notificationclick', (event) => {
       }
     })
   );
-});
-
-// Background Push Listener
-self.addEventListener('push', (event) => {
-  let title = 'MUTU STUDY Studio';
-  let body = 'আপনার স্টুডিওতে নতুন আপডেট এসেছে!';
-  let data = { url: '/' };
-
-  if (event.data) {
-    try {
-      const payload = event.data.json();
-      if (payload.title) title = payload.title;
-      if (payload.body) body = payload.body;
-      if (payload.data) data = payload.data;
-    } catch (e) {
-      body = event.data.text();
-    }
-  }
-
-  const options = {
-    body,
-    icon: '/icons/icon-192.png',
-    badge: '/icons/badge-72x72.png',
-    vibrate: [100, 50, 100],
-    data,
-    tag: 'mutu-push-notification',
-    renotify: true
-  };
-
-  event.waitUntil(self.registration.showNotification(title, options));
 });

@@ -2,7 +2,7 @@
   "id": "/",
   "name": "MUTU STUDY Studio",
   "short_name": "MutuStudy",
-  "description": "MUTU STUDY A4 Auto-Pagination & Educational Publishing Studio with dual-theme typography, cover page studio, and print-ready PDFs.",
+  "description": "MUTU STUDY A4 Auto-Pagination & Educational Publishing Studio with dual-theme typography, cover page studio, and PWA capabilities.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

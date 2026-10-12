@@ -185,28 +185,246 @@ export function savePersistedState() {
 }
 
 /**
- * Switches Active Tab inside the Settings Studio Modal
+ * Navigates into a dedicated Settings Subpage (Content, Cover, Typography, Layout, Metadata, System)
+ * @param {string} pageId - 'content' | 'cover' | 'typography' | 'layout' | 'metadata' | 'system'
+ */
+export function navigateToSettingsPage(pageId) {
+  const hubView = document.getElementById('settingsViewHub');
+  if (hubView) hubView.style.display = 'none';
+
+  const subpages = document.querySelectorAll('.settings-subpage');
+  subpages.forEach(p => p.classList.remove('active'));
+
+  const target = document.getElementById(`settingsSubpage-${pageId}`);
+  if (target) {
+    target.classList.add('active');
+  }
+
+  // Update Breadcrumb & Header Title
+  const titles = {
+    content: "📝 বিষয়ভিত্তিক কন্টেন্ট ম্যানেজার",
+    cover: "🎨 কভার পেজ স্টুডিও",
+    typography: "✍️ ফন্ট ও টাইপোগ্রাফি",
+    layout: "📄 পেজ সেটআপ ও মার্জিন",
+    metadata: "🏷️ মেটাডাটা ও জলছাপ",
+    system: "⚙️ সিস্টেম, ব্যাকআপ ও লাইভ সিঙ্ক"
+  };
+
+  const breadcrumbActive = document.getElementById('settingsActiveBreadcrumb');
+  if (breadcrumbActive && titles[pageId]) {
+    breadcrumbActive.innerText = titles[pageId];
+  }
+}
+
+/**
+ * Returns from subpage back to Settings Hub Dashboard
+ */
+export function navigateToSettingsHub() {
+  const subpages = document.querySelectorAll('.settings-subpage');
+  subpages.forEach(p => p.classList.remove('active'));
+
+  const hubView = document.getElementById('settingsViewHub');
+  if (hubView) hubView.style.display = 'block';
+
+  const breadcrumbActive = document.getElementById('settingsActiveBreadcrumb');
+  if (breadcrumbActive) {
+    breadcrumbActive.innerText = "স্টুডিও ড্যাশবোর্ড";
+  }
+}
+
+/**
+ * Inserts predefined LaTeX, Chemistry, or Diagram template into content editor
+ * @param {string} type 
+ */
+export function insertFormulaSnippet(type) {
+  const textarea = document.getElementById('cfgRawContentInput');
+  if (!textarea) return;
+
+  const snippets = {
+    'inline-math': '$v = u + at$',
+    'display-math': '$$\\int_{a}^{b} f(x)\\,dx = F(b) - F(a)$$',
+    'fraction': '$$\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$',
+    'limit': '$$\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1$$',
+    'chem-benzene': `
+<div class="chem-structure-card">
+  <div class="chem-structure-name">বেনজিন বলয় (Benzene Ring, $C_6H_6$)</div>
+  <svg viewBox="0 0 100 100" class="chem-benzene-svg" width="90" height="90">
+    <polygon points="50,12 85,32 85,72 50,92 15,72 15,32" fill="none" stroke="currentColor" stroke-width="2.5" />
+    <circle cx="50" cy="52" r="22" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4,3" />
+  </svg>
+</div>`,
+    'chem-reaction': `
+<div class="chem-reaction-card">
+  <div class="chem-reaction-title">বেনজিনের নাইট্রেশন বিক্রিয়া (Nitration)</div>
+  <div class="chem-reaction-row">
+    <span class="chem-reactant">C_6H_6</span>
+    <span class="chem-plus">+</span>
+    <span class="chem-reactant">HNO_3</span>
+    <span class="chem-arrow">&xrarr;</span>
+    <span class="chem-product">C_6H_5NO_2</span>
+    <span class="chem-plus">+</span>
+    <span class="chem-byproduct">H_2O</span>
+  </div>
+</div>`,
+    'concept-box': `
+<div class="science-concept-card">
+  <div class="concept-badge">&bull; মূল ধারণা ও সূত্র</div>
+  <h3 class="concept-title">মহাকর্ষীয় বিভব ও মুক্তিবেগ</h3>
+  <p>মহাকর্ষীয় ক্ষেত্রের কোনো বিন্দুতে একক ভরের বস্তুকে অসীম হতে আনতে যে পরিমাণ কাজ সম্পন্ন হয়:</p>
+  <div class="math-formula-box">$$V = -\\frac{GM}{r}, \\quad v_e = \\sqrt{\\frac{2GM}{R}} = \\sqrt{2gR}$$</div>
+</div>`,
+    'academic-table': `
+<table class="academic-table">
+  <thead>
+    <tr><th>রাশি (Quantity)</th><th>প্রতীক</th><th>SI একক</th><th>মাত্রা সমীকরণ</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>বল (Force)</td><td>$F$</td><td>Newton (N)</td><td>$[MLT^{-2}]$</td></tr>
+    <tr><td>কাজ (Work)</td><td>$W$</td><td>Joule (J)</td><td>$[ML^2T^{-2}]$</td></tr>
+  </tbody>
+</table>`,
+    'mnemonic-box': `
+<div class="mnemonic-ribbon">
+  <strong>&bigstar; মনে রাখার শর্টকাট টেকনিক:</strong> &ldquo;প-তে পজিটিভ, ন-তে নেগেটিভ&rdquo; &mdash; চার্জ ও দিক নির্ণয়ের বিশেষ সূত্র।
+</div>`
+  };
+
+  const textToInsert = snippets[type] || '';
+  if (!textToInsert) return;
+
+  const start = textarea.selectionStart || 0;
+  const end = textarea.selectionEnd || 0;
+  const oldVal = textarea.value;
+
+  textarea.value = oldVal.substring(0, start) + textToInsert + oldVal.substring(end);
+  textarea.selectionStart = textarea.selectionEnd = start + textToInsert.length;
+  textarea.focus();
+
+  onContentTextareaInput(textarea.value);
+
+  if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+    window.showToast("সফলভাবে কোড স্নিপেট যুক্ত করা হয়েছে!");
+  }
+}
+
+/**
+ * Applies edited content to preview immediately with auto-pagination
+ */
+export function applyContentAndRepaginate() {
+  const contentInput = document.getElementById('cfgRawContentInput');
+  if (contentInput) {
+    onContentTextareaInput(contentInput.value);
+  }
+  if (typeof window !== 'undefined' && typeof window.runAutoPagination === 'function') {
+    window.runAutoPagination();
+  }
+  if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+    window.showToast("⚡ কন্টেন্ট লাইভ প্রিভিউতে সফলভাবে রেন্ডার হয়েছে!");
+  }
+}
+
+/**
+ * 1-Click Preview Sync & Stale Cache Flush Engine
+ */
+export function syncAndForceRefreshPreview() {
+  // 1. Flush SW caches
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage('clearCache');
+  }
+
+  // 2. Re-trigger pagination immediately
+  if (typeof window !== 'undefined' && typeof window.runAutoPagination === 'function') {
+    window.runAutoPagination();
+  }
+
+  // 3. Close settings modal if open
+  closeSettingsModal();
+
+  if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+    window.showToast("🔄 লাইভ প্রিভিউ সম্পূর্ণ ফ্রেশ সিঙ্ক হয়েছে!", 2500);
+  }
+}
+
+/**
+ * Exports all settings and custom subject notes as downloadable JSON file
+ */
+export function exportProjectBackup() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+  const dlAnchorElem = document.createElement('a');
+  dlAnchorElem.setAttribute("href", dataStr);
+  dlAnchorElem.setAttribute("download", `MUTU_STUDY_Backup_${Date.now()}.json`);
+  dlAnchorElem.click();
+  if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+    window.showToast("📥 প্রজেক্ট ব্যাকআপ JSON ডাউনলোড সম্পন্ন হয়েছে!");
+  }
+}
+
+/**
+ * Imports configuration JSON file
+ * @param {HTMLInputElement} inputEl 
+ */
+export function importProjectBackup(inputEl) {
+  if (!inputEl || !inputEl.files || !inputEl.files[0]) return;
+  const file = inputEl.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (parsed && typeof parsed === 'object') {
+        Object.assign(appState, parsed);
+        savePersistedState();
+        if (typeof window !== 'undefined' && typeof window.runAutoPagination === 'function') {
+          window.runAutoPagination();
+        }
+        if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+          window.showToast("📤 ব্যাকআপ ডেটা সফলভাবে রিস্টোর হয়েছে!");
+        }
+        openSettingsModal();
+      }
+    } catch (err) {
+      if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+        window.showToast("ত্রুটি: ব্যাকআপ ফাইলটি সঠিক নয়!");
+      }
+    }
+  };
+  reader.readAsText(file);
+}
+
+/**
+ * Resets all user customization and restores factory defaults
+ */
+export function resetFactoryDefaults() {
+  try {
+    localStorage.removeItem('mutu_studio_master_state_v2');
+    localStorage.removeItem('mutu_user_custom_edited');
+    localStorage.removeItem('mutu_doc_theme');
+    localStorage.removeItem('mutu_active_subject');
+  } catch (e) {}
+
+  window.location.reload();
+}
+
+/**
+ * Switches Active Tab inside the Settings Studio Modal (legacy alias)
  * @param {string} tabId - 'content' | 'cover' | 'typography' | 'general'
  */
 export function switchSettingsTab(tabId) {
-  const navButtons = document.querySelectorAll('.tab-nav-btn');
-  const panes = document.querySelectorAll('.tab-pane');
-
-  navButtons.forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
-  });
-
-  panes.forEach(pane => {
-    pane.classList.toggle('active', pane.id === `tab-${tabId}`);
-  });
+  navigateToSettingsPage(tabId);
 }
 
 /**
  * Opens Settings Modal and Populates All Fields with Current State
+ * @param {string} [initialPage=null]
  */
-export function openSettingsModal() {
+export function openSettingsModal(initialPage = null) {
   const modal = document.getElementById('settingsModal');
   if (!modal) return;
+
+  if (initialPage) {
+    navigateToSettingsPage(initialPage);
+  } else {
+    navigateToSettingsHub();
+  }
 
   // Subject Selector
   const curSub = appState.currentSubject || appState.activeSubject || 'chemistry';
@@ -592,6 +810,14 @@ if (typeof window !== 'undefined') {
   window.openSettingsModal = openSettingsModal;
   window.closeSettingsModal = closeSettingsModal;
   window.toggleCustomCoverBox = toggleCustomCoverBox;
+  window.navigateToSettingsPage = navigateToSettingsPage;
+  window.navigateToSettingsHub = navigateToSettingsHub;
+  window.insertFormulaSnippet = insertFormulaSnippet;
+  window.applyContentAndRepaginate = applyContentAndRepaginate;
+  window.syncAndForceRefreshPreview = syncAndForceRefreshPreview;
+  window.exportProjectBackup = exportProjectBackup;
+  window.importProjectBackup = importProjectBackup;
+  window.resetFactoryDefaults = resetFactoryDefaults;
   window.saveAllSettings = saveAllSettings;
   window.resetDemoContent = resetDemoContent;
 }
