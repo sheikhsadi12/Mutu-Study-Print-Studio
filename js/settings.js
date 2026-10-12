@@ -324,10 +324,13 @@ export function applyContentAndRepaginate() {
 }
 
 /**
- * 1-Click Preview Sync & Stale Cache Flush Engine
+ * 1-Click Preview Sync & Stale Cache Flush Engine (Zero Bloat)
  */
 export function syncAndForceRefreshPreview() {
-  // 1. Flush SW caches
+  // 1. Flush SW and browser CacheStorage immediately
+  if ('caches' in window) {
+    caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))));
+  }
   if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
     navigator.serviceWorker.controller.postMessage('clearCache');
   }
@@ -341,7 +344,7 @@ export function syncAndForceRefreshPreview() {
   closeSettingsModal();
 
   if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
-    window.showToast("🔄 লাইভ প্রিভিউ সম্পূর্ণ ফ্রেশ সিঙ্ক হয়েছে!", 2500);
+    window.showToast("⚡ ক্যাশ সম্পূর্ণ পরিষ্কার ও লাইভ ফ্রেশ সিঙ্ক সম্পন্ন হয়েছে!", 2500);
   }
 }
 

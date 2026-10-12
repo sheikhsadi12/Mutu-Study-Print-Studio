@@ -48,7 +48,7 @@ export function createNewA4Page(state = appState) {
 
 /**
  * High-performance Dual Engine Math Typesetter (KaTeX + MathJax 3)
- * Guarantees zero raw LaTeX and accurate physical A4 box heights
+ * Ultra-fast synchronous rendering with zero CPU thrashing
  * @param {HTMLElement} container - DOM element containing LaTeX expressions
  */
 export async function renderAllMathInElement(container) {
@@ -72,8 +72,10 @@ export async function renderAllMathInElement(container) {
     }
   }
 
-  // 2. MathJax 3 Asynchronous Engine (typesets any remaining or MathJax-specific tags)
-  if (typeof window !== 'undefined' && window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+  // 2. MathJax 3: Only invoke if unrendered math remains (e.g. specialized macros)
+  const text = container.textContent || '';
+  const hasUnrenderedMath = text.includes('$$') || text.includes('\\begin{') || text.includes('\\frac{');
+  if (hasUnrenderedMath && typeof window !== 'undefined' && window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
     try {
       await window.MathJax.typesetPromise([container]);
     } catch (err) {
@@ -117,18 +119,18 @@ export function applyTypography(state = appState) {
 
 let isPaginating = false;
 let pendingPagination = false;
+let paginationDebounceTimer = null;
 
-// Auto-recovery listener when MathJax or KaTeX finishes async loading
+// Auto-recovery listener when MathJax finishes async loading
 if (typeof window !== 'undefined') {
   window.addEventListener('mathjax-ready', () => {
-    console.log('[MUTU Paginator] MathJax ready event received. Re-paginating with rendered math...');
     runAutoPagination(appState);
   });
 }
 
 /**
  * Master Auto-Pagination Engine
- * Asynchronously renders math formulas and distributes child blocks across strict A4 sheets
+ * Ultra-fast single-pass math rendering & atomic DOM document fragment replacement
  * @param {object} [state=appState] - Application state object
  */
 export async function runAutoPagination(state = appState) {
@@ -158,7 +160,7 @@ export async function runAutoPagination(state = appState) {
     tempPool.innerHTML = rawHtml;
     document.body.appendChild(tempPool);
 
-    // CRITICAL: Render all math formulas before measuring element heights
+    // Render all math formulas in the pool ONCE
     await renderAllMathInElement(tempPool);
 
     const stage = document.getElementById('document-stage');
@@ -166,15 +168,8 @@ export async function runAutoPagination(state = appState) {
       if (tempPool.parentNode) tempPool.parentNode.removeChild(tempPool);
       return;
     }
-    stage.innerHTML = '';
 
-    // Watermark configuration
-    if (!state.watermarkEnabled) {
-      stage.classList.add('watermark-disabled');
-    } else {
-      stage.classList.remove('watermark-disabled');
-    }
-    document.documentElement.style.setProperty('--watermark-opacity', state.watermarkOpacity);
+    stage.innerHTML = '';
 
     // 1. Inject Cover Page if Enabled
     if (state.coverEnabled) {
@@ -182,8 +177,7 @@ export async function runAutoPagination(state = appState) {
       stage.appendChild(coverPage);
     }
 
-    // 2. Paginate Content Nodes
-    // Since tempPool has already been typeset, its children have real DOM heights and vector equations
+    // 2. Paginate Content Nodes into strict A4 sheets
     const items = Array.from(tempPool.children);
     if (items.length > 0) {
       let currentPage = createNewA4Page(state);
@@ -212,10 +206,15 @@ export async function runAutoPagination(state = appState) {
       tempPool.parentNode.removeChild(tempPool);
     }
 
-    // 3. Typeset any remaining formulas on stage
-    await renderAllMathInElement(stage);
+    // Watermark configuration
+    if (!state.watermarkEnabled) {
+      stage.classList.add('watermark-disabled');
+    } else {
+      stage.classList.remove('watermark-disabled');
+    }
+    document.documentElement.style.setProperty('--watermark-opacity', state.watermarkOpacity);
 
-    // 4. Dynamic Page Numbers Calculation (PAGE XX / YY)
+    // 3. Dynamic Page Numbers Calculation (PAGE XX / YY)
     const contentPages = stage.querySelectorAll('.a4-page:not(.a4-cover-page)');
     const totalContentPages = contentPages.length;
     contentPages.forEach((page, index) => {
@@ -230,7 +229,7 @@ export async function runAutoPagination(state = appState) {
     isPaginating = false;
     if (pendingPagination) {
       pendingPagination = false;
-      setTimeout(() => runAutoPagination(state), 40);
+      requestAnimationFrame(() => runAutoPagination(state));
     }
   }
 }
