@@ -14,33 +14,56 @@
 }
 
 /* Universal Bengali Unicode Fallback Engine:
-   Forces any Bengali glyph (U+0980-09FF) in mixed lines, badges or equations to render in Hind Siliguri */
+   Forces any Bengali glyph (U+0980-09FF) in mixed lines, titles, badges or equations
+   to ALWAYS render in Hind Siliguri ("হিন্দি শিলিগুড়ি / হিন্দি স্টাইল") */
 @font-face {
-  font-family: 'UniversalBengali';
+  font-family: 'HindSiliguriBengali';
   src: local('Hind Siliguri'), local('HindSiliguri-Regular'),
        url('https://fonts.gstatic.com/s/hindsiliguri/v12/ijwOs5juQtsyLLR5jN4cxC2J8Au5.woff2') format('woff2');
+  font-weight: 400 500;
+  font-style: normal;
+  unicode-range: U+0980-09FF, U+200C-200D;
+}
+
+@font-face {
+  font-family: 'HindSiliguriBengali';
+  src: local('Hind Siliguri Bold'), local('HindSiliguri-Bold'),
+       url('https://fonts.gstatic.com/s/hindsiliguri/v12/ijwOs5juQtsyLLR5jN4cxC2J8Du7.woff2') format('woff2');
+  font-weight: 600 700 800;
+  font-style: normal;
   unicode-range: U+0980-09FF, U+200C-200D;
 }
 
 /* Master Brand Font Selectors (M & S are Cinzel Decorative, rest are standard Cinzel) */
 .cinzel-dec {
-  font-family: 'Cinzel Decorative', 'Hind Siliguri', 'Kalpurush', Georgia, serif !important;
+  font-family: 'Cinzel Decorative', 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', Georgia, serif !important;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
 .cinzel-norm {
-  font-family: 'Cinzel', 'Hind Siliguri', 'Kalpurush', Georgia, serif !important;
+  font-family: 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', Georgia, serif !important;
   font-weight: 700;
   letter-spacing: 0.05em;
 }
 
-/* 3. Bengali Typography Engine (যুক্তবর্ণ ও ল্যাগেচার ফিক্স - Zero Broken Glyphs) */
+/* 3. Academic Headings & Titles: Selected English Heading Font with Hind Siliguri Bengali Fallback */
+h1, h2, h3, h4,
+.cover-main-en-title,
+.cover-main-bn-title,
+.chapter-hero-banner h2,
+.module-heading,
+.science-card h3,
+.science-concept-card h4,
+.pq-title {
+  font-family: var(--font-heading-primary, 'Playfair Display'), 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
+}
+
+/* 4. Academic Body & Content: Selected English Body Font with Hind Siliguri Bengali Fallback */
 .a4-page,
 .a4-cover-page,
 .page-content-area,
 .science-card,
 .science-concept-card,
-.module-heading,
 .law-ribbon,
 .law-callout-box,
 .chem-box,
@@ -50,38 +73,42 @@
 .chapter-hero-banner,
 .explanation-card,
 .cover-subject-pill,
-.cover-kicker,
-.cover-main-en-title,
-.cover-main-bn-title,
 .cover-subtitle,
 .cover-meta-item,
-.cover-footer-imprint {
-  font-family: var(--font-english), 'Hind Siliguri', 'Kalpurush', -apple-system, sans-serif !important;
+.cover-footer-imprint,
+.header-meta,
+.footer-left-meta,
+.footer-page-num {
+  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', -apple-system, sans-serif !important;
+}
+
+.cover-kicker {
+  font-family: 'Cinzel Decorative', 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', Georgia, serif !important;
 }
 
 /* Preserve Mathematical Typography & Fonts with Bengali Ligature Support (KaTeX & MathJax) */
 .katex,
 .katex * {
-  font-family: KaTeX_Main, var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', 'Times New Roman', serif;
+  font-family: KaTeX_Main, var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', 'Times New Roman', serif;
 }
 .katex .mathnormal,
 .katex .mathdefault {
-  font-family: KaTeX_Math, var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', 'Times New Roman', serif;
+  font-family: KaTeX_Math, var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', 'Times New Roman', serif;
   font-style: italic;
 }
 .katex .mathbf {
-  font-family: KaTeX_Main, var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', 'Times New Roman', serif;
+  font-family: KaTeX_Main, var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', 'Times New Roman', serif;
   font-weight: bold;
 }
 .katex .amsrm {
-  font-family: KaTeX_AMS, var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', 'Times New Roman', serif;
+  font-family: KaTeX_AMS, var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', 'Times New Roman', serif;
 }
 .katex .text,
 .katex .mtext,
 .katex-display .mtext,
 .katex .mord.text,
 .katex .katex-error {
-  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', sans-serif !important;
+  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
   font-style: normal !important;
   color: inherit !important;
   border: none !important;
@@ -89,12 +116,12 @@
 }
 .MathJax,
 .MathJax * {
-  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', inherit;
+  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', inherit;
 }
 mjx-container,
 mjx-container [class*="mtext"],
 mjx-container text {
-  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', sans-serif !important;
+  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
 }
 
 .bn-text, 
@@ -108,7 +135,7 @@ mjx-container text {
 .mnemonic-text, 
 .pq-answer, 
 .bn-sub {
-  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', -apple-system, sans-serif !important;
+  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', -apple-system, sans-serif !important;
   letter-spacing: normal !important;
   word-spacing: normal;
   line-height: 1.62 !important;
@@ -118,7 +145,7 @@ mjx-container text {
   overflow-wrap: break-word;
 }
 
-/* 4. English Typography Engine */
+/* 5. English Typography Engine */
 .en-text, 
 .passage-en, 
 .st-en, 
@@ -126,7 +153,7 @@ mjx-container text {
 .grammar-rule-name, 
 .example-en, 
 .pq-content {
-  font-family: var(--font-english);
+  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
   letter-spacing: -0.01em;
   line-height: 1.48;
 }

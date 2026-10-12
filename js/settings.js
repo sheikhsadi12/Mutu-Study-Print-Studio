@@ -525,6 +525,8 @@ export function openSettingsModal(initialPage = null) {
   if (fontScale) fontScale.value = Math.round(appState.fontScale * 100);
   if (scaleVal) scaleVal.innerText = Math.round(appState.fontScale * 100) + '%';
 
+  modal.classList.remove('closing');
+  void modal.offsetWidth;
   modal.classList.add('open');
   if (typeof window !== 'undefined' && typeof window.pushModalHistory === 'function') {
     window.pushModalHistory('settingsModal');
@@ -532,11 +534,17 @@ export function openSettingsModal(initialPage = null) {
 }
 
 /**
- * Closes Settings Studio Modal
+ * Closes Settings Studio Modal with silky smooth exit animation
  */
 export function closeSettingsModal() {
   const modal = document.getElementById('settingsModal');
-  if (modal) modal.classList.remove('open');
+  if (modal) {
+    modal.classList.add('closing');
+    modal.classList.remove('open');
+    setTimeout(() => {
+      modal.classList.remove('closing');
+    }, 260);
+  }
 }
 
 /**

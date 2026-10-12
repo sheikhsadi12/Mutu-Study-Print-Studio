@@ -259,7 +259,7 @@ html[data-theme="light"] .a4-page {
   margin: 0 auto;
 }
 .cover-kicker {
-  font-family: 'Cinzel', 'Hind Siliguri', 'Kalpurush', Georgia, serif;
+  font-family: 'Cinzel Decorative', 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', serif;
   font-size: 8.5pt;
   font-weight: 700;
   letter-spacing: 0.22em;
@@ -274,7 +274,7 @@ html[data-theme="light"] .a4-page {
   border: 1.2px solid var(--border-color);
   padding: 5px 22px;
   border-radius: 30px;
-  font-family: 'Cinzel', 'Hind Siliguri', 'Kalpurush', sans-serif;
+  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif;
   font-size: 9.5pt;
   font-weight: 700;
   color: var(--text-english);
@@ -329,7 +329,7 @@ html[data-theme="light"] .a4-page {
 }
 
 .cover-main-en-title {
-  font-family: 'Cormorant Garamond', 'Hind Siliguri', 'Kalpurush', Georgia, serif;
+  font-family: var(--font-heading-primary, 'Playfair Display'), 'HindSiliguriBengali', 'Hind Siliguri', serif;
   font-size: 24pt;
   line-height: 1.2;
   font-weight: 700;
@@ -337,14 +337,14 @@ html[data-theme="light"] .a4-page {
   letter-spacing: 0.01em;
 }
 .cover-main-bn-title {
-  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Kalpurush', sans-serif;
+  font-family: var(--font-heading-primary, 'Playfair Display'), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif;
   font-size: 15.5pt;
   line-height: 1.45;
   color: var(--accent-secondary);
   font-weight: 600;
 }
 .cover-subtitle {
-  font-family: 'Cormorant Garamond', 'Hind Siliguri', 'Kalpurush', Georgia, serif;
+  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', serif;
   font-size: 10.5pt;
   font-style: italic;
   color: var(--text-english-muted);
@@ -373,16 +373,17 @@ html[data-theme="light"] .a4-page {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--accent-secondary);
-  font-family: 'Cinzel', 'Hind Siliguri', 'Kalpurush', Georgia, serif;
+  font-family: 'Cinzel Decorative', 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', serif;
   margin-bottom: 2px;
 }
 .cover-meta-item span {
   font-size: 9.3pt;
   color: var(--text-english);
   font-weight: 600;
+  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif;
 }
 .cover-footer-imprint {
-  font-family: 'Cinzel', 'Hind Siliguri', 'Kalpurush', Georgia, serif;
+  font-family: 'Cinzel Decorative', 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', serif;
   font-size: 7.8pt;
   letter-spacing: 0.2em;
   color: var(--text-english-muted);

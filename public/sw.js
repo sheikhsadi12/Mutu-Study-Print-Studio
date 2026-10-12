@@ -1,17 +1,17 @@
 /**
  * ============================================================================
- * MUTU STUDY A4 STUDIO — BULLETPROOF PWA SERVICE WORKER (sw.js)
- * True Network-First Architecture: Never freezes preview across versions!
+ * MUTU STUDY A4 STUDIO — ULTRA-SPEED ZERO-BLOAT SERVICE WORKER (sw.js)
+ * High-performance, zero-accumulation, instant app shell delivery
  * ============================================================================
  */
 
-const CACHE_NAME = 'mutu-study-v3.1.0-live-sync';
+const CACHE_NAME = 'mutu-study-v3.3.0-ultra-speed';
 
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
-  '/manifest.json',
   '/manifest.webmanifest',
+  '/manifest.json',
   '/css/variables.css',
   '/css/typography.css',
   '/css/layout.css',
@@ -27,19 +27,18 @@ const PRECACHE_ASSETS = [
   '/js/settings.js',
   '/js/demo-content.js',
   '/icons/icon.svg',
-  '/icons/badge.svg',
+  '/icons/icon-dark.svg',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/maskable-icon-512.png',
   '/icons/apple-touch-icon.png'
 ];
 
-// 1. Install Event: Activate immediately
+// 1. Install Event: Cache essential app shell and activate immediately
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[MUTU PWA SW] Caching app shell assets...');
       return Promise.allSettled(
         PRECACHE_ASSETS.map((url) =>
           fetch(url, { cache: 'no-cache' })
@@ -53,14 +52,14 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// 2. Activate Event: Purge ALL previous caches and take control
+// 2. Activate Event: Wipe ALL old cache versions immediately and claim clients
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('[MUTU PWA SW] Deleting obsolete cache:', key);
+            console.log('[MUTU PWA SW] Purging obsolete cache:', key);
             return caches.delete(key);
           }
         })
@@ -69,47 +68,89 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 3. Message handler: Allow instant cache purge
+// 3. Message handler: Allow instant cache purge and skipWaiting
 self.addEventListener('message', (event) => {
   if (event.data === 'skipWaiting') {
     self.skipWaiting();
-  } else if (event.data === 'clearCache') {
+  } else if (event.data === 'clearCache' || event.data === 'purgeAll') {
     caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))));
   }
 });
 
-// 4. Fetch Handler: 100% Network-First with Live Dev Bypass
-// On development hosts (like Google AI Studio preview .run.app / localhost), bypass cache to avoid preview freezes!
+// 4. Fetch Handler: Ultra-fast Stale-While-Revalidate for app assets, Network-First for HTML
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
 
+  // Never intercept iframe previews or dev hosts to ensure live reload
   const isDevHost = url.hostname.includes('run.app') || url.hostname === 'localhost' || url.hostname === '127.0.0.1';
   if (isDevHost) {
     event.respondWith(fetch(request).catch(() => caches.match(request)));
     return;
   }
 
+  // A. HTML Navigation Requests: Fast Network-first with 1.2s timeout fallback
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      new Promise((resolve) => {
+        let timedOut = false;
+        const timer = setTimeout(() => {
+          timedOut = true;
+          caches.match('/index.html').then((cached) => {
+            if (cached) resolve(cached);
+          });
+        }, 1200);
+
+        fetch(request)
+          .then((networkResponse) => {
+            clearTimeout(timer);
+            if (!timedOut && networkResponse && networkResponse.status === 200) {
+              const clone = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put('/index.html', clone));
+              resolve(networkResponse);
+            }
+          })
+          .catch(() => {
+            clearTimeout(timer);
+            caches.match('/index.html').then((cached) => resolve(cached || Response.error()));
+          });
+      })
+    );
+    return;
+  }
+
+  // B. Only cache same-origin local assets. NEVER bloat cache with third-party CDNs!
+  const isSameOrigin = url.origin === self.location.origin;
+  if (!isSameOrigin) {
+    // External requests (like Google Fonts or CDN) go directly to network without caching to avoid bloat
+    event.respondWith(fetch(request).catch(() => caches.match(request)));
+    return;
+  }
+
+  // C. Stale-While-Revalidate for local core assets: INSTANT 0ms response from cache, silent revalidate
   event.respondWith(
-    fetch(request)
-      .then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
-          const clone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(request, clone));
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        // Fallback to cache ONLY when completely offline
-        return caches.match(request, { ignoreSearch: true })
-          .then((cached) => cached || (request.mode === 'navigate' ? caches.match('/index.html') : null));
-      })
+    caches.match(request).then((cachedResponse) => {
+      const fetchPromise = fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const clone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, clone);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => cachedResponse);
+
+      // Return cached response immediately if available, otherwise wait for network
+      return cachedResponse || fetchPromise;
+    })
   );
 });
 
-// 5. Notification Click
+// 5. Notification Click Handler
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const targetUrl = (event.notification.data && event.notification.data.url) ? event.notification.data.url : '/';

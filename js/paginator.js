@@ -72,10 +72,9 @@ export async function renderAllMathInElement(container) {
     }
   }
 
-  // 2. MathJax 3: Only invoke if unrendered math remains (e.g. specialized macros)
-  const text = container.textContent || '';
-  const hasUnrenderedMath = text.includes('$$') || text.includes('\\begin{') || text.includes('\\frac{');
-  if (hasUnrenderedMath && typeof window !== 'undefined' && window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+  // 2. MathJax 3: Only invoke if raw unparsed math formulas exist outside KaTeX
+  const hasUnrendered = container.innerHTML.includes('$$') && !container.querySelector('.katex');
+  if (hasUnrendered && typeof window !== 'undefined' && window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
     try {
       await window.MathJax.typesetPromise([container]);
     } catch (err) {
@@ -111,9 +110,9 @@ export function applyTypography(state = appState) {
   root.style.setProperty('--font-bengali-primary', primaryBn);
 
   // Cascade: Primary English font matches Latin ASCII first; Bengali glyphs fall back to Hind Siliguri
-  root.style.setProperty('--font-english', `${primaryEnBody}, ${primaryBn}, 'Kalpurush', sans-serif`);
-  root.style.setProperty('--font-display', `${primaryEnHead}, ${primaryBn}, 'Kalpurush', serif`);
-  root.style.setProperty('--font-bengali', `${primaryEnBody}, ${primaryBn}, 'Kalpurush', sans-serif`);
+  root.style.setProperty('--font-english', `${primaryEnBody}, 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', sans-serif`);
+  root.style.setProperty('--font-display', `${primaryEnHead}, 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
+  root.style.setProperty('--font-bengali', `${primaryEnBody}, 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', sans-serif`);
   root.style.setProperty('--global-font-scale', state.fontScale);
 }
 

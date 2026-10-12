@@ -49,6 +49,7 @@ export function setTheme(theme) {
   // Sync Brand Header Icon with Active Theme Architecture
   const brandImgs = document.querySelectorAll('.ui-brand img, .intro-brand-header img');
   brandImgs.forEach(img => {
+    img.onerror = () => { img.src = './icons/icon-192.png'; };
     img.src = (theme === 'dark') ? './icons/icon-dark.svg' : './icons/icon.svg';
   });
 
@@ -70,7 +71,7 @@ export function setTheme(theme) {
   }
 
   localStorage.setItem('mutu_doc_theme', theme);
-  setTimeout(() => runAutoPagination(appState), 40);
+  // Pure instantaneous CSS variable theme swap - zero DOM thrashing
 }
 
 /**
@@ -307,6 +308,24 @@ function initInstallPrompt() {
   });
 }
 
+// Universal Smooth Modal Transition Helpers
+export function smoothCloseModal(modal, onDone) {
+  if (!modal) return;
+  modal.classList.add('closing');
+  modal.classList.remove('open');
+  setTimeout(() => {
+    modal.classList.remove('closing');
+    if (typeof onDone === 'function') onDone();
+  }, 260);
+}
+
+export function smoothOpenModal(modal) {
+  if (!modal) return;
+  modal.classList.remove('closing');
+  void modal.offsetWidth; // Force layout reflow for animation
+  modal.classList.add('open');
+}
+
 // Android Pure-App History & Modal State Manager
 let lastBackPressTime = 0;
 
@@ -342,7 +361,7 @@ export function openPWAIntro() {
   }
   const modal = document.getElementById('pwaIntroModal');
   if (modal) {
-    modal.classList.add('open');
+    smoothOpenModal(modal);
     pushModalHistory('pwaIntroModal');
   }
 }
@@ -354,8 +373,7 @@ export function openPWAIntro() {
 export function closePWAIntro(dontShowAgain = false) {
   const modal = document.getElementById('pwaIntroModal');
   if (modal) {
-    modal.classList.remove('open');
-    popModalHistory('pwaIntroModal');
+    smoothCloseModal(modal, () => popModalHistory('pwaIntroModal'));
   }
 
   const checkbox = document.getElementById('introDontShowCheck');
@@ -378,7 +396,7 @@ export async function triggerInstallFromIntro() {
 export function openIOSInstallDialog() {
   const dialog = document.getElementById('iosInstallModal');
   if (dialog) {
-    dialog.classList.add('open');
+    smoothOpenModal(dialog);
     pushModalHistory('iosInstallModal');
   }
 }
@@ -386,8 +404,7 @@ export function openIOSInstallDialog() {
 export function closeIOSInstallDialog() {
   const dialog = document.getElementById('iosInstallModal');
   if (dialog) {
-    dialog.classList.remove('open');
-    popModalHistory('iosInstallModal');
+    smoothCloseModal(dialog, () => popModalHistory('iosInstallModal'));
   }
 }
 
@@ -401,7 +418,7 @@ export function openPWAFrameModal() {
     openBtn.href = window.location.origin + window.location.pathname + '?source=pwa&install=1';
   }
   if (modal) {
-    modal.classList.add('open');
+    smoothOpenModal(modal);
     pushModalHistory('pwaFrameModal');
   }
 }
@@ -409,8 +426,7 @@ export function openPWAFrameModal() {
 export function closePWAFrameModal() {
   const modal = document.getElementById('pwaFrameModal');
   if (modal) {
-    modal.classList.remove('open');
-    popModalHistory('pwaFrameModal');
+    smoothCloseModal(modal, () => popModalHistory('pwaFrameModal'));
   }
 }
 
@@ -420,7 +436,7 @@ export function closePWAFrameModal() {
 export function openPWADiagnosticModal() {
   const modal = document.getElementById('pwaDiagnosticModal');
   if (!modal) return;
-  modal.classList.add('open');
+  smoothOpenModal(modal);
   pushModalHistory('pwaDiagnosticModal');
 
   const swElem = document.getElementById('diagSWStatus');
@@ -471,8 +487,7 @@ export function openPWADiagnosticModal() {
 export function closePWADiagnosticModal() {
   const modal = document.getElementById('pwaDiagnosticModal');
   if (modal) {
-    modal.classList.remove('open');
-    popModalHistory('pwaDiagnosticModal');
+    smoothCloseModal(modal, () => popModalHistory('pwaDiagnosticModal'));
   }
 }
 
@@ -615,7 +630,7 @@ export function openDualExportModal() {
   if (darkNameEl) darkNameEl.innerText = `${baseTitle} - Dark Theme.pdf`;
 
   if (modal) {
-    modal.classList.add('open');
+    smoothOpenModal(modal);
     pushModalHistory('dualExportModal');
   }
 }
@@ -626,8 +641,7 @@ export function openDualExportModal() {
 export function closeDualExportModal() {
   const modal = document.getElementById('dualExportModal');
   if (modal) {
-    modal.classList.remove('open');
-    popModalHistory('dualExportModal');
+    smoothCloseModal(modal, () => popModalHistory('dualExportModal'));
   }
 }
 
@@ -918,11 +932,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Pure Android Hardware Back Button & Tab Navigation Engine
 window.addEventListener('popstate', () => {
-  // 1. If any modal dialog is open, close the topmost modal
+  // 1. If any modal dialog is open, close the topmost modal smoothly
   const openModals = document.querySelectorAll('.modal-overlay.open');
   if (openModals.length > 0) {
     const topModal = openModals[openModals.length - 1];
-    topModal.classList.remove('open');
+    smoothCloseModal(topModal);
     return;
   }
 
@@ -940,8 +954,11 @@ window.addEventListener('popstate', () => {
   if (isStandalone) {
     const now = Date.now();
     if (now - lastBackPressTime < 2200) {
-      // User tapped back twice quickly: allow system to exit/minimize
-      window.history.back();
+      // User tapped back twice quickly: animate smooth native exit
+      document.body.classList.add('app-exit-transition');
+      setTimeout(() => {
+        window.history.back();
+      }, 260);
     } else {
       lastBackPressTime = now;
       showToast("আর একবার ব্যাক বাটন চাপলে অ্যাপ থেকে বের হবেন", 2200);
@@ -957,7 +974,7 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     const openModals = document.querySelectorAll('.modal-overlay.open');
     if (openModals.length > 0) {
-      openModals[openModals.length - 1].classList.remove('open');
+      smoothCloseModal(openModals[openModals.length - 1]);
       return;
     }
     const fabMenu = document.getElementById('fabMenu');

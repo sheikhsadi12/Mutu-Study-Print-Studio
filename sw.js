@@ -5,13 +5,13 @@
  * ============================================================================
  */
 
-const CACHE_NAME = 'mutu-study-v3.2.0-zero-bloat';
-const MAX_CACHE_ITEMS = 25;
+const CACHE_NAME = 'mutu-study-v3.3.0-ultra-speed';
 
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
+  '/manifest.json',
   '/css/variables.css',
   '/css/typography.css',
   '/css/layout.css',
@@ -27,25 +27,12 @@ const PRECACHE_ASSETS = [
   '/js/settings.js',
   '/js/demo-content.js',
   '/icons/icon.svg',
+  '/icons/icon-dark.svg',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/maskable-icon-512.png',
   '/icons/apple-touch-icon.png'
 ];
-
-/**
- * Trim cache to enforce strict capacity limit (Zero bloat)
- */
-async function trimCache(cacheName, maxItems) {
-  try {
-    const cache = await caches.open(cacheName);
-    const keys = await cache.keys();
-    if (keys.length > maxItems) {
-      await cache.delete(keys[0]);
-      await trimCache(cacheName, maxItems);
-    }
-  } catch (e) {}
-}
 
 // 1. Install Event: Cache essential app shell and activate immediately
 self.addEventListener('install', (event) => {
@@ -151,7 +138,6 @@ self.addEventListener('fetch', (event) => {
             const clone = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(request, clone);
-              trimCache(CACHE_NAME, MAX_CACHE_ITEMS);
             });
           }
           return networkResponse;

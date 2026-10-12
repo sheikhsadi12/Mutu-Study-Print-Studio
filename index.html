@@ -55,7 +55,7 @@
           if ('caches' in window) {
             caches.keys().then(function(keys) {
               for (var i = 0; i < keys.length; i++) {
-                if (keys[i].indexOf('v3.2.0') === -1) {
+                if (keys[i].indexOf('v3.3.0') === -1) {
                   caches.delete(keys[i]);
                 }
               }
@@ -302,7 +302,7 @@
   <!-- Screen Top Control Bar (Hidden in Print Mode) -->
   <header class="screen-control-bar no-print">
     <a href="#" class="ui-brand" aria-label="MUTU STUDY" style="text-decoration:none; display:inline-flex; align-items:center; flex-shrink:0;">
-      <img src="./icons/icon-192.png" alt="App Logo" width="34" height="34" style="width:34px; height:34px; min-width:34px; min-height:34px; border-radius: 9px; vertical-align: middle; display: inline-block; box-shadow: 0 2px 8px rgba(0,0,0,0.18); object-fit: contain; flex-shrink:0;" />
+      <img id="appBrandLogoImg" src="./icons/icon-192.png" alt="App Logo" width="34" height="34" style="width:34px; height:34px; min-width:34px; min-height:34px; border-radius: 9px; vertical-align: middle; display: inline-block; box-shadow: 0 2px 8px rgba(0,0,0,0.18); object-fit: contain; flex-shrink:0;" onerror="this.onerror=null; this.src='./icons/icon-192.png';" />
     </a>
 
     <div class="ui-actions" style="flex-shrink: 0; display: inline-flex; align-items: center; gap: 8px;">
