@@ -5,7 +5,7 @@
  * ============================================================================
  */
 
-const CACHE_NAME = 'mutu-study-v3.3.0-ultra-speed';
+const CACHE_NAME = 'mutu-study-v3.3.1-fluid-navigation';
 
 const PRECACHE_ASSETS = [
   '/',

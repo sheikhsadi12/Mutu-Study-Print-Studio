@@ -750,32 +750,56 @@ export function resetZoomToFit() {
 }
 
 /**
- * Toggles Zoom between Fit and 150%
+ * Zooms document symmetrically around a specific client focal point
+ * (defaults to center of viewport so content does not fly down or jump!)
+ * @param {number} targetScale 
+ * @param {number} [clientFocalX] 
+ * @param {number} [clientFocalY] 
+ */
+export function zoomWithFocalPoint(targetScale, clientFocalX = window.innerWidth / 2, clientFocalY = window.innerHeight / 2) {
+  const oldScale = currentDocScale;
+  const newScale = Math.max(0.35, Math.min(3.5, targetScale));
+  if (Math.abs(oldScale - newScale) < 0.005) return;
+
+  const docX = window.scrollX + clientFocalX;
+  const docY = window.scrollY + clientFocalY;
+  const ratio = newScale / oldScale;
+
+  setDocumentScale(newScale);
+
+  window.scrollTo({
+    left: Math.max(0, docX * ratio - clientFocalX),
+    top: Math.max(0, docY * ratio - clientFocalY),
+    behavior: 'smooth'
+  });
+}
+
+/**
+ * Toggles Zoom between Fit and 175% centered on viewport
  */
 export function toggleZoomFit() {
   const fit = calculateFitScale();
-  if (Math.abs(currentDocScale - fit) < 0.06) {
-    setDocumentScale(Math.min(2.0, fit * 1.75));
+  if (Math.abs(currentDocScale - fit) < 0.08) {
+    zoomWithFocalPoint(Math.min(2.2, fit * 1.75));
   } else {
     resetZoomToFit();
   }
 }
 
 /**
- * Zoom In button handler (+20%)
+ * Zoom In button handler (+25% centered on viewport)
  */
 export function zoomInDoc() {
-  const next = Math.min(3.5, currentDocScale + 0.2);
-  setDocumentScale(next);
+  zoomWithFocalPoint(currentDocScale + 0.25);
 }
 
 /**
- * Zoom Out button handler (-20%)
+ * Zoom Out button handler (-25% centered on viewport)
  */
 export function zoomOutDoc() {
   const fit = calculateFitScale();
-  const next = Math.max(0.35, Math.max(fit * 0.75, currentDocScale - 0.2));
-  setDocumentScale(next);
+  const next = Math.max(0.35, Math.max(fit * 0.75, currentDocScale - 0.25));
+  zoomWithFocalPoint(next);
 }
 
 /**
@@ -969,6 +993,30 @@ let isProgrammaticScroll = false;
 let scrollTrackingTimer = null;
 
 /**
+ * Calculates currently visible page index in viewport
+ * @returns {number} 0-based page index
+ */
+export function getCurrentVisiblePageIndex() {
+  const wrappers = document.querySelectorAll('.a4-page-wrapper');
+  if (wrappers.length === 0) return 0;
+
+  const viewportMid = window.innerHeight * 0.45;
+  let closestIndex = 0;
+  let minDiff = Infinity;
+
+  wrappers.forEach((w, idx) => {
+    const rect = w.getBoundingClientRect();
+    const pageMid = rect.top + rect.height / 2;
+    const diff = Math.abs(pageMid - viewportMid);
+    if (diff < minDiff) {
+      minDiff = diff;
+      closestIndex = idx;
+    }
+  });
+  return closestIndex;
+}
+
+/**
  * Smoothly scrolls the document to a specific page by index
  * @param {number} targetIndex 
  */
@@ -992,33 +1040,7 @@ export function updatePageScrollTracking() {
   clearTimeout(scrollTrackingTimer);
   scrollTrackingTimer = setTimeout(() => {
     if (isProgrammaticScroll) return;
-    const wrappers = document.querySelectorAll('.a4-page-wrapper');
-    if (wrappers.length === 0) return;
-
-    const viewportMid = window.innerHeight * 0.4;
-    let closestIndex = 0;
-    let minDiff = Infinity;
-
-    wrappers.forEach((w, idx) => {
-      const rect = w.getBoundingClientRect();
-      const pageMid = rect.top + rect.height / 2;
-      const diff = Math.abs(pageMid - viewportMid);
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestIndex = idx;
-      }
-    });
-
-    if (closestIndex !== currentPageIndex) {
-      currentPageIndex = closestIndex;
-      // Push history state if not in modal
-      const openModals = document.querySelectorAll('.modal-overlay.open');
-      if (openModals.length === 0) {
-        try {
-          window.history.pushState({ pageIndex: closestIndex }, document.title);
-        } catch (e) {}
-      }
-    }
+    currentPageIndex = getCurrentVisiblePageIndex();
   }, 120);
 }
 
@@ -1094,7 +1116,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Close FAB circular menu when clicking outside
   document.addEventListener('click', (e) => {
     const fabMenu = document.getElementById('fabMenu');
-    if (fabMenu && !fabMenu.contains(e.target)) {
+    if (fabMenu && fabMenu.contains(e.target)) {
       fabMenu.classList.remove('active');
     }
   });
@@ -1120,18 +1142,21 @@ window.addEventListener('popstate', () => {
   if (openModals.length > 0) {
     const settingsModal = document.getElementById('settingsModal');
     if (settingsModal && settingsModal.classList.contains('open')) {
-      const hubView = document.getElementById('settingsViewHub');
-      const isSubpageOpen = hubView && (hubView.style.display === 'none' || hubView.style.display === '');
       const activeSubpage = document.querySelector('.settings-subpage.active');
       if (activeSubpage) {
         // Return to Settings Hub Dashboard
         if (typeof window.navigateToSettingsHub === 'function') {
           window.navigateToSettingsHub(false);
         }
+        lastBackPressTime = 0;
+        try {
+          window.history.pushState({ modalId: 'settingsModal', activeTab: 'hub' }, document.title);
+        } catch (err) {}
         return;
       } else {
         // At settings hub: close settings modal smoothly
         handleCloseSettingsModal();
+        lastBackPressTime = 0;
         return;
       }
     }
@@ -1139,6 +1164,7 @@ window.addEventListener('popstate', () => {
     // Topmost other modal
     const topModal = openModals[openModals.length - 1];
     smoothCloseModal(topModal);
+    lastBackPressTime = 0;
     return;
   }
 
@@ -1146,6 +1172,10 @@ window.addEventListener('popstate', () => {
   const fabMenu = document.getElementById('fabMenu');
   if (fabMenu && fabMenu.classList.contains('active')) {
     fabMenu.classList.remove('active');
+    lastBackPressTime = 0;
+    try {
+      window.history.pushState({ root: true }, document.title);
+    } catch (err) {}
     return;
   }
 
@@ -1153,27 +1183,33 @@ window.addEventListener('popstate', () => {
   const fitScale = calculateFitScale();
   if (currentDocScale > fitScale + 0.1) {
     resetZoomToFit();
+    lastBackPressTime = 0;
+    try {
+      window.history.pushState({ root: true }, document.title);
+    } catch (err) {}
     return;
   }
 
   // 4. Document Multi-Page Native Navigation Stack:
   // "যদি আমরা তিন নাম্বার পেজ থাকি, তাহলে তিনবার ব্যাক বাটন হোম পেজে আসার পরে ব্যাক বাটন দিলে তোমার ই হবে।
   //  মানে যেই পেজে থাকবো ব্যাক বাটন দিলে সেই ওইখান থেকে আগের পেজে যাবে। দুইটা দিলে দুইটা আগের পেজ দিবে।"
-  if (currentPageIndex > 0) {
-    const prevPageIndex = currentPageIndex - 1;
+  const currentVisible = getCurrentVisiblePageIndex();
+  if (currentVisible > 0) {
+    const prevPageIndex = currentVisible - 1;
     scrollToPage(prevPageIndex);
+    lastBackPressTime = 0; // Clear exit timer so navigating pages NEVER triggers app exit!
+    try {
+      window.history.pushState({ root: true, pageIndex: prevPageIndex }, document.title);
+    } catch (err) {}
     return;
   }
 
   // 5. On Root Home Page (Page 1): Double-Back to Exit Protection
   const now = Date.now();
   if (now - lastBackPressTime < 2000) {
-    // User pressed back again within 2 seconds: smooth exit transition
-    document.body.classList.add('app-exiting');
+    // User pressed back again within 2 seconds: allow exit without blanking screen
     if (navigator.vibrate) navigator.vibrate([20, 50, 20]);
-    setTimeout(() => {
-      window.history.back();
-    }, 260);
+    window.history.back();
   } else {
     lastBackPressTime = now;
     showNativeExitToast("অ্যাপ থেকে বের হতে আর একবার ব্যাক চাপুন");

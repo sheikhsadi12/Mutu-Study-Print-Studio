@@ -26,8 +26,9 @@
   align-items: center;
   gap: 28px;
   padding: 20px 0 95px 0;
-  width: auto;
+  width: max-content;
   min-width: 100%;
+  margin: 0 auto;
   box-sizing: border-box;
   touch-action: pan-x pan-y;
   -webkit-overflow-scrolling: touch;
@@ -41,8 +42,7 @@
   margin: 0 auto 28px auto;
   flex-shrink: 0;
   box-sizing: border-box;
-  transform-origin: top center;
-  transition: width 0.08s ease-out, height 0.08s ease-out;
+  transition: width 0.12s ease-out, height 0.12s ease-out;
 }
 
 .document-stage.is-zooming .a4-page-wrapper {

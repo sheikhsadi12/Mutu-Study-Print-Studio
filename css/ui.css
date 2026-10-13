@@ -279,14 +279,12 @@ html[data-theme="light"] .ambient-orb {
   color: var(--text-english);
 }
 
-/* Real App Smooth Minimize / Exit Transition */
+/* Real App Safe Exit Transition Indicator */
 body.app-exit-transition,
 body.app-exiting {
-  transform: scale(0.97);
-  opacity: 0;
-  filter: blur(4px);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
+  /* Keep layout fully visible and interactive, never turn white or freeze! */
+  filter: brightness(0.95);
+  transition: filter 0.2s ease;
 }
 
 /* Native Android Glass Exit Toast */
