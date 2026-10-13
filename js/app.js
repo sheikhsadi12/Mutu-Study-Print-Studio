@@ -683,13 +683,12 @@ export function handleCloseSettingsModal() {
 }
 
 /* ============================================================================
-   FLUID HAND-OPERATED PINCH-TO-ZOOM ENGINE (Pure Multi-Touch & Trackpad Gestures)
-   Natural zoom of document content only — top control bar remains stationary!
+   FLUID HAND-OPERATED PINCH-TO-ZOOM ENGINE (Google Drive & Real PDF Reader Architecture)
+   Natural zoom anchored directly around touch focal point (midpoint of fingers).
+   The document scales outward in all directions without any top jump!
    ============================================================================ */
 
 let currentDocScale = 1;
-let initialPinchDistance = 0;
-let pinchStartScale = 1;
 
 /**
  * Calculates responsive default fit scale based on viewport width
@@ -712,12 +711,25 @@ export function calculateFitScale() {
 }
 
 /**
- * Applies smooth scale to the A4 document pages
+ * Applies smooth scale to the A4 document pages and updates floating controller
  * @param {number} scale 
  */
 export function setDocumentScale(scale) {
   currentDocScale = Math.max(0.35, Math.min(3.5, scale));
   document.documentElement.style.setProperty('--doc-preview-scale', currentDocScale.toFixed(4));
+
+  const badgeBtn = document.getElementById('docZoomBadge');
+  if (badgeBtn) {
+    const fitScale = calculateFitScale();
+    const percent = Math.round(currentDocScale * 100);
+    if (Math.abs(currentDocScale - fitScale) < 0.04) {
+      badgeBtn.innerText = 'Fit';
+      badgeBtn.title = `স্ক্রিন ফিট (${percent}%) - ট্যাপ করে জুম করুন`;
+    } else {
+      badgeBtn.innerText = `${percent}%`;
+      badgeBtn.title = `বর্তমান জুম ${percent}% - ট্যাপ করে ফিট করুন`;
+    }
+  }
 }
 
 /**
@@ -731,9 +743,45 @@ export function updateResponsivePageScale() {
 }
 
 /**
+ * 1-Tap Reset Zoom to Fit Width
+ */
+export function resetZoomToFit() {
+  setDocumentScale(calculateFitScale());
+}
+
+/**
+ * Toggles Zoom between Fit and 150%
+ */
+export function toggleZoomFit() {
+  const fit = calculateFitScale();
+  if (Math.abs(currentDocScale - fit) < 0.06) {
+    setDocumentScale(Math.min(2.0, fit * 1.75));
+  } else {
+    resetZoomToFit();
+  }
+}
+
+/**
+ * Zoom In button handler (+20%)
+ */
+export function zoomInDoc() {
+  const next = Math.min(3.5, currentDocScale + 0.2);
+  setDocumentScale(next);
+}
+
+/**
+ * Zoom Out button handler (-20%)
+ */
+export function zoomOutDoc() {
+  const fit = calculateFitScale();
+  const next = Math.max(0.35, Math.max(fit * 0.75, currentDocScale - 0.2));
+  setDocumentScale(next);
+}
+
+/**
  * Initializes natural touch pinch-to-zoom & desktop trackpad zoom engine.
- * Hand-operated, fluid, unrestricted zooming of document content only.
- * The top bar remains fixed and crisp.
+ * Synchronous focal-point tracking ensures content expands outward around the fingers,
+ * exactly like reading a PDF in Google Drive or Adobe Acrobat!
  */
 export function initFluidPinchToZoom() {
   const stage = document.getElementById('document-stage');
@@ -742,37 +790,58 @@ export function initFluidPinchToZoom() {
   // Set initial comfortable scale
   setDocumentScale(calculateFitScale());
 
-  // 1. Fluid Multi-Touch Two-Finger Pinch-to-Zoom (Isolates zoom to document only!)
+  let isPinching = false;
+  let pinchStartDist = 0;
+  let pinchStartScale = 1;
+  let pinchFocalDocX = 0;
+  let pinchFocalDocY = 0;
+
+  // 1. Fluid Multi-Touch Two-Finger Pinch-to-Zoom (Focal point math)
   stage.addEventListener('touchstart', (e) => {
     if (e.touches.length === 2) {
-      e.preventDefault(); // Stops Chrome Android from triggering whole-page browser zoom
+      e.preventDefault();
       const t1 = e.touches[0];
       const t2 = e.touches[1];
-      initialPinchDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      pinchStartDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
       pinchStartScale = currentDocScale;
+      const midClientX = (t1.clientX + t2.clientX) / 2;
+      const midClientY = (t1.clientY + t2.clientY) / 2;
+      pinchFocalDocX = window.scrollX + midClientX;
+      pinchFocalDocY = window.scrollY + midClientY;
+      isPinching = true;
+      stage.classList.add('is-zooming');
     }
   }, { passive: false });
 
   stage.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 2) {
-      e.preventDefault(); // Stops Chrome Android from zooming the top control bar!
-      if (initialPinchDistance > 0) {
-        const t1 = e.touches[0];
-        const t2 = e.touches[1];
-        const currentDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
-        const ratio = currentDist / initialPinchDistance;
-        setDocumentScale(pinchStartScale * ratio);
-      }
+    if (e.touches.length === 2 && isPinching && pinchStartDist > 0) {
+      e.preventDefault();
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const curDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      const curMidX = (t1.clientX + t2.clientX) / 2;
+      const curMidY = (t1.clientY + t2.clientY) / 2;
+      const ratio = curDist / pinchStartDist;
+      const targetScale = Math.max(0.35, Math.min(3.5, pinchStartScale * ratio));
+
+      setDocumentScale(targetScale);
+
+      // Keep exact touch focal point locked under fingers:
+      const scaleMultiplier = targetScale / pinchStartScale;
+      const nextScrollX = pinchFocalDocX * scaleMultiplier - curMidX;
+      const nextScrollY = pinchFocalDocY * scaleMultiplier - curMidY;
+      window.scrollTo(Math.max(0, nextScrollX), Math.max(0, nextScrollY));
     }
   }, { passive: false });
 
   stage.addEventListener('touchend', (e) => {
-    if (e.touches.length < 2) {
-      initialPinchDistance = 0;
+    if (e.touches.length < 2 && isPinching) {
+      isPinching = false;
+      stage.classList.remove('is-zooming');
     }
   }, { passive: true });
 
-  // Protect fixed top header from any touch pinch events
+  // Protect fixed top header from touch pinch events
   const headerBar = document.querySelector('.screen-control-bar');
   if (headerBar) {
     headerBar.addEventListener('touchstart', (e) => {
@@ -783,7 +852,7 @@ export function initFluidPinchToZoom() {
     }, { passive: false });
   }
 
-  // Prevent iOS / Safari gesture zoom on the app shell
+  // Prevent browser-level full shell zoom in Safari/Chrome
   window.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
   window.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
 
@@ -791,26 +860,49 @@ export function initFluidPinchToZoom() {
   stage.addEventListener('wheel', (e) => {
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
-      const zoomStep = -e.deltaY * 0.0035;
-      setDocumentScale(currentDocScale + zoomStep);
+      const focalX = e.clientX;
+      const focalY = e.clientY;
+      const docX = window.scrollX + focalX;
+      const docY = window.scrollY + focalY;
+      const startS = currentDocScale;
+      const zoomFactor = -e.deltaY * 0.0025;
+      const targetS = Math.max(0.35, Math.min(3.5, startS * (1 + zoomFactor)));
+      const ratio = targetS / startS;
+      setDocumentScale(targetS);
+      window.scrollTo(
+        Math.max(0, docX * ratio - focalX),
+        Math.max(0, docY * ratio - focalY)
+      );
     }
   }, { passive: false });
 
-  // 3. Double-tap with finger to smoothly toggle between auto-fit and zoomed in (1.25x)
+  // 3. Double-tap to smoothly zoom into tap position or reset to fit
   let lastTapTime = 0;
+  let lastTapCoords = { x: 0, y: 0 };
   stage.addEventListener('touchend', (e) => {
     if (e.changedTouches.length === 1 && e.touches.length === 0) {
       const now = Date.now();
-      if (now - lastTapTime < 320) {
+      const touch = e.changedTouches[0];
+      if (now - lastTapTime < 320 && Math.hypot(touch.clientX - lastTapCoords.x, touch.clientY - lastTapCoords.y) < 30) {
         const fit = calculateFitScale();
-        if (Math.abs(currentDocScale - fit) < 0.08) {
-          setDocumentScale(1.25);
+        if (Math.abs(currentDocScale - fit) < 0.1) {
+          const tapDocX = window.scrollX + touch.clientX;
+          const tapDocY = window.scrollY + touch.clientY;
+          const targetS = Math.min(2.0, fit * 1.8);
+          const ratio = targetS / currentDocScale;
+          setDocumentScale(targetS);
+          window.scrollTo({
+            left: Math.max(0, tapDocX * ratio - touch.clientX),
+            top: Math.max(0, tapDocY * ratio - touch.clientY),
+            behavior: 'smooth'
+          });
         } else {
-          setDocumentScale(fit);
+          resetZoomToFit();
         }
         lastTapTime = 0;
       } else {
         lastTapTime = now;
+        lastTapCoords = { x: touch.clientX, y: touch.clientY };
       }
     }
   }, { passive: true });
@@ -825,7 +917,6 @@ function bindUIEventListeners() {
     themeBtn.addEventListener('click', toggleAcademicTheme);
   }
 
-  // Print button opens the unified 1 vs 2 PDF options modal
   const printBtn = document.getElementById('printNowBtn');
   if (printBtn) {
     printBtn.addEventListener('click', openDualExportModal);
@@ -863,6 +954,94 @@ function bindUIEventListeners() {
   }
 }
 
+/* ============================================================================
+   NATIVE ANDROID PAGE NAVIGATION STACK & HARDWARE BACK BUTTON ARCHITECTURE
+   Professional App Hierarchy:
+   1. Subpages / Sub-Tabs -> Return to Settings Hub
+   2. Modals -> Close Modal
+   3. Zoomed State -> Reset to Fit
+   4. Multi-Page Document (Page 3 -> Page 2 -> Page 1) -> Navigate back 1 page per back press
+   5. Root Page (Page 1) -> Double-Back to Exit Protection with glass toast & haptics!
+   ============================================================================ */
+
+let currentPageIndex = 0;
+let isProgrammaticScroll = false;
+let scrollTrackingTimer = null;
+
+/**
+ * Smoothly scrolls the document to a specific page by index
+ * @param {number} targetIndex 
+ */
+export function scrollToPage(targetIndex) {
+  const wrappers = document.querySelectorAll('.a4-page-wrapper');
+  if (wrappers[targetIndex]) {
+    isProgrammaticScroll = true;
+    currentPageIndex = targetIndex;
+    wrappers[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => {
+      isProgrammaticScroll = false;
+    }, 450);
+  }
+}
+
+/**
+ * Tracks which page the user is currently reading
+ */
+export function updatePageScrollTracking() {
+  if (isProgrammaticScroll) return;
+  clearTimeout(scrollTrackingTimer);
+  scrollTrackingTimer = setTimeout(() => {
+    if (isProgrammaticScroll) return;
+    const wrappers = document.querySelectorAll('.a4-page-wrapper');
+    if (wrappers.length === 0) return;
+
+    const viewportMid = window.innerHeight * 0.4;
+    let closestIndex = 0;
+    let minDiff = Infinity;
+
+    wrappers.forEach((w, idx) => {
+      const rect = w.getBoundingClientRect();
+      const pageMid = rect.top + rect.height / 2;
+      const diff = Math.abs(pageMid - viewportMid);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIndex = idx;
+      }
+    });
+
+    if (closestIndex !== currentPageIndex) {
+      currentPageIndex = closestIndex;
+      // Push history state if not in modal
+      const openModals = document.querySelectorAll('.modal-overlay.open');
+      if (openModals.length === 0) {
+        try {
+          window.history.pushState({ pageIndex: closestIndex }, document.title);
+        } catch (e) {}
+      }
+    }
+  }, 120);
+}
+
+/**
+ * Displays native glass double-back exit confirmation toast
+ * @param {string} message 
+ */
+export function showNativeExitToast(message = "অ্যাপ থেকে বের হতে আর একবার ব্যাক চাপুন") {
+  let toast = document.getElementById('nativeExitToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'nativeExitToast';
+    toast.className = 'native-exit-toast no-print';
+    document.body.appendChild(toast);
+  }
+  toast.innerText = message;
+  toast.classList.add('show');
+  clearTimeout(toast.__timer);
+  toast.__timer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2200);
+}
+
 // Window Lifecycle Orchestrator
 window.addEventListener('DOMContentLoaded', () => {
   loadPersistedState();
@@ -898,14 +1077,12 @@ window.addEventListener('DOMContentLoaded', () => {
                        (window.navigator.standalone === true);
 
   if (isStandalone) {
-    // In standalone mode, user is already installed and using the native app
     localStorage.setItem('mutu_intro_dismissed', 'true');
     const pwaBtn = document.getElementById('pwaInstallBtn');
     if (pwaBtn) pwaBtn.style.display = 'none';
     const banner = document.getElementById('pwaDirectInstallBanner');
     if (banner) banner.style.display = 'none';
   } else {
-    // Check and display PWA Intro on first browser visit only
     const introDismissed = localStorage.getItem('mutu_intro_dismissed');
     if (!introDismissed) {
       setTimeout(() => {
@@ -922,19 +1099,44 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Track page scrolling
+  window.addEventListener('scroll', updatePageScrollTracking, { passive: true });
+  window.addEventListener('mutu-pages-rendered', () => {
+    updatePageScrollTracking();
+  });
+
   // Base history state for smooth Android back navigation
   try {
     if (!window.history.state) {
-      window.history.replaceState({ root: true }, document.title);
+      window.history.replaceState({ root: true, pageIndex: 0 }, document.title);
     }
   } catch (err) {}
 });
 
-// Pure Android Hardware Back Button & Tab Navigation Engine
+// Full Native App Navigation Hierarchy Back Button Listener
 window.addEventListener('popstate', () => {
-  // 1. If any modal dialog is open, close the topmost modal smoothly
+  // 1. If any modal dialog is open, handle modal sub-tab hierarchy
   const openModals = document.querySelectorAll('.modal-overlay.open');
   if (openModals.length > 0) {
+    const settingsModal = document.getElementById('settingsModal');
+    if (settingsModal && settingsModal.classList.contains('open')) {
+      const hubView = document.getElementById('settingsViewHub');
+      const isSubpageOpen = hubView && (hubView.style.display === 'none' || hubView.style.display === '');
+      const activeSubpage = document.querySelector('.settings-subpage.active');
+      if (activeSubpage) {
+        // Return to Settings Hub Dashboard
+        if (typeof window.navigateToSettingsHub === 'function') {
+          window.navigateToSettingsHub(false);
+        }
+        return;
+      } else {
+        // At settings hub: close settings modal smoothly
+        handleCloseSettingsModal();
+        return;
+      }
+    }
+
+    // Topmost other modal
     const topModal = openModals[openModals.length - 1];
     smoothCloseModal(topModal);
     return;
@@ -947,29 +1149,42 @@ window.addEventListener('popstate', () => {
     return;
   }
 
-  // 3. Android Standalone Double-Back Exit Protection
-  const isStandalone = window.__pwaIsStandalone ||
-                       window.matchMedia('(display-mode: standalone)').matches || 
-                       (window.navigator.standalone === true);
-  if (isStandalone) {
-    const now = Date.now();
-    if (now - lastBackPressTime < 2200) {
-      // User tapped back twice quickly: animate smooth native exit
-      document.body.classList.add('app-exit-transition');
-      setTimeout(() => {
-        window.history.back();
-      }, 260);
-    } else {
-      lastBackPressTime = now;
-      showToast("আর একবার ব্যাক বাটন চাপলে অ্যাপ থেকে বের হবেন", 2200);
-      try {
-        window.history.pushState({ root: true }, document.title);
-      } catch (err) {}
-    }
+  // 3. If zoomed in, smoothly reset zoom to fit
+  const fitScale = calculateFitScale();
+  if (currentDocScale > fitScale + 0.1) {
+    resetZoomToFit();
+    return;
+  }
+
+  // 4. Document Multi-Page Native Navigation Stack:
+  // "যদি আমরা তিন নাম্বার পেজ থাকি, তাহলে তিনবার ব্যাক বাটন হোম পেজে আসার পরে ব্যাক বাটন দিলে তোমার ই হবে।
+  //  মানে যেই পেজে থাকবো ব্যাক বাটন দিলে সেই ওইখান থেকে আগের পেজে যাবে। দুইটা দিলে দুইটা আগের পেজ দিবে।"
+  if (currentPageIndex > 0) {
+    const prevPageIndex = currentPageIndex - 1;
+    scrollToPage(prevPageIndex);
+    return;
+  }
+
+  // 5. On Root Home Page (Page 1): Double-Back to Exit Protection
+  const now = Date.now();
+  if (now - lastBackPressTime < 2000) {
+    // User pressed back again within 2 seconds: smooth exit transition
+    document.body.classList.add('app-exiting');
+    if (navigator.vibrate) navigator.vibrate([20, 50, 20]);
+    setTimeout(() => {
+      window.history.back();
+    }, 260);
+  } else {
+    lastBackPressTime = now;
+    showNativeExitToast("অ্যাপ থেকে বের হতে আর একবার ব্যাক চাপুন");
+    if (navigator.vibrate) navigator.vibrate(15);
+    try {
+      window.history.pushState({ root: true, pageIndex: 0 }, document.title);
+    } catch (err) {}
   }
 });
 
-// Hardware Keyboard Support for Android Tablets & Cases (Escape / Tab handling)
+// Hardware Keyboard Support for Android Tablets & Cases (Escape key handling)
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     const openModals = document.querySelectorAll('.modal-overlay.open');
@@ -985,7 +1200,6 @@ window.addEventListener('keydown', (e) => {
 });
 
 // Debounced Window Resize & Orientation Change Handler
-// Fluidly adapts scale without clearing DOM or crashing pagination!
 let scaleDebounceTimer;
 const handleViewportResize = () => {
   updateResponsivePageScale();
@@ -1032,6 +1246,7 @@ if (typeof window !== 'undefined') {
   window.triggerInstallFromIntro = triggerInstallFromIntro;
   window.requestNotificationPermissionAndSendDemo = requestNotificationPermissionAndSendDemo;
   window.showToast = showToast;
+  window.showNativeExitToast = showNativeExitToast;
   window.getDocumentBaseTitle = getDocumentBaseTitle;
   window.exportPDF = exportPDF;
   window.exportCurrentSinglePDF = exportCurrentSinglePDF;
@@ -1041,4 +1256,9 @@ if (typeof window !== 'undefined') {
   window.updateResponsivePageScale = updateResponsivePageScale;
   window.setDocumentScale = setDocumentScale;
   window.calculateFitScale = calculateFitScale;
+  window.resetZoomToFit = resetZoomToFit;
+  window.toggleZoomFit = toggleZoomFit;
+  window.zoomInDoc = zoomInDoc;
+  window.zoomOutDoc = zoomOutDoc;
+  window.scrollToPage = scrollToPage;
 }

@@ -47,15 +47,21 @@
 }
 
 /* 3. Academic Headings & Titles: Selected English Heading Font with Hind Siliguri Bengali Fallback */
+/* 3. Academic Headings & Titles: Selected English Heading Font with Hind Siliguri Bengali Fallback */
 h1, h2, h3, h4,
-.cover-main-en-title,
-.cover-main-bn-title,
 .chapter-hero-banner h2,
 .module-heading,
 .science-card h3,
 .science-concept-card h4,
 .pq-title {
   font-family: var(--font-heading-primary, 'Playfair Display'), 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
+}
+
+.cover-main-en-title {
+  font-family: var(--font-cover-title-en, var(--font-cover-title, var(--font-heading-primary, 'Playfair Display'))), 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
+}
+.cover-main-bn-title {
+  font-family: var(--font-cover-title-bn, 'HindSiliguriBengali', 'Hind Siliguri'), 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
 }
 
 /* 4. Academic Body & Content: Selected English Body Font with Hind Siliguri Bengali Fallback */
@@ -72,18 +78,29 @@ h1, h2, h3, h4,
 .math-formula-box,
 .chapter-hero-banner,
 .explanation-card,
-.cover-subject-pill,
-.cover-subtitle,
-.cover-meta-item,
-.cover-footer-imprint,
 .header-meta,
 .footer-left-meta,
 .footer-page-num {
   font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', -apple-system, sans-serif !important;
 }
 
+.cover-subtitle {
+  font-family: var(--font-cover-subtitle, var(--font-english-primary, 'Outfit')), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
+}
+.cover-subject-pill {
+  font-family: var(--font-cover-subject, var(--font-cover-subtitle, var(--font-english-primary, 'Outfit'))), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
+}
 .cover-kicker {
-  font-family: 'Cinzel Decorative', 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', Georgia, serif !important;
+  font-family: var(--font-cover-kicker, 'Cinzel Decorative'), 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', Georgia, serif !important;
+}
+.cover-meta-item strong {
+  font-family: var(--font-cover-meta-label, var(--font-cover-kicker, 'Cinzel Decorative')), 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
+}
+.cover-meta-item span {
+  font-family: var(--font-cover-meta-value, var(--font-cover-subtitle, var(--font-english-primary, 'Outfit'))), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
+}
+.cover-footer-imprint {
+  font-family: var(--font-cover-imprint, var(--font-cover-kicker, 'Cinzel Decorative')), 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
 }
 
 /* Preserve Mathematical Typography & Fonts with Bengali Ligature Support (KaTeX & MathJax) */

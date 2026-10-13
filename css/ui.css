@@ -280,12 +280,169 @@ html[data-theme="light"] .ambient-orb {
 }
 
 /* Real App Smooth Minimize / Exit Transition */
-body.app-exit-transition {
-  transform: scale(0.92);
+body.app-exit-transition,
+body.app-exiting {
+  transform: scale(0.97);
   opacity: 0;
-  filter: blur(5px);
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease, filter 0.28s ease;
+  filter: blur(4px);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
+}
+
+/* Native Android Glass Exit Toast */
+.native-exit-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(24, 11, 16, 0.92);
+  color: #fff;
+  border: 1px solid var(--border-strong);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-size: 12.5px;
+  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: all 0.25s ease;
+  z-index: 99999;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.native-exit-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Floating Glass Zoom Controller (Real PDF Reader Architecture) */
+.doc-zoom-controller {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  background: var(--glass-surface-card, rgba(28, 14, 20, 0.88));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border, rgba(232, 153, 130, 0.28));
+  border-radius: 30px;
+  padding: 3px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  z-index: 9980;
+  gap: 2px;
+  user-select: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.doc-zoom-controller .zoom-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-english, #FFF8ED);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+.doc-zoom-controller .zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--accent-secondary, #E89982);
+}
+.doc-zoom-controller .zoom-btn:active {
+  transform: scale(0.9);
+}
+
+.doc-zoom-controller .zoom-badge-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-english, #FFF8ED);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0 8px;
+  height: 28px;
+  border-radius: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-english-primary, 'Outfit'), sans-serif;
+  transition: all 0.15s ease;
+}
+.doc-zoom-controller .zoom-badge-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--accent-secondary, #E89982);
+}
+
+/* Top Drag Handle Indicator for Native Android Bottom Sheets */
+.modal-drag-handle {
+  width: 40px;
+  height: 4.5px;
+  background: var(--glass-border-light, rgba(255, 255, 255, 0.45));
+  border-radius: 4px;
+  margin: 6px auto 10px auto;
+  display: none;
+  flex-shrink: 0;
+}
+
+/* Mobile & Tablet Native Android Bottom-Sheet Transitions (<= 768px) */
+@media (max-width: 768px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  
+  .modal-drag-handle {
+    display: block;
+  }
+
+  .modal-content,
+  .settings-modal,
+  .pwa-intro-dialog,
+  .export-modal,
+  .ios-install-dialog,
+  .pwa-frame-dialog,
+  .diagnostic-modal {
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease;
+    border-radius: 20px 20px 0 0;
+    max-height: 90vh;
+    width: 100%;
+    max-width: 100vw;
+    margin: 0;
+    border-bottom: none;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .modal-overlay.open .modal-content,
+  .modal-overlay.open .settings-modal,
+  .modal-overlay.open .pwa-intro-dialog,
+  .modal-overlay.open .export-modal,
+  .modal-overlay.open .ios-install-dialog,
+  .modal-overlay.open .pwa-frame-dialog,
+  .modal-overlay.open .diagnostic-modal {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .modal-overlay.closing .modal-content,
+  .modal-overlay.closing .settings-modal,
+  .modal-overlay.closing .pwa-intro-dialog,
+  .modal-overlay.closing .export-modal,
+  .modal-overlay.closing .ios-install-dialog,
+  .modal-overlay.closing .pwa-frame-dialog,
+  .modal-overlay.closing .diagnostic-modal {
+    transform: translateY(100%) !important;
+    opacity: 0.8 !important;
+    transition: transform 0.26s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease !important;
+  }
 }
 
 /* Glossy Breadcrumb in Modal Header */

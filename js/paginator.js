@@ -109,6 +109,37 @@ export function applyTypography(state = appState) {
   root.style.setProperty('--font-heading-primary', primaryEnHead);
   root.style.setProperty('--font-bengali-primary', primaryBn);
 
+  // Individual Cover Specific Font Stacks (English in selected font, Bengali in Hind Siliguri)
+  const rawCoverTitleEn = state.fontCoverTitleEn || state.fontCoverTitle || state.fontEnglishHeading || "'Playfair Display'";
+  const rawCoverTitleBn = state.fontCoverTitleBn || state.fontBengali || "'Hind Siliguri'";
+  const rawCoverSub = state.fontCoverSubtitle || state.fontEnglishBody || "'Outfit'";
+  const rawCoverKicker = state.fontCoverKicker || "'Cinzel Decorative'";
+  const rawCoverSubject = state.fontCoverSubject || state.fontCoverSubtitle || "'Outfit'";
+  const rawCoverMetaLabel = state.fontCoverMetaLabel || "'Cinzel'";
+  const rawCoverMetaVal = state.fontCoverMetaValue || state.fontCoverSubtitle || "'Outfit'";
+  const rawCoverImprint = state.fontCoverImprint || "'Cinzel'";
+
+  const cleanFontName = (str) => (str || '').split(',')[0].trim().replace(/['"]/g, '');
+
+  const coverTitleEnName = cleanFontName(rawCoverTitleEn);
+  const coverTitleBnName = cleanFontName(rawCoverTitleBn);
+  const coverSubName = cleanFontName(rawCoverSub);
+  const coverKickerName = cleanFontName(rawCoverKicker);
+  const coverSubjectName = cleanFontName(rawCoverSubject);
+  const coverMetaLabelName = cleanFontName(rawCoverMetaLabel);
+  const coverMetaValName = cleanFontName(rawCoverMetaVal);
+  const coverImprintName = cleanFontName(rawCoverImprint);
+
+  root.style.setProperty('--font-cover-title', `'${coverTitleEnName}', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
+  root.style.setProperty('--font-cover-title-en', `'${coverTitleEnName}', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
+  root.style.setProperty('--font-cover-title-bn', `'${coverTitleBnName}', 'HindSiliguriBengali', 'Kalpurush', sans-serif`);
+  root.style.setProperty('--font-cover-subtitle', `'${coverSubName}', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', sans-serif`);
+  root.style.setProperty('--font-cover-kicker', `'${coverKickerName}', 'Cinzel', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
+  root.style.setProperty('--font-cover-subject', `'${coverSubjectName}', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', sans-serif`);
+  root.style.setProperty('--font-cover-meta-label', `'${coverMetaLabelName}', 'Cinzel', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
+  root.style.setProperty('--font-cover-meta-value', `'${coverMetaValName}', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', sans-serif`);
+  root.style.setProperty('--font-cover-imprint', `'${coverImprintName}', 'Cinzel', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
+
   // Cascade: Primary English font matches Latin ASCII first; Bengali glyphs fall back to Hind Siliguri
   root.style.setProperty('--font-english', `${primaryEnBody}, 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', sans-serif`);
   root.style.setProperty('--font-display', `${primaryEnHead}, 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
@@ -170,17 +201,26 @@ export async function runAutoPagination(state = appState) {
 
     stage.innerHTML = '';
 
-    // 1. Inject Cover Page if Enabled
+    // 1. Inject Cover Page if Enabled (wrapped for natural 2D zoom & safe layout)
+    let pageSequence = 0;
     if (state.coverEnabled) {
       const coverPage = createCoverPage(state);
-      stage.appendChild(coverPage);
+      const wrapper = document.createElement('div');
+      wrapper.className = 'a4-page-wrapper';
+      wrapper.dataset.pageIndex = String(pageSequence++);
+      wrapper.appendChild(coverPage);
+      stage.appendChild(wrapper);
     }
 
     // 2. Paginate Content Nodes into strict A4 sheets
     const items = Array.from(tempPool.children);
     if (items.length > 0) {
       let currentPage = createNewA4Page(state);
-      stage.appendChild(currentPage);
+      let currentWrapper = document.createElement('div');
+      currentWrapper.className = 'a4-page-wrapper';
+      currentWrapper.dataset.pageIndex = String(pageSequence++);
+      currentWrapper.appendChild(currentPage);
+      stage.appendChild(currentWrapper);
       let contentArea = currentPage.querySelector('.page-content-area');
 
       for (let i = 0; i < items.length; i++) {
@@ -193,7 +233,11 @@ export async function runAutoPagination(state = appState) {
           contentArea.removeChild(clone);
 
           currentPage = createNewA4Page(state);
-          stage.appendChild(currentPage);
+          currentWrapper = document.createElement('div');
+          currentWrapper.className = 'a4-page-wrapper';
+          currentWrapper.dataset.pageIndex = String(pageSequence++);
+          currentWrapper.appendChild(currentPage);
+          stage.appendChild(currentWrapper);
           contentArea = currentPage.querySelector('.page-content-area');
           contentArea.appendChild(clone);
         }
@@ -224,6 +268,10 @@ export async function runAutoPagination(state = appState) {
         pageNumEl.innerText = `PAGE ${currentP} / ${totalP}`;
       }
     });
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('mutu-pages-rendered'));
+    }
   } finally {
     isPaginating = false;
     if (pendingPagination) {

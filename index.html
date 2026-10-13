@@ -355,6 +355,7 @@
        ======================================================================== -->
   <div class="modal-overlay no-print" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
     <div class="settings-modal">
+      <div class="modal-drag-handle" aria-hidden="true"></div>
       
       <!-- Modal Header with Dynamic Breadcrumb -->
       <div class="modal-header">
@@ -641,6 +642,16 @@
           </div>
 
           <div class="settings-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface-card-subtle); padding:10px 14px; border-radius:10px; margin-bottom:12px; border:1px solid var(--glass-border);">
+              <div>
+                <strong style="font-size:12.5px; color:var(--accent-primary); display:block;">✍️ কভার পেজের ফন্ট কাস্টমাইজেশন</strong>
+                <span style="font-size:11px; color:var(--text-english-muted);">শিরোনাম, সাবটাইটেল, কিকার ও মেটা ফিল্ডের স্বতন্ত্র ফন্ট সেটিংস</span>
+              </div>
+              <button type="button" class="ui-btn" style="font-size:11.5px; padding:6px 12px;" onclick="navigateToSettingsPage('typography')">
+                <span>ফন্ট স্টুডিও &rarr;</span>
+              </button>
+            </div>
+
             <div class="toggle-row">
               <span style="font-weight: 700; color: var(--accent-primary);">কভার পেজ চালু রাখবেন?</span>
               <input type="checkbox" id="cfgCoverToggle">
@@ -751,6 +762,112 @@
                 <option value="'Noto Serif Bengali', 'Kalpurush', serif">নোটো সেরিফ বেঙ্গলি (Noto Serif Bengali - বইয়ের সেরিফ লুক)</option>
                 <option value="'Tiro Bangla', serif">তিরো বাংলা (Tiro Bangla - প্রাতিষ্ঠানিক একাডেমিক সেরিফ)</option>
                 <option value="'Anek Bangla', sans-serif">অনেক বাংলা (Anek Bangla - কনটেম্পোরারি মডার্ন সান্স)</option>
+              </select>
+            </div>
+
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--glass-border);">
+              <span style="font-size: 12.5px; font-weight: 700; color: var(--accent-secondary); display: block; margin-bottom: 4px;">🎨 কভার পেজের প্রতিটি উপাদানের স্বতন্ত্র ফন্ট স্টুডিও:</span>
+              <p style="font-size: 11.5px; color: var(--text-english-muted); margin: 0 0 10px 0;">
+                💡 ইংরেজি ফন্ট সিলেক্ট করলে ইংরেজি লেখাটি সেই ফন্টে থাকবে এবং বাংলা অক্ষরসমূহ স্বয়ংক্রিয়ভাবে হিন্দি শিলিগুড়ি (Hind Siliguri) ফন্টে পিওরলি ব্লেন্ড হবে।
+              </p>
+            </div>
+
+            <!-- 1. English Title Font -->
+            <div class="form-row">
+              <label for="cfgFontCoverTitleEn">১. কভার মূল ইংরেজি শিরোনাম ফন্ট (Cover English Title):</label>
+              <select id="cfgFontCoverTitleEn" class="form-control" onchange="if(document.getElementById('cfgFontCoverTitle')) document.getElementById('cfgFontCoverTitle').value=this.value;">
+                <option value="'Playfair Display', Georgia, serif">Playfair Display (রাজকীয় সেরিফ)</option>
+                <option value="'Cinzel Decorative', Georgia, serif">Cinzel Decorative (রোমান ডেকোরেটিভ)</option>
+                <option value="'Cinzel', Georgia, serif">Cinzel (রোমান ক্লাসিক)</option>
+                <option value="'Cormorant Garamond', serif">Cormorant Garamond (লাক্সারি ফাইন সেরিফ)</option>
+                <option value="'Outfit', sans-serif">Outfit (আধুনিক বোল্ড সান্স)</option>
+                <option value="'Montserrat', sans-serif">Montserrat (জ্যামিতিক ক্লিন সান্স)</option>
+                <option value="'Merriweather', Georgia, serif">Merriweather (বইয়ের মতো উষ্ণ সেরিফ)</option>
+              </select>
+              <!-- Hidden fallback for backward compatibility -->
+              <input type="hidden" id="cfgFontCoverTitle" value="'Playfair Display', Georgia, serif">
+            </div>
+
+            <!-- 2. Bengali Title Font -->
+            <div class="form-row">
+              <label for="cfgFontCoverTitleBn">২. কভার বাংলা শিরোনাম ফন্ট (Cover Bengali Title):</label>
+              <select id="cfgFontCoverTitleBn" class="form-control">
+                <option value="'Hind Siliguri', 'Kalpurush', sans-serif">হিন্দ শিলিগুড়ি (Hind Siliguri - সর্বাধিক পঠিত ও ক্লিন)</option>
+                <option value="'Noto Serif Bengali', 'Kalpurush', serif">নোটো সেরিফ বেঙ্গলি (Noto Serif Bengali - মার্জিত সেরিফ)</option>
+                <option value="'Tiro Bangla', serif">তিরো বাংলা (Tiro Bangla - প্রাতিষ্ঠানিক একাডেমিক সেরিফ)</option>
+                <option value="'Anek Bangla', sans-serif">অনেক বাংলা (Anek Bangla - কনটেম্পোরারি সান্স)</option>
+                <option value="'Kalpurush', sans-serif">কালপুরুষ (Kalpurush - ক্লাসিক বাংলা)</option>
+              </select>
+            </div>
+
+            <!-- 3. Subtitle Font -->
+            <div class="form-row">
+              <label for="cfgFontCoverSubtitle">৩. কভার সাবটাইটেল ও সারসংক্ষেপ ফন্ট (Cover Subtitle):</label>
+              <select id="cfgFontCoverSubtitle" class="form-control">
+                <option value="'Outfit', sans-serif">Outfit (আধুনিক ক্রিস্প সান্স)</option>
+                <option value="'Cormorant Garamond', serif">Cormorant Garamond (লাক্সারি ইটালিক সেরিফ)</option>
+                <option value="'Montserrat', sans-serif">Montserrat (ক্লিন জ্যামিতিক সান্স)</option>
+                <option value="'Merriweather', Georgia, serif">Merriweather (উষ্ণ সেরিফ)</option>
+                <option value="'Playfair Display', Georgia, serif">Playfair Display (মার্জিত সেরিফ)</option>
+                <option value="'Hind Siliguri', sans-serif">হিন্দ শিলিগুড়ি (Hind Siliguri)</option>
+              </select>
+            </div>
+
+            <!-- 4. Kicker Font -->
+            <div class="form-row">
+              <label for="cfgFontCoverKicker">৪. কভার সিরিজ কিকার ও ব্যান্ড ফন্ট (Cover Top Kicker):</label>
+              <select id="cfgFontCoverKicker" class="form-control">
+                <option value="'Cinzel Decorative', Georgia, serif">Cinzel Decorative (রোমান হেরিটেজ)</option>
+                <option value="'Cinzel', Georgia, serif">Cinzel (রোমান ক্লাসিক)</option>
+                <option value="'Montserrat', sans-serif">Montserrat (অল-ক্যাপস সান্স)</option>
+                <option value="'Outfit', sans-serif">Outfit (আধুনিক বোল্ড)</option>
+                <option value="'Playfair Display', Georgia, serif">Playfair Display (রাজকীয় সেরিফ)</option>
+              </select>
+            </div>
+
+            <!-- 5. Subject Pill Font -->
+            <div class="form-row">
+              <label for="cfgFontCoverSubject">৫. কভার বিষয় ব্যাজ ফন্ট (Subject Badge / Pill):</label>
+              <select id="cfgFontCoverSubject" class="form-control">
+                <option value="'Outfit', sans-serif">Outfit (আধুনিক বোল্ড সান্স)</option>
+                <option value="'Montserrat', sans-serif">Montserrat (জ্যামিতিক সান্স)</option>
+                <option value="'Cinzel', Georgia, serif">Cinzel (রোমান ক্লাসিক)</option>
+                <option value="'Playfair Display', Georgia, serif">Playfair Display (সেরিফ)</option>
+                <option value="'Hind Siliguri', sans-serif">হিন্দ শিলিগুড়ি (Hind Siliguri)</option>
+              </select>
+            </div>
+
+            <!-- 6. Meta Grid Field Labels Font -->
+            <div class="form-row">
+              <label for="cfgFontCoverMetaLabel">৬. মেটা ফিল্ড লেবেল ফন্ট (ইনস্ট্রাক্টর, সেশন ইত্যাদি):</label>
+              <select id="cfgFontCoverMetaLabel" class="form-control">
+                <option value="'Cinzel', Georgia, serif">Cinzel (রোমান ক্লাসিক)</option>
+                <option value="'Cinzel Decorative', Georgia, serif">Cinzel Decorative (রোমান হেরিটেজ)</option>
+                <option value="'Montserrat', sans-serif">Montserrat (ক্যাপস সান্স)</option>
+                <option value="'Outfit', sans-serif">Outfit (আধুনিক সান্স)</option>
+              </select>
+            </div>
+
+            <!-- 7. Meta Grid Values Font -->
+            <div class="form-row">
+              <label for="cfgFontCoverMetaVal">৭. মেটা ইনফো ও বিবরণ ফন্ট (শিক্ষকের নাম, শিক্ষাবর্ষ ইত্যাদি):</label>
+              <select id="cfgFontCoverMetaVal" class="form-control">
+                <option value="'Outfit', sans-serif">Outfit (আধুনিক ক্রিস্প সান্স)</option>
+                <option value="'Montserrat', sans-serif">Montserrat (ক্লিন সান্স)</option>
+                <option value="'Cormorant Garamond', serif">Cormorant Garamond (ফাইন সেরিফ)</option>
+                <option value="'Merriweather', Georgia, serif">Merriweather (বইয়ের মতো উষ্ণ সেরিফ)</option>
+                <option value="'Hind Siliguri', sans-serif">হিন্দ শিলিগুড়ি (Hind Siliguri)</option>
+              </select>
+            </div>
+
+            <!-- 8. Footer Imprint Font -->
+            <div class="form-row">
+              <label for="cfgFontCoverImprint">৮. কভার ফুটনোট ও ইমপ্রিন্ট ফন্ট (Footer Imprint):</label>
+              <select id="cfgFontCoverImprint" class="form-control">
+                <option value="'Cinzel', Georgia, serif">Cinzel (রোমান ক্লাসিক)</option>
+                <option value="'Cinzel Decorative', Georgia, serif">Cinzel Decorative (রোমান হেরিটেজ)</option>
+                <option value="'Montserrat', sans-serif">Montserrat (ক্লিন সান্স)</option>
+                <option value="'Outfit', sans-serif">Outfit (আধুনিক সান্স)</option>
               </select>
             </div>
 
@@ -987,6 +1104,7 @@
        ======================================================================== -->
   <div class="modal-overlay no-print" id="pwaIntroModal" role="dialog" aria-modal="true" aria-labelledby="introModalTitle">
     <div class="pwa-intro-dialog">
+      <div class="modal-drag-handle" aria-hidden="true"></div>
       <div class="intro-brand-header">
         <svg class="ui-brand-emblem" viewBox="45 20 260 310" width="48" height="48" aria-hidden="true" style="vertical-align: middle; flex-shrink: 0; display: inline-block;">
           <path fill="url(#m-left-fill)" d="M 58.05,46.45 L 147.48,97.94 C 162.85,106.75 170.78,120.15 170.78,135.43 L 170.78,322.16 L 75.14,267.86 C 64.14,261.61 58.05,252.95 58.05,240.17 Z"/>
@@ -1239,6 +1357,7 @@
        ======================================================================== -->
   <div class="modal-overlay no-print" id="dualExportModal" role="dialog" aria-modal="true" aria-labelledby="dualExportTitle">
     <div class="dual-export-modal">
+      <div class="modal-drag-handle" aria-hidden="true"></div>
       <div class="modal-header" style="padding: 0 0 10px 0; border-bottom: 1px solid var(--glass-border);">
         <h3 id="dualExportTitle" style="display:flex; align-items:center; gap:8px; font-size:1.15rem; color:var(--accent-primary); margin:0;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -1322,6 +1441,16 @@
     <span class="offline-pill-dot"></span>
     <span>অফলাইন মোড — ক্যাশ মেমোরি থেকে চলছে</span>
     <button type="button" class="offline-pill-close" onclick="document.getElementById('offlinePill').classList.remove('visible')" title="Close notification" aria-label="Close notification">&times;</button>
+  </div>
+
+  <!-- Native Android Hardware Double-Back Glass Exit Toast -->
+  <div class="native-exit-toast no-print" id="nativeExitToast">অ্যাপ থেকে বের হতে আর একবার ব্যাক চাপুন</div>
+
+  <!-- Real PDF Reader Style Glass Floating Zoom Controller -->
+  <div class="doc-zoom-controller no-print" id="docZoomController" role="group" aria-label="ডকুমেন্ট জুম কন্ট্রোল">
+    <button type="button" class="zoom-btn" onclick="zoomOutDoc()" title="জুম আউট (−20%)" aria-label="Zoom out">−</button>
+    <button type="button" class="zoom-badge-btn" id="docZoomBadge" onclick="toggleZoomFit()" title="স্ক্রিন ফিট রিসেট করুন">Fit</button>
+    <button type="button" class="zoom-btn" onclick="zoomInDoc()" title="জুম ইন (+20%)" aria-label="Zoom in">+</button>
   </div>
 
   <!-- ========================================================================

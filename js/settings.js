@@ -113,6 +113,15 @@ export const appState = {
   fontEnglishBody: "'Outfit', sans-serif",
   fontEnglishHeading: "'Playfair Display', Georgia, serif",
   fontBengali: "'Hind Siliguri', 'Kalpurush', sans-serif",
+  fontCoverTitle: "'Playfair Display', Georgia, serif",
+  fontCoverTitleEn: "'Playfair Display', Georgia, serif",
+  fontCoverTitleBn: "'Hind Siliguri', 'Kalpurush', sans-serif",
+  fontCoverSubtitle: "'Outfit', sans-serif",
+  fontCoverKicker: "'Cinzel Decorative', Georgia, serif",
+  fontCoverSubject: "'Outfit', sans-serif",
+  fontCoverMetaLabel: "'Cinzel', Georgia, serif",
+  fontCoverMetaValue: "'Outfit', sans-serif",
+  fontCoverImprint: "'Cinzel', Georgia, serif",
   fontScale: 1.0,
 
   // In-System Raw Content HTML
@@ -184,11 +193,28 @@ export function savePersistedState() {
   }
 }
 
+// Sub-Tab Navigation History Stack
+export let settingsTabHistory = ['hub'];
+
+/**
+ * Switch Settings Tab with History Support
+ * @param {string} tabId - Subpage ID ('content' | 'cover' | 'typography' | 'layout' | 'metadata' | 'system' | 'hub')
+ * @param {boolean} [pushHistory=true] - Whether to push state to window.history
+ */
+export function switchSettingsTab(tabId, pushHistory = true) {
+  if (tabId === 'hub') {
+    navigateToSettingsHub(pushHistory);
+  } else {
+    navigateToSettingsPage(tabId, pushHistory);
+  }
+}
+
 /**
  * Navigates into a dedicated Settings Subpage (Content, Cover, Typography, Layout, Metadata, System)
  * @param {string} pageId - 'content' | 'cover' | 'typography' | 'layout' | 'metadata' | 'system'
+ * @param {boolean} [pushHistory=true]
  */
-export function navigateToSettingsPage(pageId) {
+export function navigateToSettingsPage(pageId, pushHistory = true) {
   const hubView = document.getElementById('settingsViewHub');
   if (hubView) hubView.style.display = 'none';
 
@@ -214,12 +240,20 @@ export function navigateToSettingsPage(pageId) {
   if (breadcrumbActive && titles[pageId]) {
     breadcrumbActive.innerText = titles[pageId];
   }
+
+  if (pushHistory) {
+    settingsTabHistory.push(pageId);
+    try {
+      window.history.pushState({ modalId: 'settingsModal', activeTab: pageId }, document.title);
+    } catch (e) {}
+  }
 }
 
 /**
  * Returns from subpage back to Settings Hub Dashboard
+ * @param {boolean} [pushHistory=false]
  */
-export function navigateToSettingsHub() {
+export function navigateToSettingsHub(pushHistory = false) {
   const subpages = document.querySelectorAll('.settings-subpage');
   subpages.forEach(p => p.classList.remove('active'));
 
@@ -229,6 +263,13 @@ export function navigateToSettingsHub() {
   const breadcrumbActive = document.getElementById('settingsActiveBreadcrumb');
   if (breadcrumbActive) {
     breadcrumbActive.innerText = "স্টুডিও ড্যাশবোর্ড";
+  }
+
+  settingsTabHistory = ['hub'];
+  if (pushHistory) {
+    try {
+      window.history.pushState({ modalId: 'settingsModal', activeTab: 'hub' }, document.title);
+    } catch (e) {}
   }
 }
 
@@ -408,14 +449,6 @@ export function resetFactoryDefaults() {
 }
 
 /**
- * Switches Active Tab inside the Settings Studio Modal (legacy alias)
- * @param {string} tabId - 'content' | 'cover' | 'typography' | 'general'
- */
-export function switchSettingsTab(tabId) {
-  navigateToSettingsPage(tabId);
-}
-
-/**
  * Opens Settings Modal and Populates All Fields with Current State
  * @param {string} [initialPage=null]
  */
@@ -510,7 +543,7 @@ export function openSettingsModal(initialPage = null) {
 
   toggleCustomCoverBox();
 
-  // Tab 4: Typography
+  // Tab 4: Typography & Cover Fonts
   const fontEnBody = document.getElementById('cfgFontEnBody');
   if (fontEnBody) fontEnBody.value = appState.fontEnglishBody;
 
@@ -520,6 +553,33 @@ export function openSettingsModal(initialPage = null) {
   const fontBn = document.getElementById('cfgFontBn');
   if (fontBn) fontBn.value = appState.fontBengali;
 
+  const fontCoverTitle = document.getElementById('cfgFontCoverTitle');
+  if (fontCoverTitle) fontCoverTitle.value = appState.fontCoverTitle || "'Playfair Display', Georgia, serif";
+
+  const fontCoverTitleEn = document.getElementById('cfgFontCoverTitleEn');
+  if (fontCoverTitleEn) fontCoverTitleEn.value = appState.fontCoverTitleEn || appState.fontCoverTitle || "'Playfair Display', Georgia, serif";
+
+  const fontCoverTitleBn = document.getElementById('cfgFontCoverTitleBn');
+  if (fontCoverTitleBn) fontCoverTitleBn.value = appState.fontCoverTitleBn || appState.fontBengali || "'Hind Siliguri', 'Kalpurush', sans-serif";
+
+  const fontCoverSubtitle = document.getElementById('cfgFontCoverSubtitle');
+  if (fontCoverSubtitle) fontCoverSubtitle.value = appState.fontCoverSubtitle || "'Outfit', sans-serif";
+
+  const fontCoverKicker = document.getElementById('cfgFontCoverKicker');
+  if (fontCoverKicker) fontCoverKicker.value = appState.fontCoverKicker || "'Cinzel Decorative', Georgia, serif";
+
+  const fontCoverSubject = document.getElementById('cfgFontCoverSubject');
+  if (fontCoverSubject) fontCoverSubject.value = appState.fontCoverSubject || "'Outfit', sans-serif";
+
+  const fontCoverMetaLabel = document.getElementById('cfgFontCoverMetaLabel');
+  if (fontCoverMetaLabel) fontCoverMetaLabel.value = appState.fontCoverMetaLabel || "'Cinzel', Georgia, serif";
+
+  const fontCoverMetaVal = document.getElementById('cfgFontCoverMetaVal');
+  if (fontCoverMetaVal) fontCoverMetaVal.value = appState.fontCoverMetaValue || "'Outfit', sans-serif";
+
+  const fontCoverImprint = document.getElementById('cfgFontCoverImprint');
+  if (fontCoverImprint) fontCoverImprint.value = appState.fontCoverImprint || "'Cinzel', Georgia, serif";
+
   const fontScale = document.getElementById('cfgFontScale');
   const scaleVal = document.getElementById('cfgScaleVal');
   if (fontScale) fontScale.value = Math.round(appState.fontScale * 100);
@@ -528,6 +588,7 @@ export function openSettingsModal(initialPage = null) {
   modal.classList.remove('closing');
   void modal.offsetWidth;
   modal.classList.add('open');
+  navigateToSettingsHub(false);
   if (typeof window !== 'undefined' && typeof window.pushModalHistory === 'function') {
     window.pushModalHistory('settingsModal');
   }
@@ -639,7 +700,7 @@ export function saveAllSettings() {
   const coverCustomHtml = document.getElementById('cfgCoverCustomHtml');
   if (coverCustomHtml) appState.coverCustomHtml = coverCustomHtml.value;
 
-  // Typography
+  // Typography & Cover Fonts
   const fontEnBody = document.getElementById('cfgFontEnBody');
   if (fontEnBody) appState.fontEnglishBody = fontEnBody.value;
 
@@ -648,6 +709,34 @@ export function saveAllSettings() {
 
   const fontBn = document.getElementById('cfgFontBn');
   if (fontBn) appState.fontBengali = fontBn.value;
+
+  const fontCoverTitle = document.getElementById('cfgFontCoverTitle');
+  if (fontCoverTitle) appState.fontCoverTitle = fontCoverTitle.value;
+
+  const fontCoverTitleEn = document.getElementById('cfgFontCoverTitleEn');
+  if (fontCoverTitleEn) appState.fontCoverTitleEn = fontCoverTitleEn.value;
+  else if (fontCoverTitle) appState.fontCoverTitleEn = fontCoverTitle.value;
+
+  const fontCoverTitleBn = document.getElementById('cfgFontCoverTitleBn');
+  if (fontCoverTitleBn) appState.fontCoverTitleBn = fontCoverTitleBn.value;
+
+  const fontCoverSubtitle = document.getElementById('cfgFontCoverSubtitle');
+  if (fontCoverSubtitle) appState.fontCoverSubtitle = fontCoverSubtitle.value;
+
+  const fontCoverKicker = document.getElementById('cfgFontCoverKicker');
+  if (fontCoverKicker) appState.fontCoverKicker = fontCoverKicker.value;
+
+  const fontCoverSubject = document.getElementById('cfgFontCoverSubject');
+  if (fontCoverSubject) appState.fontCoverSubject = fontCoverSubject.value;
+
+  const fontCoverMetaLabel = document.getElementById('cfgFontCoverMetaLabel');
+  if (fontCoverMetaLabel) appState.fontCoverMetaLabel = fontCoverMetaLabel.value;
+
+  const fontCoverMetaVal = document.getElementById('cfgFontCoverMetaVal');
+  if (fontCoverMetaVal) appState.fontCoverMetaValue = fontCoverMetaVal.value;
+
+  const fontCoverImprint = document.getElementById('cfgFontCoverImprint');
+  if (fontCoverImprint) appState.fontCoverImprint = fontCoverImprint.value;
 
   const fontScale = document.getElementById('cfgFontScale');
   if (fontScale) appState.fontScale = Number(fontScale.value) / 100;

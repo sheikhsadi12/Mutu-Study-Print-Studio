@@ -8,10 +8,10 @@
   --font-heading-primary: 'Playfair Display';
   --font-bengali-primary: 'Hind Siliguri';
 
-  --font-cinzel: 'Cinzel Decorative', 'Cinzel', 'Hind Siliguri', 'Kalpurush', serif;
-  --font-display: 'Playfair Display', 'Cinzel', 'Hind Siliguri', 'Kalpurush', serif;
-  --font-english: 'Outfit', 'Hind Siliguri', 'Kalpurush', sans-serif;
-  --font-bengali: 'Outfit', 'Hind Siliguri', 'Kalpurush', sans-serif;
+  --font-cinzel: 'Cinzel Decorative', 'Cinzel', 'AutoBengali', Georgia, serif;
+  --font-display: 'Playfair Display', 'Cinzel', 'AutoBengali', Georgia, serif;
+  --font-english: 'Outfit';
+  --font-bengali: 'AutoBengali', 'Hind Siliguri', sans-serif;
   
   --page-width: 210mm;
   --page-height: 297mm;
@@ -203,7 +203,7 @@ html[data-theme="light"] {
 body {
   background-color: var(--app-stage-bg, #0c0608);
   color: var(--text-english);
-  font-family: var(--font-english);
+  font-family: var(--font-english), 'AutoBengali', -apple-system, sans-serif;
   margin: 0;
   padding: 0;
   transition: background-color 0.25s ease, color 0.25s ease;
