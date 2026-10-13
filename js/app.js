@@ -683,62 +683,182 @@ export function handleCloseSettingsModal() {
 }
 
 /* ============================================================================
-   FLUID HAND-OPERATED PINCH-TO-ZOOM ENGINE (Google Drive & Real PDF Reader Architecture)
-   Natural zoom anchored directly around touch focal point (midpoint of fingers).
-   The document scales outward in all directions without any top jump!
+   FLUID HAND-OPERATED PINCH-TO-ZOOM ENGINE & DOC ZOOM CONTROLLER
+   Google Drive & Real PDF Reader Architecture.
+   Accurately calculates scaling ratios relative to the #document-stage container,
+   maintains responsive 'Fit' mode during orientation changes,
+   and implements discrete 10% percentage steps for plus/minus buttons.
    ============================================================================ */
 
 let currentDocScale = 1;
+let isDocInFitMode = true;
 
 /**
- * Calculates responsive default fit scale based on viewport width
+ * Accurately calculates scaling ratio relative to the #document-stage container
+ * @returns {number} Scale ratio (between 0.25 and 1.0)
  */
 export function calculateFitScale() {
-  const viewportWidth = window.innerWidth;
-  const a4PixelWidth = 794; // Standard 210mm in 96dpi CSS px
+  const stage = document.getElementById('document-stage');
+  const container = stage?.parentElement || document.body;
+  const containerWidth = (container && container.clientWidth > 0) ? container.clientWidth : window.innerWidth;
+
+  // Responsive margins/padding around document stage
   let horizontalPadding = 16;
-  if (viewportWidth >= 1024) {
+  if (containerWidth >= 1024) {
     horizontalPadding = 48;
-  } else if (viewportWidth >= 768) {
+  } else if (containerWidth >= 768) {
     horizontalPadding = 28;
+  } else if (containerWidth <= 420) {
+    horizontalPadding = 12; // Mobile screen comfort padding
   }
 
-  const availableWidth = viewportWidth - horizontalPadding;
-  if (availableWidth < a4PixelWidth) {
-    return Math.max(0.35, Math.min(1, availableWidth / a4PixelWidth));
+  const availableWidth = Math.max(260, containerWidth - horizontalPadding);
+  const a4PixelWidth = 794; // Standard 210mm A4 in 96dpi CSS px
+  const ratio = availableWidth / a4PixelWidth;
+
+  // Proportional scale to fit container width, capped at 1.0 (100% natural A4 print size)
+  if (ratio < 1.0) {
+    return Math.max(0.25, Math.min(1.0, Number(ratio.toFixed(3))));
   }
-  return 1;
+  return 1.0;
 }
 
 /**
- * Applies smooth scale to the A4 document pages and updates floating controller
+ * Applies scale to the A4 document pages and updates floating controller indicators
  * @param {number} scale 
  */
 export function setDocumentScale(scale) {
-  currentDocScale = Math.max(0.35, Math.min(3.5, scale));
+  currentDocScale = Math.max(0.25, Math.min(3.5, scale));
   document.documentElement.style.setProperty('--doc-preview-scale', currentDocScale.toFixed(4));
 
   const badgeBtn = document.getElementById('docZoomBadge');
+  const zoomInBtn = document.getElementById('zoomInBtn');
+  const zoomOutBtn = document.getElementById('zoomOutBtn');
+  const zoomActualBtn = document.getElementById('zoomActualBtn');
+
+  const fitScale = calculateFitScale();
+  const percent = Math.round(currentDocScale * 100);
+  const isFit = isDocInFitMode || Math.abs(currentDocScale - fitScale) < 0.02;
+
   if (badgeBtn) {
-    const fitScale = calculateFitScale();
-    const percent = Math.round(currentDocScale * 100);
-    if (Math.abs(currentDocScale - fitScale) < 0.04) {
-      badgeBtn.innerText = 'Fit';
-      badgeBtn.title = `স্ক্রিন ফিট (${percent}%) - ট্যাপ করে জুম করুন`;
+    if (isFit) {
+      badgeBtn.innerHTML = `Fit <span style="font-size:9.5px; opacity:0.85;">(${percent}%)</span>`;
+      badgeBtn.classList.add('is-fit');
+      badgeBtn.title = `স্ক্রিন ফিট (${percent}%) — ট্যাপ করে বড় করুন`;
     } else {
       badgeBtn.innerText = `${percent}%`;
-      badgeBtn.title = `বর্তমান জুম ${percent}% - ট্যাপ করে ফিট করুন`;
+      badgeBtn.classList.remove('is-fit');
+      badgeBtn.title = `বর্তমান জুম ${percent}% — ট্যাপ করে স্ক্রিন ফিট করুন`;
+    }
+  }
+
+  if (zoomInBtn) {
+    zoomInBtn.disabled = currentDocScale >= 3.48;
+    zoomInBtn.style.opacity = currentDocScale >= 3.48 ? '0.35' : '1';
+  }
+  if (zoomOutBtn) {
+    const minScale = Math.max(0.25, Math.min(0.35, fitScale * 0.8));
+    zoomOutBtn.disabled = currentDocScale <= minScale + 0.02;
+    zoomOutBtn.style.opacity = currentDocScale <= minScale + 0.02 ? '0.35' : '1';
+  }
+  if (zoomActualBtn) {
+    const isActual = Math.abs(currentDocScale - 1.0) < 0.02;
+    if (isActual) {
+      zoomActualBtn.style.color = 'var(--accent-primary, #D4AF37)';
+      zoomActualBtn.style.fontWeight = '700';
+    } else {
+      zoomActualBtn.style.color = '';
+      zoomActualBtn.style.fontWeight = '';
     }
   }
 }
 
 /**
- * Updates dynamic responsive scaling on mobile & tablet viewports
+ * Finds the currently visible or active A4 page wrapper and fractional coordinates
+ * @param {number} clientX 
+ * @param {number} clientY 
+ * @returns {{ wrapper: HTMLElement|null, uX: number, uY: number }}
+ */
+export function getPageNormalizedPoint(clientX, clientY) {
+  const wrappers = document.querySelectorAll('.a4-page-wrapper');
+  if (wrappers.length === 0) {
+    return { wrapper: null, uX: 0.5, uY: 0.5 };
+  }
+
+  let chosenWrapper = null;
+  let minDiff = Infinity;
+
+  wrappers.forEach((w) => {
+    const rect = w.getBoundingClientRect();
+    if (clientY >= rect.top && clientY <= rect.bottom) {
+      chosenWrapper = w;
+    }
+    const mid = rect.top + rect.height / 2;
+    const diff = Math.abs(mid - clientY);
+    if (diff < minDiff) {
+      minDiff = diff;
+      if (!chosenWrapper) {
+        chosenWrapper = w;
+      }
+    }
+  });
+
+  if (!chosenWrapper) chosenWrapper = wrappers[0];
+
+  const rect = chosenWrapper.getBoundingClientRect();
+  const uX = rect.width > 0 ? Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) : 0.5;
+  const uY = rect.height > 0 ? Math.max(0, Math.min(1, (clientY - rect.top) / rect.height)) : 0.5;
+
+  return { wrapper: chosenWrapper, uX, uY };
+}
+
+/**
+ * Scales document smoothly around a specific focal point without content jumping down or flying away.
+ * @param {number} targetScale 
+ * @param {number} [clientFocalX] 
+ * @param {number} [clientFocalY] 
+ * @param {boolean} [smoothScroll] 
+ */
+export function zoomToTargetScale(
+  targetScale,
+  clientFocalX = window.innerWidth / 2,
+  clientFocalY = window.innerHeight / 2,
+  smoothScroll = true
+) {
+  const oldScale = currentDocScale;
+  const newScale = Math.max(0.25, Math.min(3.5, targetScale));
+  if (Math.abs(oldScale - newScale) < 0.003) return;
+
+  const { wrapper, uX, uY } = getPageNormalizedPoint(clientFocalX, clientFocalY);
+  if (!wrapper) {
+    setDocumentScale(newScale);
+    return;
+  }
+
+  const pageIndex = parseInt(wrapper.dataset.pageIndex || '0', 10);
+  setDocumentScale(newScale);
+
+  // Exact focal point compensation keeping the target point steady
+  const deltaY = (pageIndex + uY) * 1123 * (newScale - oldScale);
+  const deltaX = (uX - 0.5) * 794 * (newScale - oldScale);
+
+  const targetScrollX = Math.max(0, window.scrollX + deltaX);
+  const targetScrollY = Math.max(0, window.scrollY + deltaY);
+
+  window.scrollTo({
+    left: targetScrollX,
+    top: targetScrollY,
+    behavior: smoothScroll ? 'smooth' : 'instant'
+  });
+}
+
+/**
+ * Updates dynamic responsive scaling on mobile & tablet viewports and orientation changes
  */
 export function updateResponsivePageScale() {
-  // If user hasn't zoomed manually beyond fit, adapt fluidly to screen
-  if (currentDocScale <= 1.05) {
-    setDocumentScale(calculateFitScale());
+  if (isDocInFitMode) {
+    const fit = calculateFitScale();
+    setDocumentScale(fit);
   }
 }
 
@@ -746,60 +866,54 @@ export function updateResponsivePageScale() {
  * 1-Tap Reset Zoom to Fit Width
  */
 export function resetZoomToFit() {
-  setDocumentScale(calculateFitScale());
+  isDocInFitMode = true;
+  const fit = calculateFitScale();
+  zoomToTargetScale(fit);
 }
 
 /**
- * Zooms document symmetrically around a specific client focal point
- * (defaults to center of viewport so content does not fly down or jump!)
- * @param {number} targetScale 
- * @param {number} [clientFocalX] 
- * @param {number} [clientFocalY] 
- */
-export function zoomWithFocalPoint(targetScale, clientFocalX = window.innerWidth / 2, clientFocalY = window.innerHeight / 2) {
-  const oldScale = currentDocScale;
-  const newScale = Math.max(0.35, Math.min(3.5, targetScale));
-  if (Math.abs(oldScale - newScale) < 0.005) return;
-
-  const docX = window.scrollX + clientFocalX;
-  const docY = window.scrollY + clientFocalY;
-  const ratio = newScale / oldScale;
-
-  setDocumentScale(newScale);
-
-  window.scrollTo({
-    left: Math.max(0, docX * ratio - clientFocalX),
-    top: Math.max(0, docY * ratio - clientFocalY),
-    behavior: 'smooth'
-  });
-}
-
-/**
- * Toggles Zoom between Fit and 175% centered on viewport
+ * Toggles Zoom between Fit and Comfortable Zoom (100% or 140%)
  */
 export function toggleZoomFit() {
   const fit = calculateFitScale();
-  if (Math.abs(currentDocScale - fit) < 0.08) {
-    zoomWithFocalPoint(Math.min(2.2, fit * 1.75));
+  const isCurrentlyFit = isDocInFitMode || Math.abs(currentDocScale - fit) < 0.02;
+  if (isCurrentlyFit) {
+    isDocInFitMode = false;
+    const targetZoom = fit >= 0.9 ? 1.40 : 1.0;
+    zoomToTargetScale(targetZoom);
   } else {
     resetZoomToFit();
   }
 }
 
 /**
- * Zoom In button handler (+25% centered on viewport)
+ * Zoom In button handler (+10% discrete percentage step centered on viewport)
  */
 export function zoomInDoc() {
-  zoomWithFocalPoint(currentDocScale + 0.25);
+  isDocInFitMode = false;
+  const currentPercent = Math.round(currentDocScale * 100);
+  let nextPercent = Math.floor(currentPercent / 10) * 10 + 10;
+  if (nextPercent <= currentPercent) {
+    nextPercent += 10;
+  }
+  nextPercent = Math.min(350, nextPercent);
+  zoomToTargetScale(nextPercent / 100);
 }
 
 /**
- * Zoom Out button handler (-25% centered on viewport)
+ * Zoom Out button handler (-10% discrete percentage step centered on viewport)
  */
 export function zoomOutDoc() {
-  const fit = calculateFitScale();
-  const next = Math.max(0.35, Math.max(fit * 0.75, currentDocScale - 0.25));
-  zoomWithFocalPoint(next);
+  isDocInFitMode = false;
+  const fitScale = calculateFitScale();
+  const minPercent = Math.max(25, Math.round(Math.min(0.35, fitScale * 0.8) * 100));
+  const currentPercent = Math.round(currentDocScale * 100);
+  let prevPercent = Math.ceil(currentPercent / 10) * 10 - 10;
+  if (prevPercent >= currentPercent) {
+    prevPercent -= 10;
+  }
+  prevPercent = Math.max(minPercent, prevPercent);
+  zoomToTargetScale(prevPercent / 100);
 }
 
 /**
@@ -817,8 +931,9 @@ export function initFluidPinchToZoom() {
   let isPinching = false;
   let pinchStartDist = 0;
   let pinchStartScale = 1;
-  let pinchFocalDocX = 0;
-  let pinchFocalDocY = 0;
+  let activePinchWrapper = null;
+  let pinchUX = 0.5;
+  let pinchUY = 0.5;
 
   // 1. Fluid Multi-Touch Two-Finger Pinch-to-Zoom (Focal point math)
   stage.addEventListener('touchstart', (e) => {
@@ -830,15 +945,19 @@ export function initFluidPinchToZoom() {
       pinchStartScale = currentDocScale;
       const midClientX = (t1.clientX + t2.clientX) / 2;
       const midClientY = (t1.clientY + t2.clientY) / 2;
-      pinchFocalDocX = window.scrollX + midClientX;
-      pinchFocalDocY = window.scrollY + midClientY;
+
+      const norm = getPageNormalizedPoint(midClientX, midClientY);
+      activePinchWrapper = norm.wrapper;
+      pinchUX = norm.uX;
+      pinchUY = norm.uY;
+
       isPinching = true;
       stage.classList.add('is-zooming');
     }
   }, { passive: false });
 
   stage.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 2 && isPinching && pinchStartDist > 0) {
+    if (e.touches.length === 2 && isPinching && pinchStartDist > 0 && activePinchWrapper) {
       e.preventDefault();
       const t1 = e.touches[0];
       const t2 = e.touches[1];
@@ -846,15 +965,21 @@ export function initFluidPinchToZoom() {
       const curMidX = (t1.clientX + t2.clientX) / 2;
       const curMidY = (t1.clientY + t2.clientY) / 2;
       const ratio = curDist / pinchStartDist;
-      const targetScale = Math.max(0.35, Math.min(3.5, pinchStartScale * ratio));
+      if (Math.abs(ratio - 1) > 0.02) {
+        isDocInFitMode = false;
+      }
+      const targetScale = Math.max(0.25, Math.min(3.5, pinchStartScale * ratio));
 
       setDocumentScale(targetScale);
 
-      // Keep exact touch focal point locked under fingers:
-      const scaleMultiplier = targetScale / pinchStartScale;
-      const nextScrollX = pinchFocalDocX * scaleMultiplier - curMidX;
-      const nextScrollY = pinchFocalDocY * scaleMultiplier - curMidY;
-      window.scrollTo(Math.max(0, nextScrollX), Math.max(0, nextScrollY));
+      const newRect = activePinchWrapper.getBoundingClientRect();
+      const curPointX = newRect.left + pinchUX * newRect.width;
+      const curPointY = newRect.top + pinchUY * newRect.height;
+
+      const nextScrollX = Math.max(0, window.scrollX + (curPointX - curMidX));
+      const nextScrollY = Math.max(0, window.scrollY + (curPointY - curMidY));
+
+      window.scrollTo(nextScrollX, nextScrollY);
     }
   }, { passive: false });
 
@@ -884,19 +1009,12 @@ export function initFluidPinchToZoom() {
   stage.addEventListener('wheel', (e) => {
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
+      isDocInFitMode = false;
       const focalX = e.clientX;
       const focalY = e.clientY;
-      const docX = window.scrollX + focalX;
-      const docY = window.scrollY + focalY;
-      const startS = currentDocScale;
-      const zoomFactor = -e.deltaY * 0.0025;
-      const targetS = Math.max(0.35, Math.min(3.5, startS * (1 + zoomFactor)));
-      const ratio = targetS / startS;
-      setDocumentScale(targetS);
-      window.scrollTo(
-        Math.max(0, docX * ratio - focalX),
-        Math.max(0, docY * ratio - focalY)
-      );
+      const zoomFactor = -e.deltaY * 0.003;
+      const targetS = Math.max(0.25, Math.min(3.5, currentDocScale * (1 + zoomFactor)));
+      zoomToTargetScale(targetS, focalX, focalY, false);
     }
   }, { passive: false });
 
@@ -907,19 +1025,13 @@ export function initFluidPinchToZoom() {
     if (e.changedTouches.length === 1 && e.touches.length === 0) {
       const now = Date.now();
       const touch = e.changedTouches[0];
-      if (now - lastTapTime < 320 && Math.hypot(touch.clientX - lastTapCoords.x, touch.clientY - lastTapCoords.y) < 30) {
+      if (now - lastTapTime < 320 && Math.hypot(touch.clientX - lastTapCoords.x, touch.clientY - lastTapCoords.y) < 35) {
         const fit = calculateFitScale();
-        if (Math.abs(currentDocScale - fit) < 0.1) {
-          const tapDocX = window.scrollX + touch.clientX;
-          const tapDocY = window.scrollY + touch.clientY;
-          const targetS = Math.min(2.0, fit * 1.8);
-          const ratio = targetS / currentDocScale;
-          setDocumentScale(targetS);
-          window.scrollTo({
-            left: Math.max(0, tapDocX * ratio - touch.clientX),
-            top: Math.max(0, tapDocY * ratio - touch.clientY),
-            behavior: 'smooth'
-          });
+        const isFit = isDocInFitMode || Math.abs(currentDocScale - fit) < 0.04;
+        if (isFit) {
+          isDocInFitMode = false;
+          const targetZoom = Math.min(2.4, Math.max(1.35, fit * 2.0));
+          zoomToTargetScale(targetZoom, touch.clientX, touch.clientY, true);
         } else {
           resetZoomToFit();
         }
@@ -1235,20 +1347,40 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-// Debounced Window Resize & Orientation Change Handler
+// Responsive Window Resize & Orientation Change Handler
 let scaleDebounceTimer;
+let orientationTimer;
 const handleViewportResize = () => {
   updateResponsivePageScale();
   clearTimeout(scaleDebounceTimer);
+  clearTimeout(orientationTimer);
+  // Short interval for mobile browser orientation animation completion
+  orientationTimer = setTimeout(() => {
+    updateResponsivePageScale();
+  }, 50);
   scaleDebounceTimer = setTimeout(() => {
     updateResponsivePageScale();
-  }, 200);
+  }, 220);
 };
 
 window.addEventListener('resize', handleViewportResize, { passive: true });
 window.addEventListener('orientationchange', handleViewportResize, { passive: true });
 if (window.screen && window.screen.orientation) {
   window.screen.orientation.addEventListener('change', handleViewportResize, { passive: true });
+}
+
+// Observe container resizing for split-screen and foldable devices
+if (typeof ResizeObserver !== 'undefined') {
+  try {
+    const stage = document.getElementById('document-stage');
+    const targetElem = stage?.parentElement || document.body;
+    const ro = new ResizeObserver(() => {
+      if (isDocInFitMode) {
+        updateResponsivePageScale();
+      }
+    });
+    ro.observe(targetElem);
+  } catch (err) {}
 }
 
 // Global Window Exports for direct HTML onclick binding & console access
@@ -1296,5 +1428,8 @@ if (typeof window !== 'undefined') {
   window.toggleZoomFit = toggleZoomFit;
   window.zoomInDoc = zoomInDoc;
   window.zoomOutDoc = zoomOutDoc;
+  window.zoomToTargetScale = zoomToTargetScale;
+  window.getPageNormalizedPoint = getPageNormalizedPoint;
   window.scrollToPage = scrollToPage;
+  window.isDocInFitMode = () => isDocInFitMode;
 }

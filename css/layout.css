@@ -20,6 +20,7 @@
   padding-right: max(14px, env(safe-area-inset-right));
 }
 
+#document-stage,
 .document-stage {
   display: flex;
   flex-direction: column;
@@ -32,9 +33,10 @@
   box-sizing: border-box;
   touch-action: pan-x pan-y;
   -webkit-overflow-scrolling: touch;
+  transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform;
 }
 
-/* 2. Scaled A4 Page Wrapper (Fluid 2D Pan & Multi-Touch Zoom) */
 .a4-page-wrapper {
   width: calc(794px * var(--doc-preview-scale, 1));
   height: calc(1123px * var(--doc-preview-scale, 1));
@@ -42,15 +44,13 @@
   margin: 0 auto 28px auto;
   flex-shrink: 0;
   box-sizing: border-box;
-  transition: width 0.12s ease-out, height 0.12s ease-out;
-}
-
-.document-stage.is-zooming .a4-page-wrapper {
-  transition: none !important;
+  transition: width 0.28s cubic-bezier(0.2, 0, 0, 1), height 0.28s cubic-bezier(0.2, 0, 0, 1);
+  will-change: width, height;
 }
 
 /* Responsive Document Viewport Adaptations for Mobile & Tablet */
 @media screen and (max-width: 860px) {
+  #document-stage,
   .document-stage {
     padding: 14px 0 95px 0;
     gap: 20px;
@@ -84,10 +84,13 @@
   break-after: page;
   page-break-inside: avoid;
   break-inside: avoid;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.08s ease-out;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.28s cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform;
 }
 
-.document-stage.is-zooming .a4-page {
+.document-stage.is-zooming,
+.document-stage.is-zooming .a4-page,
+.document-stage.is-zooming .a4-page-wrapper {
   transition: none !important;
 }
 

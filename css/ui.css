@@ -314,56 +314,101 @@ body.app-exiting {
   transform: translateX(-50%) translateY(0);
 }
 
-/* Floating Glass Zoom Controller (Real PDF Reader Architecture) */
+/* Floating Glass Zoom Controller (Real PDF Reader Architecture - Bottom Center) */
 .doc-zoom-controller {
   position: fixed;
-  bottom: 22px;
-  right: 22px;
+  bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
-  background: var(--glass-surface-card, rgba(28, 14, 20, 0.88));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border, rgba(232, 153, 130, 0.28));
-  border-radius: 30px;
-  padding: 3px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  background: var(--glass-surface-card, rgba(28, 14, 20, 0.94));
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1.2px solid var(--glass-border, rgba(232, 153, 130, 0.35));
+  border-radius: 999px;
+  padding: 4px 8px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1.5px rgba(255, 255, 255, 0.2);
   z-index: 9980;
-  gap: 2px;
+  gap: 4px;
   user-select: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  touch-action: manipulation;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.doc-zoom-controller:hover {
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.7), 0 0 20px var(--accent-glow, rgba(212, 175, 55, 0.25));
+  border-color: var(--accent-primary, #D4AF37);
 }
 
 .doc-zoom-controller .zoom-btn {
   background: transparent;
   border: none;
   color: var(--text-english, #FFF8ED);
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 0;
+  outline: none;
 }
-.doc-zoom-controller .zoom-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+.doc-zoom-controller .zoom-btn svg {
+  stroke: currentColor;
+}
+.doc-zoom-controller .zoom-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
   color: var(--accent-secondary, #E89982);
+  transform: scale(1.1);
 }
-.doc-zoom-controller .zoom-btn:active {
-  transform: scale(0.9);
+.doc-zoom-controller .zoom-btn:active:not(:disabled) {
+  transform: scale(0.92);
 }
 
 .doc-zoom-controller .zoom-badge-btn {
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--text-english, #FFF8ED);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 700;
+  padding: 0 10px;
+  height: 30px;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--font-english-primary, 'Outfit'), sans-serif;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  white-space: nowrap;
+}
+.doc-zoom-controller .zoom-badge-btn.is-fit {
+  background: rgba(212, 175, 55, 0.18);
+  border-color: rgba(212, 175, 55, 0.55);
+  color: var(--accent-primary, #D4AF37);
+}
+.doc-zoom-controller .zoom-badge-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--accent-secondary, #E89982);
+  transform: scale(1.05);
+}
+.doc-zoom-controller .zoom-badge-btn:active {
+  transform: scale(0.95);
+}
+
+.doc-zoom-controller .zoom-preset-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-english-muted, #B098A4);
+  font-size: 11px;
+  font-weight: 600;
   padding: 0 8px;
   height: 28px;
   border-radius: 14px;
@@ -373,10 +418,22 @@ body.app-exiting {
   justify-content: center;
   font-family: var(--font-english-primary, 'Outfit'), sans-serif;
   transition: all 0.15s ease;
+  outline: none;
 }
-.doc-zoom-controller .zoom-badge-btn:hover {
+.doc-zoom-controller .zoom-preset-btn:hover {
   background: rgba(255, 255, 255, 0.12);
-  color: var(--accent-secondary, #E89982);
+  color: var(--text-english, #FFF8ED);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.doc-zoom-controller .zoom-preset-btn:active {
+  transform: scale(0.93);
+}
+
+.doc-zoom-controller .zoom-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--glass-border, rgba(232, 153, 130, 0.25));
+  margin: 0 1px;
 }
 
 /* Top Drag Handle Indicator for Native Android Bottom Sheets */

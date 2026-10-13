@@ -5,7 +5,7 @@
  * ============================================================================
  */
 
-const CACHE_NAME = 'mutu-study-v3.3.1-fluid-navigation';
+const CACHE_NAME = 'mutu-study-v3.3.3-fluid-smooth-zoom';
 
 const PRECACHE_ASSETS = [
   '/',

@@ -55,7 +55,7 @@
           if ('caches' in window) {
             caches.keys().then(function(keys) {
               for (var i = 0; i < keys.length; i++) {
-                if (keys[i].indexOf('v3.3.1') === -1) {
+                if (keys[i].indexOf('v3.3.3') === -1) {
                   caches.delete(keys[i]);
                 }
               }
@@ -1446,11 +1446,17 @@
   <!-- Native Android Hardware Double-Back Glass Exit Toast -->
   <div class="native-exit-toast no-print" id="nativeExitToast">অ্যাপ থেকে বের হতে আর একবার ব্যাক চাপুন</div>
 
-  <!-- Real PDF Reader Style Glass Floating Zoom Controller -->
+  <!-- Real PDF Reader Style Glass Floating Zoom Controller (Bottom Center) -->
   <div class="doc-zoom-controller no-print" id="docZoomController" role="group" aria-label="ডকুমেন্ট জুম কন্ট্রোল">
-    <button type="button" class="zoom-btn" onclick="zoomOutDoc()" title="জুম আউট (−20%)" aria-label="Zoom out">−</button>
-    <button type="button" class="zoom-badge-btn" id="docZoomBadge" onclick="toggleZoomFit()" title="স্ক্রিন ফিট রিসেট করুন">Fit</button>
-    <button type="button" class="zoom-btn" onclick="zoomInDoc()" title="জুম ইন (+20%)" aria-label="Zoom in">+</button>
+    <button type="button" class="zoom-btn" id="zoomOutBtn" onclick="zoomOutDoc()" title="জুম কমান (−)" aria-label="Zoom out">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </button>
+    <button type="button" class="zoom-badge-btn is-fit" id="docZoomBadge" onclick="toggleZoomFit()" title="স্ক্রিন ফিট / জুম টগল">Fit</button>
+    <button type="button" class="zoom-btn" id="zoomInBtn" onclick="zoomInDoc()" title="জুম বাড়ান (+)" aria-label="Zoom in">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </button>
+    <div class="zoom-divider"></div>
+    <button type="button" class="zoom-preset-btn" id="zoomActualBtn" onclick="zoomToTargetScale(1.0)" title="১০০% আসল A4 প্রিন্ট স্কেল (1:1 Size)" aria-label="100% Print Size">100%</button>
   </div>
 
   <!-- ========================================================================
