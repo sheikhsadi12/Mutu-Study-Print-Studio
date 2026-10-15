@@ -38,24 +38,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
+  gap: 0;
   padding: 20px 24px 115px 24px;
   width: max-content;
   min-width: 100%;
   box-sizing: border-box;
   touch-action: pan-x pan-y;
   -webkit-overflow-scrolling: touch;
+  will-change: auto !important;
+  transform: none !important;
+}
+
+/* Disable texture locks on document stage */
+.document-stage {
+  will-change: auto !important;
+  transform: none !important;
 }
 
 .a4-page-wrapper {
-  width: calc(794px * var(--doc-preview-scale, 1));
-  height: calc(1123px * var(--doc-preview-scale, 1));
   position: relative;
-  margin: 0 0 28px 0;
+  margin: 0;
+  padding: 0;
+  display: block;
   flex-shrink: 0;
   box-sizing: border-box;
-  transition: width 0.28s cubic-bezier(0.2, 0, 0, 1), height 0.28s cubic-bezier(0.2, 0, 0, 1);
-  will-change: width, height;
 }
 
 /* Responsive Document Viewport Adaptations for Mobile & Tablet */
@@ -63,22 +69,23 @@
   #document-stage,
   .document-stage {
     padding: 14px 0 95px 0;
-    gap: 20px;
+    gap: 0;
   }
 }
 
-/* Standard A4 Physical Page (794px x 1123px exact) */
+/* Crisp Vector A4 Layout (Never Blurs or Pixelates on Zoom) */
 .a4-page {
   width: 794px !important;
   height: 1123px !important;
   min-height: 1123px !important;
   max-height: 1123px !important;
-  transform: scale(var(--doc-preview-scale, 1));
-  transform-origin: top left;
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 0;
+  zoom: var(--doc-preview-scale, 1);
+  transform: none !important;
+  margin-bottom: 28px !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  position: relative;
   box-sizing: border-box;
   background-color: var(--bg-page);
   background-image: var(--bg-page-gradient);
@@ -94,8 +101,8 @@
   break-after: page;
   page-break-inside: avoid;
   break-inside: avoid;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.28s cubic-bezier(0.2, 0, 0, 1);
-  will-change: transform;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  will-change: auto;
 }
 
 .document-stage.is-zooming,
@@ -572,6 +579,7 @@ html[data-theme="light"] .a4-page {
   }
   .a4-page {
     position: static !important;
+    zoom: 1 !important;
     transform: none !important;
     margin: 0 !important;
     border: none !important;
