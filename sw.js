@@ -5,7 +5,7 @@
  * ============================================================================
  */
 
-const CACHE_NAME = 'mutu-study-v3.3.5-viewport-zoom-locked';
+const CACHE_NAME = 'mutu-study-v3.4.0-pwa-direct-install';
 
 const PRECACHE_ASSETS = [
   '/',

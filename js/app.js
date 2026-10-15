@@ -109,19 +109,11 @@ export function toggleAcademicTheme(e) {
  * Initializes PWA Service Worker Registration immediately
  */
 function initServiceWorker() {
-  // If running inside an iframe (like Google AI Studio preview sandbox), DO NOT register service worker
-  // This guarantees live preview never freezes or serves stale cached files!
-  if (window.self !== window.top) {
-    console.log('[MUTU PWA] In preview iframe: service worker registration bypassed for instant live updates.');
-    return;
-  }
-
   if ('serviceWorker' in navigator) {
     const swUrl = '/sw.js';
     navigator.serviceWorker.register(swUrl, { scope: '/' })
       .then((registration) => {
         console.log('[MUTU PWA] Service Worker registered with scope:', registration.scope);
-        // Promptly check for SW update and notify clients
         if (typeof registration.update === 'function') {
           registration.update().catch(() => {});
         }
@@ -130,7 +122,7 @@ function initServiceWorker() {
         console.warn('[MUTU PWA] Service Worker registration notice:', error);
       });
 
-    // When new service worker takes over, reload to apply fresh engine
+    // When new service worker takes over, log controller status
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       console.log('[MUTU PWA] Service worker updated controller.');
     });
@@ -186,17 +178,18 @@ export async function triggerPWAInstall() {
     try {
       await promptEvent.prompt();
       const choice = await promptEvent.userChoice;
-      console.log('[MUTU PWA] User prompt choice:', choice.outcome);
-      if (choice.outcome === 'accepted') {
-        showToast("🎉 MUTU STUDY অ্যাপ ইনস্টলেশন শুরু হয়েছে!");
+      console.log('[MUTU PWA] User prompt choice:', choice ? choice.outcome : '');
+      if (choice && choice.outcome === 'accepted') {
+        showToast("🎉 MUTU STUDY অ্যাপ ইনস্টলেশন সম্পন্ন হয়েছে!");
         window.__pwaInstallPrompt = null;
         deferredInstallPrompt = null;
         const btn = document.getElementById('pwaInstallBtn');
         if (btn) btn.style.display = 'none';
         closePWAFrameModal();
         closePWAIntro(true);
+        closePWADiagnosticModal();
       } else {
-        showToast("ইনস্টলেশন বাতিল হয়েছে। প্রয়োজনে পুনরায় ক্লিক করুন।");
+        showToast("ইনস্টলেশন বাতিল হয়েছে। প্রয়োজনে পুনরায় চেষ্টা করুন।");
       }
       return;
     } catch (err) {
@@ -206,63 +199,46 @@ export async function triggerPWAInstall() {
 
   // 2. If running on iOS Safari
   const ua = window.navigator.userAgent.toLowerCase();
-  const isIOS = /iphone|ipad|ipod/.test(ua);
+  const isIOS = /iphone|ipad|ipod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   if (isIOS) {
     openIOSInstallDialog();
     return;
   }
 
-  // 3. If running inside an iFrame (e.g. AI Studio preview sandbox)
-  // Attempt top-level standalone window launch for direct 1-click install
-  const isIframe = window.self !== window.top;
-  if (isIframe) {
-    const directUrl = window.location.origin + window.location.pathname + '?source=pwa&install=1';
-    const newWin = window.open(directUrl, '_blank');
-    if (!newWin) {
-      openPWAFrameModal();
-    } else {
-      showToast("🚀 নতুন উইন্ডোতে অ্যাপ ওপেন করা হয়েছে—সেখানে সরাসরি ১-ক্লিকে ইনস্টল সম্পন্ন করুন!");
-    }
-    return;
+  // 3. In iframe or if prompt is not yet ready, open the PWA Install Guide Modal
+  openPWAFrameModal();
+}
+
+/**
+ * Copies clean PWA web app URL to clipboard for easy opening in Chrome/Safari
+ */
+export function copyPwaAppUrl() {
+  const cleanUrl = window.location.origin + window.location.pathname;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(cleanUrl).then(() => {
+      showToast("📋 অ্যাপ লিংক কপি হয়েছে! ক্রোম ব্রাউজারে পেস্ট করে খুলুন।", 4000);
+    }).catch(() => {
+      fallbackCopyPwaUrl(cleanUrl);
+    });
+  } else {
+    fallbackCopyPwaUrl(cleanUrl);
   }
+}
 
-  // 4. In a top-level window, wait up to 1.5 seconds in case beforeinstallprompt is firing asynchronously
-  showToast("ইনস্টলার চালু হচ্ছে...", 1500);
-  const eventFired = await new Promise((resolve) => {
-    if (window.__pwaInstallPrompt || deferredInstallPrompt) return resolve(true);
-    const onPrompt = () => {
-      window.removeEventListener('pwa-prompt-ready', onPrompt);
-      resolve(true);
-    };
-    window.addEventListener('pwa-prompt-ready', onPrompt);
-    setTimeout(() => {
-      window.removeEventListener('pwa-prompt-ready', onPrompt);
-      resolve(false);
-    }, 1500);
-  });
-
-  const readyPrompt = window.__pwaInstallPrompt || deferredInstallPrompt;
-  if (readyPrompt) {
-    try {
-      await readyPrompt.prompt();
-      const choice = await readyPrompt.userChoice;
-      if (choice && choice.outcome === 'accepted') {
-        showToast("🎉 MUTU STUDY অ্যাপ ইনস্টলেশন সম্পন্ন হয়েছে!");
-        window.__pwaInstallPrompt = null;
-        deferredInstallPrompt = null;
-        const btn = document.getElementById('pwaInstallBtn');
-        if (btn) btn.style.display = 'none';
-        closePWAFrameModal();
-        closePWAIntro(true);
-      }
-      return;
-    } catch (err) {
-      console.warn('[MUTU PWA] Prompt launch error:', err);
-    }
+function fallbackCopyPwaUrl(text) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast("📋 অ্যাপ লিংক কপি হয়েছে! ক্রোম ব্রাউজারে পেস্ট করে খুলুন।", 4000);
+  } catch (e) {
+    showToast("অ্যাপ লিংক: " + text, 5000);
   }
-
-  // 5. If browser did not supply prompt event
-  showToast("ইনস্টলার প্রস্তুত হচ্ছে, অনুগ্রহ করে কয়েক সেকেন্ড পর আবার ক্লিক করুন।", 3000);
 }
 
 /**
@@ -414,8 +390,14 @@ export function closeIOSInstallDialog() {
 export function openPWAFrameModal() {
   const modal = document.getElementById('pwaFrameModal');
   const openBtn = document.getElementById('pwaOpenTabBtn');
+  const cleanUrl = window.location.origin + window.location.pathname;
   if (openBtn) {
-    openBtn.href = window.location.origin + window.location.pathname + '?source=pwa&install=1';
+    openBtn.href = cleanUrl;
+  }
+  const promptBtn = document.getElementById('pwaModalDirectPromptBtn');
+  const promptEvent = window.__pwaInstallPrompt || deferredInstallPrompt;
+  if (promptBtn) {
+    promptBtn.style.display = promptEvent ? 'inline-flex' : 'none';
   }
   if (modal) {
     smoothOpenModal(modal);
@@ -1495,5 +1477,6 @@ if (typeof window !== 'undefined') {
   window.isDocInFitMode = () => isDocInFitMode;
   window.getDocumentViewport = getDocumentViewport;
   window.getDocumentViewportScroll = getDocumentViewportScroll;
+  window.copyPwaAppUrl = copyPwaAppUrl;
   window.scrollDocumentViewport = scrollDocumentViewport;
 }
