@@ -1026,3 +1026,246 @@
   font-weight: 600;
   fill: var(--text-bengali);
 }
+
+/* ==========================================================================
+   CUTE & PREMIUM GLASSMORPHISM AESTHETIC CARDS (Study Studio Pro Suite)
+   Ultra-comfortable, high-elegance components matched to Mahogany & Ivory palettes
+   ========================================================================== */
+
+/* 1. Luminous Pastel Glass Capsule Card */
+.cute-capsule-card {
+  background: var(--glass-card-bg, rgba(45, 24, 34, 0.45));
+  border: 1px solid var(--glass-card-border, rgba(232, 153, 130, 0.28));
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin: 12px 0;
+  box-shadow: var(--glass-card-shadow, 0 8px 24px rgba(0, 0, 0, 0.2));
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cute-capsule-card:hover {
+  box-shadow: var(--glass-card-hover-shadow, 0 12px 32px rgba(0, 0, 0, 0.3));
+  border-color: var(--glass-card-hover-border, rgba(232, 153, 130, 0.45));
+}
+.cute-capsule-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.capsule-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 8pt;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(224, 122, 95, 0.16);
+  color: var(--accent-primary);
+  border: 1px solid rgba(224, 122, 95, 0.32);
+}
+.capsule-badge.mint {
+  background: rgba(34, 197, 94, 0.14);
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.28);
+}
+.capsule-badge.gold {
+  background: rgba(214, 161, 59, 0.16);
+  color: #d6a13b;
+  border-color: rgba(214, 161, 59, 0.32);
+}
+
+/* 2. Spotlight Ambient Glow Card */
+.glow-study-card {
+  background: radial-gradient(circle at 15% 15%, var(--accent-glow, rgba(224, 122, 95, 0.15)) 0%, transparent 50%), var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 12px 0;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.18), 0 4px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+.glow-study-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-primary), var(--accent-secondary), transparent);
+  border-radius: 12px 12px 0 0;
+}
+
+/* 3. Washi Tape Memo Sticky Note (Cute Stationery Aesthetic) */
+.washi-memo-card {
+  background: rgba(45, 24, 34, 0.55);
+  border: 1px dashed rgba(232, 153, 130, 0.35);
+  border-radius: 10px;
+  padding: 18px 18px 14px;
+  margin: 18px 0 12px;
+  position: relative;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+.washi-tape-strip {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 75px;
+  height: 16px;
+  background: rgba(214, 161, 59, 0.5);
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+}
+.washi-memo-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 9.5pt;
+  color: #e07a5f;
+  margin-bottom: 6px;
+}
+
+/* 4. Cute Glass Comparison Duo (Side-by-side Pods) */
+.glass-duo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0;
+}
+@media (max-width: 600px) {
+  .glass-duo-grid { grid-template-columns: 1fr; }
+}
+.glass-duo-pod {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.glass-duo-pod.pod-correct {
+  border-top: 3.5px solid #22c55e;
+}
+.glass-duo-pod.pod-mistake {
+  border-top: 3.5px solid #ef4444;
+}
+.pod-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 8.8pt;
+  font-weight: 700;
+}
+.pod-correct .pod-header { color: #22c55e; }
+.pod-mistake .pod-header { color: #ef4444; }
+
+/* 5. Cute Step Pathway (Flow Nodes) */
+.flow-step-lane {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 14px 0;
+  padding: 12px;
+  background: rgba(35, 18, 26, 0.45);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow-x: auto;
+}
+.flow-step-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 90px;
+  flex: 1;
+}
+.step-bubble {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: #fff;
+  font-weight: 700;
+  font-size: 10pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
+  box-shadow: 0 2px 8px var(--accent-glow, rgba(224, 122, 95, 0.25));
+}
+.step-label {
+  font-size: 8.4pt;
+  font-weight: 600;
+  color: var(--text-bengali);
+}
+.flow-step-arrow {
+  color: var(--accent-secondary);
+  font-size: 14pt;
+  font-weight: bold;
+  opacity: 0.7;
+}
+
+/* 6. Crystal Micro-Stat Pills */
+.crystal-stat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.crystal-stat-card {
+  flex: 1;
+  min-width: 95px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 8px 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.crystal-stat-val {
+  font-family: var(--font-english, 'Outfit'), sans-serif;
+  font-size: 13pt;
+  font-weight: 700;
+  color: var(--accent-primary);
+  line-height: 1.2;
+}
+.crystal-stat-lbl {
+  font-size: 7.6pt;
+  font-weight: 600;
+  color: var(--text-bengali-muted, rgba(255, 248, 237, 0.65));
+  margin-top: 2px;
+}
+
+/* 7. Pastel Bookmark Insight Card */
+.pastel-insight-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent-primary);
+  border-radius: 4px 10px 10px 4px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  position: relative;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+.pastel-insight-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9pt;
+  font-weight: 700;
+  color: var(--accent-secondary);
+  margin-bottom: 4px;
+}
+.pastel-insight-body {
+  font-size: 8.8pt;
+  line-height: 1.5;
+  color: var(--text-bengali);
+}

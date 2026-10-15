@@ -694,13 +694,58 @@ let currentDocScale = 1;
 let isDocInFitMode = true;
 
 /**
+ * Viewport container reference helper
+ * @returns {HTMLElement|null}
+ */
+export function getDocumentViewport() {
+  return document.getElementById('documentViewport');
+}
+
+/**
+ * Returns current scroll offset of the document viewport
+ * @returns {{ x: number, y: number }}
+ */
+export function getDocumentViewportScroll() {
+  const vp = getDocumentViewport();
+  if (vp) {
+    return { x: vp.scrollLeft, y: vp.scrollTop };
+  }
+  return { x: window.scrollX, y: window.scrollY };
+}
+
+/**
+ * Scrolls document viewport safely without affecting body or header
+ * @param {number} scrollX 
+ * @param {number} scrollY 
+ * @param {boolean} [smooth] 
+ */
+export function scrollDocumentViewport(scrollX, scrollY, smooth = false) {
+  const vp = getDocumentViewport();
+  if (vp && vp.scrollTo) {
+    vp.scrollTo({
+      left: Math.max(0, scrollX),
+      top: Math.max(0, scrollY),
+      behavior: smooth ? 'smooth' : 'instant'
+    });
+  } else if (vp) {
+    vp.scrollLeft = Math.max(0, scrollX);
+    vp.scrollTop = Math.max(0, scrollY);
+  } else {
+    window.scrollTo({
+      left: Math.max(0, scrollX),
+      top: Math.max(0, scrollY),
+      behavior: smooth ? 'smooth' : 'instant'
+    });
+  }
+}
+
+/**
  * Accurately calculates scaling ratio relative to the #document-stage container
  * @returns {number} Scale ratio (between 0.25 and 1.0)
  */
 export function calculateFitScale() {
-  const stage = document.getElementById('document-stage');
-  const container = stage?.parentElement || document.body;
-  const containerWidth = (container && container.clientWidth > 0) ? container.clientWidth : window.innerWidth;
+  const viewport = getDocumentViewport();
+  const containerWidth = (viewport && viewport.clientWidth > 0) ? viewport.clientWidth : window.innerWidth;
 
   // Responsive margins/padding around document stage
   let horizontalPadding = 16;
@@ -825,6 +870,10 @@ export function zoomToTargetScale(
   clientFocalY = window.innerHeight / 2,
   smoothScroll = true
 ) {
+  const fitScale = calculateFitScale();
+  // Set isDocInFitMode: true if targetScale is close to fitScale, false if custom zoom
+  isDocInFitMode = Math.abs(targetScale - fitScale) < 0.02;
+
   const oldScale = currentDocScale;
   const newScale = Math.max(0.25, Math.min(3.5, targetScale));
   if (Math.abs(oldScale - newScale) < 0.003) return;
@@ -842,14 +891,11 @@ export function zoomToTargetScale(
   const deltaY = (pageIndex + uY) * 1123 * (newScale - oldScale);
   const deltaX = (uX - 0.5) * 794 * (newScale - oldScale);
 
-  const targetScrollX = Math.max(0, window.scrollX + deltaX);
-  const targetScrollY = Math.max(0, window.scrollY + deltaY);
+  const { x: curScrollX, y: curScrollY } = getDocumentViewportScroll();
+  const targetScrollX = Math.max(0, curScrollX + deltaX);
+  const targetScrollY = Math.max(0, curScrollY + deltaY);
 
-  window.scrollTo({
-    left: targetScrollX,
-    top: targetScrollY,
-    behavior: smoothScroll ? 'smooth' : 'instant'
-  });
+  scrollDocumentViewport(targetScrollX, targetScrollY, smoothScroll);
 }
 
 /**
@@ -923,6 +969,7 @@ export function zoomOutDoc() {
  */
 export function initFluidPinchToZoom() {
   const stage = document.getElementById('document-stage');
+  const viewport = getDocumentViewport();
   if (!stage) return;
 
   // Set initial comfortable scale
@@ -935,9 +982,11 @@ export function initFluidPinchToZoom() {
   let pinchUX = 0.5;
   let pinchUY = 0.5;
 
+  const gestureTarget = viewport || stage;
+
   // 1. Fluid Multi-Touch Two-Finger Pinch-to-Zoom (Focal point math)
-  stage.addEventListener('touchstart', (e) => {
-    if (e.touches.length === 2) {
+  gestureTarget.addEventListener('touchstart', (e) => {
+    if (e.touches && e.touches.length === 2) {
       e.preventDefault();
       const t1 = e.touches[0];
       const t2 = e.touches[1];
@@ -956,8 +1005,8 @@ export function initFluidPinchToZoom() {
     }
   }, { passive: false });
 
-  stage.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 2 && isPinching && pinchStartDist > 0 && activePinchWrapper) {
+  gestureTarget.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches.length === 2 && isPinching && pinchStartDist > 0 && activePinchWrapper) {
       e.preventDefault();
       const t1 = e.touches[0];
       const t2 = e.touches[1];
@@ -976,37 +1025,43 @@ export function initFluidPinchToZoom() {
       const curPointX = newRect.left + pinchUX * newRect.width;
       const curPointY = newRect.top + pinchUY * newRect.height;
 
-      const nextScrollX = Math.max(0, window.scrollX + (curPointX - curMidX));
-      const nextScrollY = Math.max(0, window.scrollY + (curPointY - curMidY));
+      const { x: curScrollX, y: curScrollY } = getDocumentViewportScroll();
+      const nextScrollX = Math.max(0, curScrollX + (curPointX - curMidX));
+      const nextScrollY = Math.max(0, curScrollY + (curPointY - curMidY));
 
-      window.scrollTo(nextScrollX, nextScrollY);
+      scrollDocumentViewport(nextScrollX, nextScrollY, false);
     }
   }, { passive: false });
 
-  stage.addEventListener('touchend', (e) => {
-    if (e.touches.length < 2 && isPinching) {
+  gestureTarget.addEventListener('touchend', (e) => {
+    if (e.touches && e.touches.length < 2 && isPinching) {
       isPinching = false;
       stage.classList.remove('is-zooming');
     }
   }, { passive: true });
 
-  // Protect fixed top header from touch pinch events
-  const headerBar = document.querySelector('.screen-control-bar');
-  if (headerBar) {
-    headerBar.addEventListener('touchstart', (e) => {
-      if (e.touches && e.touches.length > 1) e.preventDefault();
-    }, { passive: false });
-    headerBar.addEventListener('touchmove', (e) => {
-      if (e.touches && e.touches.length > 1) e.preventDefault();
-    }, { passive: false });
-  }
+  // Prevent browser-level shell zoom on multi-touch gestures (stops header and footer from shrinking)
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches && e.touches.length > 1) {
+      const vp = getDocumentViewport();
+      if (!vp || !vp.contains(e.target)) {
+        e.preventDefault();
+      }
+    }
+  }, { passive: false });
 
-  // Prevent browser-level full shell zoom in Safari/Chrome
+  document.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
   window.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
   window.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+  window.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
 
   // 2. Desktop Trackpad Pinch or Ctrl + Mouse Wheel Zoom
-  stage.addEventListener('wheel', (e) => {
+  gestureTarget.addEventListener('wheel', (e) => {
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
       isDocInFitMode = false;
@@ -1021,8 +1076,8 @@ export function initFluidPinchToZoom() {
   // 3. Double-tap to smoothly zoom into tap position or reset to fit
   let lastTapTime = 0;
   let lastTapCoords = { x: 0, y: 0 };
-  stage.addEventListener('touchend', (e) => {
-    if (e.changedTouches.length === 1 && e.touches.length === 0) {
+  gestureTarget.addEventListener('touchend', (e) => {
+    if (e.changedTouches && e.changedTouches.length === 1 && (!e.touches || e.touches.length === 0)) {
       const now = Date.now();
       const touch = e.changedTouches[0];
       if (now - lastTapTime < 320 && Math.hypot(touch.clientX - lastTapCoords.x, touch.clientY - lastTapCoords.y) < 35) {
@@ -1234,6 +1289,10 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Track page scrolling
+  const vp = document.getElementById('documentViewport');
+  if (vp) {
+    vp.addEventListener('scroll', updatePageScrollTracking, { passive: true });
+  }
   window.addEventListener('scroll', updatePageScrollTracking, { passive: true });
   window.addEventListener('mutu-pages-rendered', () => {
     updatePageScrollTracking();
@@ -1351,16 +1410,18 @@ window.addEventListener('keydown', (e) => {
 let scaleDebounceTimer;
 let orientationTimer;
 const handleViewportResize = () => {
-  updateResponsivePageScale();
-  clearTimeout(scaleDebounceTimer);
-  clearTimeout(orientationTimer);
-  // Short interval for mobile browser orientation animation completion
-  orientationTimer = setTimeout(() => {
+  if (isDocInFitMode) {
     updateResponsivePageScale();
-  }, 50);
-  scaleDebounceTimer = setTimeout(() => {
-    updateResponsivePageScale();
-  }, 220);
+    clearTimeout(scaleDebounceTimer);
+    clearTimeout(orientationTimer);
+    // Short interval for mobile browser orientation animation completion
+    orientationTimer = setTimeout(() => {
+      if (isDocInFitMode) updateResponsivePageScale();
+    }, 50);
+    scaleDebounceTimer = setTimeout(() => {
+      if (isDocInFitMode) updateResponsivePageScale();
+    }, 220);
+  }
 };
 
 window.addEventListener('resize', handleViewportResize, { passive: true });
@@ -1432,4 +1493,7 @@ if (typeof window !== 'undefined') {
   window.getPageNormalizedPoint = getPageNormalizedPoint;
   window.scrollToPage = scrollToPage;
   window.isDocInFitMode = () => isDocInFitMode;
+  window.getDocumentViewport = getDocumentViewport;
+  window.getDocumentViewportScroll = getDocumentViewportScroll;
+  window.scrollDocumentViewport = scrollDocumentViewport;
 }

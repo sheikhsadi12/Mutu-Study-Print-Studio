@@ -80,8 +80,9 @@ html[data-theme="light"] .ambient-orb {
 
 /* 2. Glassmorphic Sticky Top Control Bar */
 .screen-control-bar {
-  position: sticky;
-  top: 0;
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
   z-index: 9999;
   background: var(--app-ui-bg);
   backdrop-filter: blur(24px) saturate(180%);

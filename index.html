@@ -2,7 +2,7 @@
 <html lang="bn" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover" />
   <title>MUTU STUDY Studio</title>
   <meta name="description" content="A4 Auto-Pagination & Educational Publishing Studio with dual-theme typography, cover page studio, and PWA capabilities." />
 
@@ -55,7 +55,7 @@
           if ('caches' in window) {
             caches.keys().then(function(keys) {
               for (var i = 0; i < keys.length; i++) {
-                if (keys[i].indexOf('v3.3.3') === -1) {
+                if (keys[i].indexOf('v3.3.5') === -1) {
                   caches.delete(keys[i]);
                 }
               }
@@ -1463,7 +1463,9 @@
        A4 RENDER TARGET
        (জাভাস্ক্রিপ্ট অটো-পেজিনেশন ইঞ্জিন স্বয়ংক্রিয়ভাবে পৃষ্ঠাগুলো এখানে রেন্ডার করবে)
        ======================================================================== -->
-  <main class="document-stage tex2jax_process" id="document-stage"></main>
+  <div class="document-viewport" id="documentViewport">
+    <main class="document-stage tex2jax_process" id="document-stage"></main>
+  </div>
 
   <!-- Modular JavaScript Engine Entry Point -->
   <script type="module" src="./js/app.js"></script>

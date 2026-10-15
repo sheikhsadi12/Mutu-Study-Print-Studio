@@ -200,12 +200,23 @@ html[data-theme="light"] {
   print-color-adjust: exact !important;
 }
 
+html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
   background-color: var(--app-stage-bg, #0c0608);
   color: var(--text-english);
   font-family: var(--font-english), 'AutoBengali', -apple-system, sans-serif;
-  margin: 0;
-  padding: 0;
   transition: background-color 0.25s ease, color 0.25s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
