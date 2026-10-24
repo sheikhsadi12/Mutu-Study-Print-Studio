@@ -137,13 +137,24 @@ export function applyTypography(state = appState) {
   root.style.setProperty('--font-cover-kicker', `'${coverKickerName}', 'Cinzel', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
   root.style.setProperty('--font-cover-subject', `'${coverSubjectName}', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', sans-serif`);
   root.style.setProperty('--font-cover-meta-label', `'${coverMetaLabelName}', 'Cinzel', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
-  root.style.setProperty('--font-cover-meta-value', `'${coverMetaValName}', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', sans-serif`);
-  root.style.setProperty('--font-cover-imprint', `'${coverImprintName}', 'Cinzel', 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
+  root.style.setProperty('--font-cover-meta-value', `'${coverMetaValName}', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif`);
+  root.style.setProperty('--font-cover-imprint', `'${coverImprintName}', 'Cinzel', 'Hind Siliguri', 'Noto Sans Bengali', serif`);
 
-  // Cascade: Primary English font matches Latin ASCII first; Bengali glyphs fall back to Hind Siliguri
-  root.style.setProperty('--font-english', `${primaryEnBody}, 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', sans-serif`);
-  root.style.setProperty('--font-display', `${primaryEnHead}, 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', serif`);
-  root.style.setProperty('--font-bengali', `${primaryEnBody}, 'HindSiliguriBengali', ${primaryBn}, 'Kalpurush', sans-serif`);
+  // Running Header & Running Footer Dynamic Fonts
+  const rawHdrCourseFont = state.headerCourseFont || state.fontEnglishBody || "'Outfit'";
+  const rawHdrUnitFont = state.headerUnitFont || state.fontEnglishBody || "'Outfit'";
+  const rawFooterFont = state.footerTaglineFont || state.fontEnglishBody || "'Outfit'";
+  const hdrCourseFontName = cleanFontName(rawHdrCourseFont);
+  const hdrUnitFontName = cleanFontName(rawHdrUnitFont);
+  const footerFontName = cleanFontName(rawFooterFont);
+  root.style.setProperty('--font-header-course', `'${hdrCourseFontName}', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif`);
+  root.style.setProperty('--font-header-unit', `'${hdrUnitFontName}', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif`);
+  root.style.setProperty('--font-footer-tag', `'${footerFontName}', 'Hind Siliguri', 'Noto Sans Bengali', sans-serif`);
+
+  // Cascade: Primary English font matches Latin ASCII; Bengali glyphs fall back to Hind Siliguri without fragmentation
+  root.style.setProperty('--font-english', `${primaryEnBody}, 'Hind Siliguri', 'Noto Sans Bengali', sans-serif`);
+  root.style.setProperty('--font-display', `${primaryEnHead}, 'Hind Siliguri', 'Noto Sans Bengali', serif`);
+  root.style.setProperty('--font-bengali', `'Hind Siliguri', 'Noto Sans Bengali', system-ui, sans-serif`);
   root.style.setProperty('--global-font-scale', state.fontScale);
 }
 

@@ -13,62 +13,67 @@
   --font-english: 'Outfit';
   --font-bengali: 'AutoBengali', 'Hind Siliguri', sans-serif;
   
+  --font-header-course: 'Outfit';
+  --font-header-unit: 'Outfit';
+  --font-footer-tag: 'Outfit';
   --page-width: 210mm;
   --page-height: 297mm;
   --watermark-opacity: 0.085;
   --global-font-scale: 1;
 }
 
-/* 2. THEME 1: DARK MAHOGANY (Default Royal Academic Dark) */
+/* 2. THEME 1: ACADEMIC DARK OBSIDIAN & WARM CHOCOLATE-WINE (Exact Match to User Screenshots) */
 html[data-theme="dark"] {
-  --app-stage-bg: #0d0609;
-  --bg-page: #150b0f;
-  --bg-page-gradient: radial-gradient(circle at 50% 12%, #29141e 0%, #150b0f 85%);
-  --surface-card: rgba(35, 18, 26, 0.58);
-  --surface-card-subtle: rgba(224, 122, 95, 0.08);
-  --surface-card-strong: rgba(45, 24, 34, 0.72);
+  --app-stage-bg: #180e10;
+  --bg-page: #180e10;
+  --bg-page-gradient: radial-gradient(circle at 50% 30%, #32191d 0%, #251316 45%, #190e10 82%, #140b0d 100%);
+  --surface-card: linear-gradient(180deg, rgba(40, 23, 26, 0.94) 0%, rgba(33, 19, 22, 0.97) 100%);
+  --surface-card-subtle: rgba(233, 129, 92, 0.08);
+  --surface-card-strong: #271619;
   
-  /* Luxury Crystal Glassmorphism (Dark Mode) */
-  --glass-surface: rgba(32, 16, 23, 0.78);
-  --glass-surface-card: rgba(42, 21, 30, 0.76);
-  --glass-border: rgba(232, 153, 130, 0.28);
-  --glass-border-light: rgba(255, 255, 255, 0.18);
-  --glass-shadow: 0 18px 50px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 1.5px rgba(255, 255, 255, 0.18);
-  
-  /* Luminous 3D Ambient Orbs */
-  --orb-1: rgba(240, 106, 76, 0.36);
-  --orb-2: rgba(188, 42, 78, 0.32);
-  --orb-3: rgba(248, 185, 65, 0.26);
-  --orb-4: rgba(138, 45, 140, 0.20);
-  
-  /* Modular Glass-Card System */
-  --glass-card-bg: linear-gradient(135deg, rgba(46, 23, 33, 0.75) 0%, rgba(26, 12, 18, 0.85) 100%);
-  --glass-card-border: rgba(232, 153, 130, 0.26);
-  --glass-card-sheen: linear-gradient(90deg, transparent 5%, rgba(255, 215, 205, 0.45) 45%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 215, 205, 0.45) 55%, transparent 95%);
-  --glass-card-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), inset 0 1px 1.2px rgba(255, 255, 255, 0.2), inset 0 -1px 2px rgba(0, 0, 0, 0.45);
-  --glass-card-hover-shadow: 0 14px 38px rgba(0, 0, 0, 0.65), 0 0 20px rgba(224, 122, 95, 0.22), inset 0 1px 1.8px rgba(255, 255, 255, 0.3);
-  --glass-card-hover-border: rgba(255, 192, 170, 0.48);
+  /* Luxury Crystal Glassmorphism matching Exact Screenshot Cards */
+  --glass-surface: rgba(36, 21, 24, 0.90);
+  --glass-surface-card: rgba(40, 23, 26, 0.92);
+  --glass-border: rgba(255, 200, 190, 0.12);
+  --glass-border-light: rgba(255, 215, 205, 0.20);
+  --glass-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 215, 205, 0.10);
 
-  --accent-primary: #e07a5f;
-  --accent-secondary: #e89982;
-  --accent-glow: rgba(224, 122, 95, 0.28);
-  --border-color: rgba(232, 153, 130, 0.24);
-  --border-subtle: rgba(232, 153, 130, 0.14);
-  --border-strong: rgba(232, 153, 130, 0.5);
+  /* Ambient Orbs (Warm Burgundy & Coral Amber from Screenshot) */
+  --orb-1: rgba(233, 129, 92, 0.18);
+  --orb-2: rgba(180, 50, 65, 0.18);
+  --orb-3: rgba(120, 25, 40, 0.22);
+  --orb-4: rgba(233, 129, 92, 0.10);
+
+  /* Modular Glass-Card System matching Screenshot */
+  --glass-card-bg: linear-gradient(180deg, rgba(40, 23, 26, 0.94) 0%, rgba(33, 19, 22, 0.97) 100%);
+  --glass-card-border: rgba(255, 200, 190, 0.12);
+  --glass-card-sheen: linear-gradient(90deg, transparent 5%, rgba(233, 129, 92, 0.20) 50%, transparent 95%);
+  --glass-card-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 215, 205, 0.10);
+  --glass-card-hover-shadow: 0 16px 44px rgba(0, 0, 0, 0.75), 0 0 20px rgba(233, 129, 92, 0.24);
+  --glass-card-hover-border: rgba(233, 129, 92, 0.55);
+
+  /* Exact Screenshot Coral-Orange & Accents */
+  --accent-primary: #e9815c;
+  --accent-secondary: #f39a7b;
+  --accent-glow: rgba(233, 129, 92, 0.28);
+  --border-color: rgba(255, 200, 190, 0.12);
+  --border-subtle: rgba(255, 200, 190, 0.06);
+  --border-strong: rgba(233, 129, 92, 0.42);
   
-  --text-english: #FFF8ED;
-  --text-english-muted: #F5EAE0;
-  --text-bengali: #FFF8ED;
-  --text-bengali-secondary: #F5EAE0;
-  --text-warm-white: #FFF8ED;
-  --text-warm-white-sub: #F7EFE4;
-  --table-stripe: rgba(28, 15, 20, 0.45);
-  --app-ui-bg: rgba(28, 14, 19, 0.86);
+  --text-english: #fffcfa;
+  --text-english-muted: #a89797;
+  --text-bengali: #fffcfa;
+  --text-bengali-secondary: #a89797;
+  --text-warm-white: #fffcfa;
+  --text-warm-white-sub: #f0e6dd;
+  --badge-contrast-text: #0e0000;
+  --table-stripe: rgba(48, 26, 30, 0.70);
+  --app-ui-bg: rgba(33, 19, 22, 0.94);
   
   /* Floating Action Menu (FAB) */
-  --fab-bg: linear-gradient(135deg, rgba(46, 23, 33, 0.9) 0%, rgba(24, 11, 16, 0.94) 100%);
-  --fab-border: rgba(255, 180, 160, 0.35);
-  --fab-shadow: 0 14px 36px rgba(0, 0, 0, 0.65), 0 0 18px rgba(224, 122, 95, 0.25), inset 0 1.5px 2px rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+  --fab-bg: linear-gradient(135deg, rgba(50, 25, 31, 0.95) 0%, rgba(28, 16, 18, 0.97) 100%);
+  --fab-border: rgba(233, 129, 92, 0.40);
+  --fab-shadow: 0 14px 36px rgba(0, 0, 0, 0.75), 0 0 20px rgba(233, 129, 92, 0.30), inset 0 1.5px 2px rgba(255, 215, 205, 0.20), inset 0 -2px 4px rgba(0, 0, 0, 0.5);
 
   /* Logo Theme Colors (Dark Mode Architectural Engine: Warm White + Soft Ivory Shadow + Royal Gold) */
   --logo-text-color: #FFF8ED;
@@ -109,14 +114,22 @@ html[data-theme="dark"] .intro-title-wrap h3,
 html[data-theme="dark"] .setting-label,
 html[data-theme="dark"] .print-now-btn,
 html[data-theme="dark"] .ui-btn-primary,
-html[data-theme="dark"] .tc-tag,
-html[data-theme="dark"] .mnemonic-pill,
 html[data-theme="dark"] .offline-pill,
 html[data-theme="dark"] .toast,
 html[data-theme="dark"] #pwaDirectInstallBanner,
 html[data-theme="dark"] .mobile-tab-btn.active,
 html[data-theme="dark"] .header-subject-tag {
   color: var(--text-warm-white, #FFF8ED);
+}
+
+/* Contrast badges on Coral-Orange background matching Screenshot */
+html[data-theme="dark"] .tc-tag,
+html[data-theme="dark"] .mnemonic-pill,
+html[data-theme="dark"] .struct-number-badge,
+html[data-theme="dark"] .formula-badge {
+  background: var(--accent-primary, #e9815c) !important;
+  color: var(--badge-contrast-text, #0e0000) !important;
+  font-weight: 700 !important;
 }
 
 /* 3. THEME 2: WARM WHITE / IVORY (Crisp Daylight Academic Light) */
@@ -214,11 +227,56 @@ body {
   flex-direction: column;
   margin: 0;
   padding: 0;
-  background-color: var(--app-stage-bg, #0c0608);
+  background-color: var(--app-stage-bg, #180e10);
   color: var(--text-english);
-  font-family: var(--font-english), 'AutoBengali', -apple-system, sans-serif;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  font-family: var(--font-english), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+  transition: background-color 0.35s cubic-bezier(0.25, 1, 0.5, 1), color 0.35s cubic-bezier(0.25, 1, 0.5, 1);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  text-rendering: geometricPrecision;
+  font-synthesis: none;
+}
+
+html[data-theme="dark"] body {
+  background-color: var(--app-stage-bg, #180e10);
+  background-image: 
+    radial-gradient(circle at 18% 22%, rgba(68, 36, 32, 0.35) 0%, transparent 60%),
+    radial-gradient(circle at 78% 75%, rgba(55, 28, 33, 0.35) 0%, transparent 60%);
+}
+
+/* Silky Velvet Theme Transition Engine (Smooth, seamless light <-> dark switching) */
+html.theme-switching body,
+html.theme-switching .document-viewport,
+html.theme-switching .document-stage,
+html.theme-switching .a4-page,
+html.theme-switching .a4-cover-page,
+html.theme-switching .screen-control-bar,
+html.theme-switching .page-header,
+html.theme-switching .page-footer,
+html.theme-switching .surface-card,
+html.theme-switching .glass-card,
+html.theme-switching .bilingual-passage-card,
+html.theme-switching .explanation-card,
+html.theme-switching .vocab-card,
+html.theme-switching .syn-ant-card,
+html.theme-switching .sentence-breakdown-card,
+html.theme-switching .grammar-structure-card,
+html.theme-switching .teachers-corner-card,
+html.theme-switching .academic-table td,
+html.theme-switching .academic-table th,
+html.theme-switching .ui-btn,
+html.theme-switching .fab-trigger,
+html.theme-switching .fab-btn-action,
+html.theme-switching .settings-modal,
+html.theme-switching .modal-overlay {
+  transition: background-color 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+              color 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* Gentle fallback for other elements */
+html.theme-switching svg {
+  transition: fill 0.34s ease, stroke 0.34s ease !important;
 }

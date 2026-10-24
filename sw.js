@@ -5,33 +5,22 @@
  * ============================================================================
  */
 
-const CACHE_NAME = 'mutu-study-v3.4.0-pwa-direct-install';
+const CACHE_NAME = 'mutu-study-v3.4.1-pwa-vercel-ready';
 
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
   '/manifest.json',
-  '/css/variables.css',
-  '/css/typography.css',
-  '/css/layout.css',
-  '/css/components.css',
-  '/css/ui.css',
-  '/css/style.css',
-  '/vendor/katex/katex.min.css',
-  '/vendor/katex/katex.min.js',
-  '/vendor/katex/auto-render.min.js',
-  '/js/app.js',
-  '/js/paginator.js',
-  '/js/cover-studio.js',
-  '/js/settings.js',
-  '/js/demo-content.js',
   '/icons/icon.svg',
   '/icons/icon-dark.svg',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/maskable-icon-512.png',
-  '/icons/apple-touch-icon.png'
+  '/icons/apple-touch-icon.png',
+  '/vendor/katex/katex.min.css',
+  '/vendor/katex/katex.min.js',
+  '/vendor/katex/auto-render.min.js'
 ];
 
 // 1. Install Event: Cache essential app shell and activate immediately

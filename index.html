@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn" data-theme="light">
+<html lang="bn" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover" />
@@ -15,7 +15,7 @@
 
   <!-- PWA & Mobile Web Capabilities -->
   <link rel="manifest" href="/manifest.webmanifest" />
-  <meta name="theme-color" content="#4A1112" />
+  <meta name="theme-color" content="#180e10" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -50,7 +50,7 @@
           if ('caches' in window) {
             caches.keys().then(function(keys) {
               for (var i = 0; i < keys.length; i++) {
-                if (keys[i].indexOf('v3.4.0') === -1) {
+                if (keys[i].indexOf('v3.4.1') === -1) {
                   caches.delete(keys[i]);
                 }
               }
@@ -138,37 +138,12 @@
       });
     }
 
-    // Pure Android Native Experience: Hardware Back Button & Modal History
+    // Pure Android Native Experience: Delegated to master app.js navigation orchestrator
     window.__pwaModalHistory = [];
     window.pushModalHistory = function(modalId) {
       window.__pwaModalHistory.push(modalId);
-      history.pushState({ modalOpen: modalId }, '');
+      try { history.pushState({ modalOpen: modalId }, ''); } catch(e) {}
     };
-
-    window.addEventListener('popstate', function(e) {
-      var modals = [
-        { id: 'settingsModal', closeFn: window.closeSettingsModal },
-        { id: 'introModal', closeFn: window.closePWAIntro },
-        { id: 'dualExportModal', closeFn: window.closeExportModal },
-        { id: 'rawEditorModal', closeFn: window.closeRawEditor }
-      ];
-
-      var handled = false;
-      for (var i = 0; i < modals.length; i++) {
-        var m = modals[i];
-        var el = document.getElementById(m.id);
-        if (el && (el.classList.contains('open') || el.classList.contains('show') || el.style.display === 'flex' || el.style.display === 'block')) {
-          if (typeof m.closeFn === 'function') {
-            m.closeFn();
-          } else {
-            el.classList.remove('open', 'show');
-            el.style.display = 'none';
-          }
-          handled = true;
-          break;
-        }
-      }
-    });
 
     // Pure Android Experience: Responsive Tablet & Mobile Auto-Rotate Stabilizer
     var rotateDebounceTimer = null;
@@ -218,6 +193,11 @@
     };
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Google Fonts Preconnect & High-Performance Bengali Typography Engine -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700&family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap" />
 
   <!-- Modular CSS Hierarchy -->
   <link rel="stylesheet" href="./css/variables.css" />
@@ -391,11 +371,11 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="settings-card-title">কন্টেন্ট ম্যানেজার</div>
-                  <div class="settings-card-desc">৫টি বিষয়ভিত্তিক লেকচার নোটস, সমীকরণ ও ডায়াগ্রাম</div>
+                  <div class="settings-card-title">কন্টেন্ট ও হেডার-ফুটার ম্যানেজার</div>
+                  <div class="settings-card-desc">বিষয় নির্বাচন, প্রতি পেজের রানিং হেডার-ফুটার ও লেকচার কন্টেন্ট</div>
                 </div>
               </div>
-              <div class="settings-card-badge">⚡ রসায়ন, পদার্থ, গণিত, বাংলা, ইংরেজি &rarr;</div>
+              <div class="settings-card-badge">📝 বিষয়, হেডার ও কন্টেন্ট এডিট &rarr;</div>
             </div>
 
             <!-- Card 2: Cover Studio -->
@@ -451,7 +431,7 @@
               <div class="settings-card-badge">📐 A4 স্ট্যান্ডার্ড প্রিন্ট &rarr;</div>
             </div>
 
-            <!-- Card 5: Metadata & Watermark -->
+            <!-- Card 5: Header, Footer & Watermark -->
             <div class="settings-hub-card" onclick="navigateToSettingsPage('metadata')" role="button" tabindex="0">
               <div style="display:flex; align-items:center; gap:12px;">
                 <div class="settings-card-icon-wrap">
@@ -460,11 +440,11 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="settings-card-title">মেটাডাটা ও জলছাপ</div>
-                  <div class="settings-card-desc">রানিং হেডার টেক্সট, ফুটার এবং ব্র্যান্ড জলছাপ</div>
+                  <div class="settings-card-title">হেডার, ফুটার ও জলছাপ</div>
+                  <div class="settings-card-desc">রানিং হেডার টেক্সট, ক্লাস, বিষয়, ইউনিট, ফুটার ও ওয়াটারমার্ক</div>
                 </div>
               </div>
-              <div class="settings-card-badge">🛡️ সিকিউর ব্র্যান্ডিং &rarr;</div>
+              <div class="settings-card-badge">🏷️ হেডার ও ফুটার সেটআপ &rarr;</div>
             </div>
 
             <!-- Card 6: System & Live Sync -->
@@ -543,6 +523,97 @@
             </div>
           </div>
 
+          <!-- Section 2: Dedicated Running Header & Footer Customization -->
+          <div class="settings-group" style="background: var(--surface-card-subtle); border: 1.5px solid var(--border-color); border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;">
+            <div class="settings-group-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+              <div style="display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+                <span style="font-size: 13px; font-weight: 700; color: var(--text-english);">২. প্রতি পেজের রানিং হেডার ও ফুটার সেটআপ (Header &amp; Footer Edit):</span>
+              </div>
+              <span style="font-size: 10.5px; background: var(--surface-card-strong); border: 1px solid var(--border-subtle); padding: 2px 7px; border-radius: 4px; color: var(--accent-secondary); font-weight: 600;">সব পেজে রানিং হেডার হিসেবে থাকবে</span>
+            </div>
+
+            <!-- Quick Presets for English & other subjects -->
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; background: var(--surface-card); padding: 6px 9px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+              <span style="font-size: 10.5px; color: var(--text-english); font-weight: 700;">⚡ দ্রুত প্রিসেট:</span>
+              <button type="button" class="ui-btn" style="padding: 2.5px 8px; font-size: 10.5px; border-radius: 4px;" onclick="setHeaderPreset('English For Today • Classes XI-XII', 'Unit 01: Education and Life • Lesson 02')">
+                English 1st Paper
+              </button>
+              <button type="button" class="ui-btn" style="padding: 2.5px 8px; font-size: 10.5px; border-radius: 4px;" onclick="setHeaderPreset('English 2nd Paper • Grammar &amp; Composition', 'Section A: Grammar Items • Syntactical Structures')">
+                English 2nd Paper
+              </button>
+              <button type="button" class="ui-btn" style="padding: 2.5px 8px; font-size: 10.5px; border-radius: 4px;" onclick="setHeaderPreset('HSC &amp; Admission English • Special Lecture', 'Unit 03: Synonyms, Antonyms &amp; Analogy Matrix')">
+                HSC Admission English
+              </button>
+              <button type="button" class="ui-btn" style="padding: 2.5px 8px; font-size: 10.5px; border-radius: 4px;" onclick="setHeaderPreset('English Spoken &amp; Conversation • Unit Practice', 'Dialogue &amp; Contextual Communication')">
+                Unit Conversation
+              </button>
+            </div>
+
+            <div class="form-row" style="margin-bottom: 9px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+                <label for="contentHeaderCourse" style="font-size: 11.5px; font-weight: 600; color: var(--text-english);">
+                  📌 হেডারের ওপরের লাইন (বই, পেপার ও শ্রেণি):
+                </label>
+                <select id="contentHdrCourseFont" class="form-control" onchange="syncHeaderFooterFonts(this.value, null, null)" style="font-size: 11px; padding: 2px 6px; width: auto; height: 26px; border-radius: 4px;">
+                  <option value="'Outfit', sans-serif">Outfit (আধুনিক সান্স)</option>
+                  <option value="'Playfair Display', Georgia, serif">Playfair Display (রয়্যাল)</option>
+                  <option value="'Cinzel Decorative', Georgia, serif">Cinzel Decorative</option>
+                  <option value="'Cinzel', Georgia, serif">Cinzel (ক্লাসিক্যাল)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (বোল্ড)</option>
+                  <option value="'Merriweather', Georgia, serif">Merriweather (সেরিফ)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                  <option value="'Hind Siliguri', sans-serif">Hind Siliguri (বাংলা)</option>
+                  <option value="'Noto Sans Bengali', sans-serif">Noto Sans Bengali</option>
+                </select>
+              </div>
+              <input type="text" class="form-control" id="contentHeaderCourse" placeholder="যেমন: English For Today • Classes XI-XII বা English 2nd Paper" oninput="syncHeaderFooterInputs(this.value, null, null)" style="width: 100%; font-size: 12.5px; padding: 7px 10px;">
+            </div>
+
+            <div class="form-row" style="margin-bottom: 9px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+                <label for="contentHeaderUnit" style="font-size: 11.5px; font-weight: 600; color: var(--text-english);">
+                  📖 হেডারের নিচের লাইন (ইউনিট, অধ্যায়, লেসন বা টপিক):
+                </label>
+                <select id="contentHdrUnitFont" class="form-control" onchange="syncHeaderFooterFonts(null, this.value, null)" style="font-size: 11px; padding: 2px 6px; width: auto; height: 26px; border-radius: 4px;">
+                  <option value="'Outfit', sans-serif">Outfit (আধুনিক সান্স)</option>
+                  <option value="'Playfair Display', Georgia, serif">Playfair Display (রয়্যাল)</option>
+                  <option value="'Cinzel Decorative', Georgia, serif">Cinzel Decorative</option>
+                  <option value="'Cinzel', Georgia, serif">Cinzel (ক্লাসিক্যাল)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (বোল্ড)</option>
+                  <option value="'Merriweather', Georgia, serif">Merriweather (সেরিফ)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                  <option value="'Hind Siliguri', sans-serif">Hind Siliguri (বাংলা)</option>
+                  <option value="'Noto Sans Bengali', sans-serif">Noto Sans Bengali</option>
+                </select>
+              </div>
+              <input type="text" class="form-control" id="contentHeaderUnit" placeholder="যেমন: Unit 01: Education and Life • Lesson 02 বা অধ্যায় ০২: জৈব রসায়ন" oninput="syncHeaderFooterInputs(null, this.value, null)" style="width: 100%; font-size: 12.5px; padding: 7px 10px;">
+            </div>
+
+            <div class="form-row" style="margin-bottom: 2px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+                <label for="contentFooterTag" style="font-size: 11.5px; font-weight: 600; color: var(--text-english);">
+                  🏷️ ফুটারের প্রকাশনা / লেকচার সিরিজ ট্যাগলাইন (নিচের বামপাশ):
+                </label>
+                <select id="contentFooterFont" class="form-control" onchange="syncHeaderFooterFonts(null, null, this.value)" style="font-size: 11px; padding: 2px 6px; width: auto; height: 26px; border-radius: 4px;">
+                  <option value="'Outfit', sans-serif">Outfit (আধুনিক সান্স)</option>
+                  <option value="'Playfair Display', Georgia, serif">Playfair Display (রয়্যাল)</option>
+                  <option value="'Cinzel Decorative', Georgia, serif">Cinzel Decorative</option>
+                  <option value="'Cinzel', Georgia, serif">Cinzel (ক্লাসিক্যাল)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (বোল্ড)</option>
+                  <option value="'Merriweather', Georgia, serif">Merriweather (সেরিফ)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                  <option value="'Hind Siliguri', sans-serif">Hind Siliguri (বাংলা)</option>
+                  <option value="'Noto Sans Bengali', sans-serif">Noto Sans Bengali</option>
+                </select>
+              </div>
+              <input type="text" class="form-control" id="contentFooterTag" placeholder="যেমন: Academic Publishing Series বা Special Lecture Sheet" oninput="syncHeaderFooterInputs(null, null, this.value)" style="width: 100%; font-size: 12.5px; padding: 7px 10px;">
+            </div>
+          </div>
+
           <!-- Quick Math & Science Formula Insertion Chips -->
           <div class="settings-group">
             <div class="settings-group-title">
@@ -551,7 +622,7 @@
                 <line x1="9" y1="20" x2="15" y2="20"/>
                 <line x1="12" y1="4" x2="12" y2="20"/>
               </svg>
-              <span>২. কুইক সমীকরণ ও স্নিপেট ইনসার্ট টুলবার (১-ক্লিক ইনসার্ট):</span>
+              <span>৩. কুইক সমীকরণ ও স্নিপেট ইনসার্ট টুলবার (১-ক্লিক ইনসার্ট):</span>
             </div>
             <div class="formula-insert-bar">
               <button type="button" class="formula-chip" onclick="insertFormulaSnippet('inline-math')" title="ইনলাইন সমীকরণ">$inline$</button>
@@ -561,6 +632,8 @@
               <button type="button" class="formula-chip" onclick="insertFormulaSnippet('chem-benzene')" title="বেনজিন বলয় ডায়াগ্রাম">⬡ বেনজিন বলয়</button>
               <button type="button" class="formula-chip" onclick="insertFormulaSnippet('chem-reaction')" title="রাসায়নিক বিক্রিয়া রো">⚗️ কেমিস্ট্রি বিক্রিয়া</button>
               <button type="button" class="formula-chip" onclick="insertFormulaSnippet('concept-box')" title="কনসেপ্ট কার্ড">💡 কনসেপ্ট বক্স</button>
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('syn-ant-card')" title="সিনোনেম-এন্টোনেম কার্ড">📖 Syn-Ant কার্ড</button>
+              <button type="button" class="formula-chip" onclick="insertFormulaSnippet('grammar-card')" title="গ্রামার স্ট্রাকচার কার্ড">📐 গ্রামার স্ট্রাকচার</button>
               <button type="button" class="formula-chip" onclick="insertFormulaSnippet('academic-table')" title="একাডেমিক টেবিল">📊 সায়েন্স টেবিল</button>
               <button type="button" class="formula-chip" onclick="insertFormulaSnippet('mnemonic-box')" title="মনে রাখার শর্টকাট রিবন">⭐ শর্টকাট রিবন</button>
             </div>
@@ -944,15 +1017,54 @@
               </select>
             </div>
             <div class="form-row">
-              <label for="cfgHeaderCourse">হেডারের ডানপাশ (বই ও শ্রেণি):</label>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+                <label for="cfgHeaderCourse">হেডারের ডানপাশ (বই ও শ্রেণি):</label>
+                <select id="cfgHdrCourseFont" class="form-control" onchange="syncHeaderFooterFonts(this.value, null, null)" style="font-size: 11px; padding: 2px 6px; width: auto; height: 26px; border-radius: 4px;">
+                  <option value="'Outfit', sans-serif">Outfit (আধুনিক সান্স)</option>
+                  <option value="'Playfair Display', Georgia, serif">Playfair Display (রয়্যাল)</option>
+                  <option value="'Cinzel Decorative', Georgia, serif">Cinzel Decorative</option>
+                  <option value="'Cinzel', Georgia, serif">Cinzel (ক্লাসিক্যাল)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (বোল্ড)</option>
+                  <option value="'Merriweather', Georgia, serif">Merriweather (সেরিফ)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                  <option value="'Hind Siliguri', sans-serif">Hind Siliguri (বাংলা)</option>
+                  <option value="'Noto Sans Bengali', sans-serif">Noto Sans Bengali</option>
+                </select>
+              </div>
               <input type="text" class="form-control" id="cfgHeaderCourse">
             </div>
             <div class="form-row">
-              <label for="cfgHeaderUnit">হেডারের ডানপাশ (অধ্যায় ও বিষয়):</label>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+                <label for="cfgHeaderUnit">হেডারের ডানপাশ (অধ্যায় ও বিষয়):</label>
+                <select id="cfgHdrUnitFont" class="form-control" onchange="syncHeaderFooterFonts(null, this.value, null)" style="font-size: 11px; padding: 2px 6px; width: auto; height: 26px; border-radius: 4px;">
+                  <option value="'Outfit', sans-serif">Outfit (আধুনিক সান্স)</option>
+                  <option value="'Playfair Display', Georgia, serif">Playfair Display (রয়্যাল)</option>
+                  <option value="'Cinzel Decorative', Georgia, serif">Cinzel Decorative</option>
+                  <option value="'Cinzel', Georgia, serif">Cinzel (ক্লাসিক্যাল)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (বোল্ড)</option>
+                  <option value="'Merriweather', Georgia, serif">Merriweather (সেরিফ)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                  <option value="'Hind Siliguri', sans-serif">Hind Siliguri (বাংলা)</option>
+                  <option value="'Noto Sans Bengali', sans-serif">Noto Sans Bengali</option>
+                </select>
+              </div>
               <input type="text" class="form-control" id="cfgHeaderUnit">
             </div>
             <div class="form-row">
-              <label for="cfgFooterTag">ফুটারের বামপাশ (ট্যাগলাইন / প্রকাশনা সিরিজ):</label>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+                <label for="cfgFooterTag">ফুটারের বামপাশ (ট্যাগলাইন / প্রকাশনা সিরিজ):</label>
+                <select id="cfgFooterFont" class="form-control" onchange="syncHeaderFooterFonts(null, null, this.value)" style="font-size: 11px; padding: 2px 6px; width: auto; height: 26px; border-radius: 4px;">
+                  <option value="'Outfit', sans-serif">Outfit (আধুনিক সান্স)</option>
+                  <option value="'Playfair Display', Georgia, serif">Playfair Display (রয়্যাল)</option>
+                  <option value="'Cinzel Decorative', Georgia, serif">Cinzel Decorative</option>
+                  <option value="'Cinzel', Georgia, serif">Cinzel (ক্লাসিক্যাল)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (বোল্ড)</option>
+                  <option value="'Merriweather', Georgia, serif">Merriweather (সেরিফ)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                  <option value="'Hind Siliguri', sans-serif">Hind Siliguri (বাংলা)</option>
+                  <option value="'Noto Sans Bengali', sans-serif">Noto Sans Bengali</option>
+                </select>
+              </div>
               <input type="text" class="form-control" id="cfgFooterTag">
             </div>
           </div>

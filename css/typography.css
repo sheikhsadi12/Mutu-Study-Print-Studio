@@ -3,50 +3,43 @@
    ========================================================================== */
 
 /* 1. Google Fonts Extended Library */
-@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;600;700&family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700&family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap');
 
-/* 2. Local Font-Face Fallback & Universal Bengali Route */
+/* 2. Local Font-Face Fallbacks & Universal Bengali Robust Aliases */
 @font-face {
   font-family: 'Cinzel Decorative';
   src: local('Cinzel Decorative Bold'), local('Cinzel Decorative'), url('CinzelDecorative.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
 }
-
-/* Universal Bengali Unicode Fallback Engine:
-   Forces any Bengali glyph (U+0980-09FF) in mixed lines, titles, badges or equations
-   to ALWAYS render in Hind Siliguri ("হিন্দি শিলিগুড়ি / হিন্দি স্টাইল") */
 @font-face {
   font-family: 'HindSiliguriBengali';
-  src: local('Hind Siliguri'), local('HindSiliguri-Regular'),
-       url('https://fonts.gstatic.com/s/hindsiliguri/v12/ijwOs5juQtsyLLR5jN4cxC2J8Au5.woff2') format('woff2');
-  font-weight: 400 500;
-  font-style: normal;
-  unicode-range: U+0980-09FF, U+200C-200D;
+  src: local('Hind Siliguri'), local('HindSiliguri-Regular'), local('Noto Sans Bengali');
+}
+@font-face {
+  font-family: 'AutoBengali';
+  src: local('Hind Siliguri'), local('HindSiliguri-Regular'), local('Noto Sans Bengali');
 }
 
-@font-face {
-  font-family: 'HindSiliguriBengali';
-  src: local('Hind Siliguri Bold'), local('HindSiliguri-Bold'),
-       url('https://fonts.gstatic.com/s/hindsiliguri/v12/ijwOs5juQtsyLLR5jN4cxC2J8Du7.woff2') format('woff2');
-  font-weight: 600 700 800;
-  font-style: normal;
-  unicode-range: U+0980-09FF, U+200C-200D;
+/* Universal Bengali Robust Ligature Engine:
+   Full complete Hind Siliguri + Noto Sans Bengali with zero conjunct slicing and zero space fragmentation */
+:root {
+  --font-bengali: 'Hind Siliguri', 'Noto Sans Bengali', 'Anek Bangla', system-ui, sans-serif;
+  --font-bengali-primary: 'Hind Siliguri', 'Noto Sans Bengali', system-ui, sans-serif;
 }
 
 /* Master Brand Font Selectors (M & S are Cinzel Decorative, rest are standard Cinzel) */
 .cinzel-dec {
-  font-family: 'Cinzel Decorative', 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', Georgia, serif !important;
+  font-family: 'Cinzel Decorative', 'Cinzel', 'Hind Siliguri', 'Noto Sans Bengali', Georgia, serif !important;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
 .cinzel-norm {
-  font-family: 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', Georgia, serif !important;
+  font-family: 'Cinzel', 'Hind Siliguri', 'Noto Sans Bengali', Georgia, serif !important;
   font-weight: 700;
   letter-spacing: 0.05em;
 }
 
-/* 3. Academic Headings & Titles: Selected English Heading Font with Hind Siliguri Bengali Fallback */
 /* 3. Academic Headings & Titles: Selected English Heading Font with Hind Siliguri Bengali Fallback */
 h1, h2, h3, h4,
 .chapter-hero-banner h2,
@@ -54,14 +47,14 @@ h1, h2, h3, h4,
 .science-card h3,
 .science-concept-card h4,
 .pq-title {
-  font-family: var(--font-heading-primary, 'Playfair Display'), 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
+  font-family: var(--font-heading-primary, 'Playfair Display'), 'Hind Siliguri', 'Noto Sans Bengali', serif !important;
 }
 
 .cover-main-en-title {
-  font-family: var(--font-cover-title-en, var(--font-cover-title, var(--font-heading-primary, 'Playfair Display'))), 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
+  font-family: var(--font-cover-title-en, var(--font-cover-title, var(--font-heading-primary, 'Playfair Display'))), 'Hind Siliguri', 'Noto Sans Bengali', serif !important;
 }
 .cover-main-bn-title {
-  font-family: var(--font-cover-title-bn, 'HindSiliguriBengali', 'Hind Siliguri'), 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
+  font-family: var(--font-cover-title-bn, 'Hind Siliguri'), 'Hind Siliguri', 'Noto Sans Bengali', serif !important;
 }
 
 /* 4. Academic Body & Content: Selected English Body Font with Hind Siliguri Bengali Fallback */
@@ -77,30 +70,43 @@ h1, h2, h3, h4,
 .chem-reaction-card,
 .math-formula-box,
 .chapter-hero-banner,
-.explanation-card,
-.header-meta,
+.explanation-card {
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Noto Sans Bengali', -apple-system, sans-serif !important;
+}
+
+/* Running Header & Footer Independent Customizable Typography Engine */
+.header-meta strong {
+  font-family: var(--font-header-course, var(--font-english-primary, 'Outfit')), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
+}
+.header-meta span {
+  font-family: var(--font-header-unit, var(--font-english-primary, 'Outfit')), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
+}
 .footer-left-meta,
+.footer-tagline-badge {
+  font-family: var(--font-footer-tag, var(--font-english-primary, 'Outfit')), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
+}
 .footer-page-num {
-  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', -apple-system, sans-serif !important;
+  font-family: var(--font-footer-tag, var(--font-english-primary, 'Outfit')), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
 }
 
 .cover-subtitle {
-  font-family: var(--font-cover-subtitle, var(--font-english-primary, 'Outfit')), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
+  font-family: var(--font-cover-subtitle, var(--font-english-primary, 'Outfit')), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
 }
 .cover-subject-pill {
-  font-family: var(--font-cover-subject, var(--font-cover-subtitle, var(--font-english-primary, 'Outfit'))), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
+  font-family: var(--font-cover-subject, var(--font-cover-subtitle, var(--font-english-primary, 'Outfit'))), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
+  letter-spacing: 0 !important;
 }
 .cover-kicker {
-  font-family: var(--font-cover-kicker, 'Cinzel Decorative'), 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', Georgia, serif !important;
+  font-family: var(--font-cover-kicker, 'Cinzel Decorative'), 'Cinzel', 'Hind Siliguri', 'Noto Sans Bengali', Georgia, serif !important;
 }
 .cover-meta-item strong {
-  font-family: var(--font-cover-meta-label, var(--font-cover-kicker, 'Cinzel Decorative')), 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
+  font-family: var(--font-cover-meta-label, var(--font-cover-kicker, 'Cinzel Decorative')), 'Cinzel', 'Hind Siliguri', 'Noto Sans Bengali', serif !important;
 }
 .cover-meta-item span {
-  font-family: var(--font-cover-meta-value, var(--font-cover-subtitle, var(--font-english-primary, 'Outfit'))), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
+  font-family: var(--font-cover-meta-value, var(--font-cover-subtitle, var(--font-english-primary, 'Outfit'))), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
 }
 .cover-footer-imprint {
-  font-family: var(--font-cover-imprint, var(--font-cover-kicker, 'Cinzel Decorative')), 'Cinzel', 'HindSiliguriBengali', 'Hind Siliguri', serif !important;
+  font-family: var(--font-cover-imprint, var(--font-cover-kicker, 'Cinzel Decorative')), 'Cinzel', 'Hind Siliguri', 'Noto Sans Bengali', serif !important;
 }
 
 /* Preserve Mathematical Typography & Fonts with Bengali Ligature Support (KaTeX & MathJax) */
@@ -133,33 +139,52 @@ h1, h2, h3, h4,
 }
 .MathJax,
 .MathJax * {
-  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', inherit;
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Noto Sans Bengali', inherit;
 }
 mjx-container,
 mjx-container [class*="mtext"],
 mjx-container text {
-  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
 }
 
-.bn-text, 
-[lang="bn"], 
-.passage-bn, 
-.st-bn, 
-.vocab-bn-meaning, 
-.grammar-explanation, 
-.bn-cell, 
-.quote-bn, 
-.mnemonic-text, 
-.pq-answer, 
-.bn-sub {
-  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', -apple-system, sans-serif !important;
-  letter-spacing: normal !important;
-  word-spacing: normal;
-  line-height: 1.62 !important;
-  text-rendering: optimizeLegibility;
+/* Master Universal Bengali Character & Conjunct Protection Engine */
+/* Prevents glyph tearing, fractured vowels (ি, ী, ু, ূ, ে, ৈ, ো, ৌ), and separated conjuncts */
+.a4-page,
+.a4-page *,
+.a4-cover-page,
+.a4-cover-page * {
+  letter-spacing: 0 !important;
+}
+
+.cinzel-dec:not(:lang(bn)),
+.cinzel-norm:not(:lang(bn)) {
+  letter-spacing: 0.04em !important;
+}
+
+:is([lang="bn"], .bn-text, .passage-bn, .st-bn, .vocab-bn-meaning, 
+    .grammar-explanation, .bn-cell, .quote-bn, .mnemonic-text, .pq-answer, 
+    .bn-sub, .sa-meaning, .sa-col-label, .sa-context-note, .struct-explanation, 
+    .struct-note, .struct-shortcut-box, .struct-example-block, .struct-ex-bn,
+    .cover-main-bn-title, .cover-subject-pill, .cover-subtitle, .cover-meta-item span, 
+    .cover-footer-imprint, .footer-tagline-badge, .header-meta span, .tc-item, .tc-header, .tc-title) {
+  font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Anek Bangla', 'Tiro Bangla', system-ui, sans-serif !important;
+  letter-spacing: 0 !important;
+  word-spacing: normal !important;
+  line-height: 1.68 !important;
+  text-rendering: optimizeLegibility !important;
+  font-variant-ligatures: contextual common-ligatures !important;
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1 !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Explicit Ligature Protection for Bengali inside all cards, tables and paragraphs */
+.vocab-card, .syn-ant-card, .struct-card, .grammar-structure-card, .grammar-analysis-card, 
+.bilingual-passage-card, .explanation-card, .teachers-corner-card,
+.chem-reaction-card, .science-card, .law-callout-box, .academic-table {
   font-feature-settings: "kern" 1, "liga" 1;
-  word-break: normal;
-  overflow-wrap: break-word;
+  text-rendering: optimizeLegibility;
 }
 
 /* 5. English Typography Engine */
@@ -170,9 +195,8 @@ mjx-container text {
 .grammar-rule-name, 
 .example-en, 
 .pq-content {
-  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
-  letter-spacing: -0.01em;
-  line-height: 1.48;
+  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
+  line-height: 1.5;
 }
 
 /* Global Font Scale Support for A4 Pages */

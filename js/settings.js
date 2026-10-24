@@ -68,7 +68,7 @@ export const SUBJECT_META = {
 
 // Master Application State
 export const appState = {
-  theme: 'light',
+  theme: 'dark',
   watermarkEnabled: true,
   watermarkOpacity: 0.08,
   
@@ -110,6 +110,9 @@ export const appState = {
   coverFooterImprint: "Official Master Study Compendium • All Rights Reserved",
 
   // Dynamic Typography Configuration
+  headerCourseFont: "'Outfit', sans-serif",
+  headerUnitFont: "'Outfit', sans-serif",
+  footerTaglineFont: "'Outfit', sans-serif",
   fontEnglishBody: "'Outfit', sans-serif",
   fontEnglishHeading: "'Playfair Display', Georgia, serif",
   fontBengali: "'Hind Siliguri', 'Kalpurush', sans-serif",
@@ -327,7 +330,65 @@ export function insertFormulaSnippet(type) {
     'mnemonic-box': `
 <div class="mnemonic-ribbon">
   <strong>&bigstar; মনে রাখার শর্টকাট টেকনিক:</strong> &ldquo;প-তে পজিটিভ, ন-তে নেগেটিভ&rdquo; &mdash; চার্জ ও দিক নির্ণয়ের বিশেষ সূত্র।
-</div>`
+</div>`,
+    'syn-ant-card': `
+<div class="syn-ant-card">
+  <div class="syn-ant-header">
+    <div>
+      <span class="sa-word-title">Indispensable</span>
+      <span class="sa-meaning">(অপরিহার্য / অনস্বীকার্য)</span>
+    </div>
+    <span class="sa-pos-badge">Adjective</span>
+  </div>
+  <div class="syn-ant-columns">
+    <div class="sa-col">
+      <div class="sa-col-label syn">সমার্থক (Synonyms)</div>
+      <div class="sa-pills-list">
+        <span class="sa-pill syn">Essential</span>
+        <span class="sa-pill syn">Vital</span>
+        <span class="sa-pill syn">Crucial</span>
+      </div>
+    </div>
+    <div class="sa-col">
+      <div class="sa-col-label ant">বিপরীতার্থক (Antonyms)</div>
+      <div class="sa-pills-list">
+        <span class="sa-pill ant">Superfluous</span>
+        <span class="sa-pill ant">Redundant</span>
+      </div>
+    </div>
+  </div>
+  <div class="sa-context-note">
+    <strong>ভর্তি পরীক্ষা টিপস:</strong> গুরুত্বপূর্ণ প্রিপজিশন: <em>Indispensable to/for</em>
+  </div>
+</div>`,
+    'grammar-card': `
+<section class="grammar-structure-card">
+  <div class="grammar-structure-header">
+    <div class="struct-badge-group">
+      <span class="struct-number-badge">Structure 01</span>
+      <span class="struct-category-badge">Grammar Blueprint</span>
+    </div>
+    <span class="struct-rule-title">Relative Pronoun 'Which' with Parallel Gerunds</span>
+  </div>
+  <div class="struct-blueprint-box">
+    <span class="struct-formula-token token-highlight">Main Clause</span>
+    <span class="struct-formula-op">+</span>
+    <span class="struct-formula-token">, which + Verb Phrase</span>
+    <span class="struct-formula-op">+</span>
+    <span class="struct-formula-token">such as + Gerund</span>
+  </div>
+  <div class="struct-explanation">
+    কমা-পরবর্তী <strong>', which...'</strong> অংশটি পূর্ববর্তী পূর্ণাঙ্গ বক্তব্যের ফলাফল নির্দেশ করে।
+  </div>
+  <div class="struct-shortcut-box">
+    <span class="struct-shortcut-icon">💡</span>
+    <span><strong>শর্টকাট নিয়ম:</strong> কমার পর পুরো বাক্যের বর্ণনায় that নয়, সর্বদা <strong>', which'</strong> বসে।</span>
+  </div>
+  <div class="struct-example-block">
+    <span class="struct-ex-en">Ex: The college launched digital labs, which boosted research.</span>
+    <span class="struct-ex-bn">বঙ্গানুবাদ: কলেজটি ডিজিটাল ল্যাব চালু করেছিল, যা গবেষণাকে ত্বরান্বিত করেছিল।</span>
+  </div>
+</section>`
   };
 
   const textToInsert = snippets[type] || '';
@@ -345,6 +406,91 @@ export function insertFormulaSnippet(type) {
 
   if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
     window.showToast("সফলভাবে কোড স্নিপেট যুক্ত করা হয়েছে!");
+  }
+}
+
+/**
+ * Synchronizes Header and Footer inputs across Content Manager and Metadata subpages in real-time
+ */
+export function syncHeaderFooterInputs(course, unit, footer) {
+  if (course !== null && course !== undefined) {
+    appState.headerCourse = course;
+    appState.coverSubject = course;
+    const c1 = document.getElementById('contentHeaderCourse');
+    const c2 = document.getElementById('cfgHeaderCourse');
+    if (c1 && c1.value !== course) c1.value = course;
+    if (c2 && c2.value !== course) c2.value = course;
+  }
+  if (unit !== null && unit !== undefined) {
+    appState.headerUnit = unit;
+    const u1 = document.getElementById('contentHeaderUnit');
+    const u2 = document.getElementById('cfgHeaderUnit');
+    if (u1 && u1.value !== unit) u1.value = unit;
+    if (u2 && u2.value !== unit) u2.value = unit;
+  }
+  if (footer !== null && footer !== undefined) {
+    appState.footerTagline = footer;
+    const f1 = document.getElementById('contentFooterTag');
+    const f2 = document.getElementById('cfgFooterTag');
+    if (f1 && f1.value !== footer) f1.value = footer;
+    if (f2 && f2.value !== footer) f2.value = footer;
+  }
+  savePersistedState();
+}
+
+/**
+ * Synchronizes Header and Footer font selectors across Content Manager and Settings in real-time
+ */
+export function syncHeaderFooterFonts(courseFont, unitFont, footerFont) {
+  if (courseFont) {
+    appState.headerCourseFont = courseFont;
+    const s1 = document.getElementById('contentHdrCourseFont');
+    const s2 = document.getElementById('cfgHdrCourseFont');
+    if (s1 && s1.value !== courseFont) s1.value = courseFont;
+    if (s2 && s2.value !== courseFont) s2.value = courseFont;
+  }
+  if (unitFont) {
+    appState.headerUnitFont = unitFont;
+    const s1 = document.getElementById('contentHdrUnitFont');
+    const s2 = document.getElementById('cfgHdrUnitFont');
+    if (s1 && s1.value !== unitFont) s1.value = unitFont;
+    if (s2 && s2.value !== unitFont) s2.value = unitFont;
+  }
+  if (footerFont) {
+    appState.footerTaglineFont = footerFont;
+    const s1 = document.getElementById('contentFooterFont');
+    const s2 = document.getElementById('cfgFooterFont');
+    if (s1 && s1.value !== footerFont) s1.value = footerFont;
+    if (s2 && s2.value !== footerFont) s2.value = footerFont;
+  }
+  savePersistedState();
+  if (typeof window !== 'undefined' && typeof window.runAutoPagination === 'function') {
+    window.runAutoPagination(appState);
+  }
+}
+
+/**
+ * Quickly applies a predefined header/unit preset (e.g. English 1st Paper, 2nd Paper, etc.)
+ */
+export function setHeaderPreset(course, unit) {
+  if (course) {
+    appState.headerCourse = course;
+    appState.coverSubject = course;
+    const c1 = document.getElementById('contentHeaderCourse');
+    const c2 = document.getElementById('cfgHeaderCourse');
+    if (c1) c1.value = course;
+    if (c2) c2.value = course;
+  }
+  if (unit) {
+    appState.headerUnit = unit;
+    const u1 = document.getElementById('contentHeaderUnit');
+    const u2 = document.getElementById('cfgHeaderUnit');
+    if (u1) u1.value = unit;
+    if (u2) u2.value = unit;
+  }
+  savePersistedState();
+  if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+    window.showToast("✅ হেডার প্রিসেট সফলভাবে সেট হয়েছে!");
   }
 }
 
@@ -482,12 +628,34 @@ export function openSettingsModal(initialPage = null) {
   // Tab 1: General & Metadata
   const courseInput = document.getElementById('cfgHeaderCourse');
   if (courseInput) courseInput.value = appState.headerCourse;
+  const cCourseInput = document.getElementById('contentHeaderCourse');
+  if (cCourseInput) cCourseInput.value = appState.headerCourse;
 
   const unitInput = document.getElementById('cfgHeaderUnit');
   if (unitInput) unitInput.value = appState.headerUnit;
+  const cUnitInput = document.getElementById('contentHeaderUnit');
+  if (cUnitInput) cUnitInput.value = appState.headerUnit;
 
   const footerInput = document.getElementById('cfgFooterTag');
   if (footerInput) footerInput.value = appState.footerTagline;
+  const cFooterInput = document.getElementById('contentFooterTag');
+  if (cFooterInput) cFooterInput.value = appState.footerTagline;
+
+  // Header & Footer Fonts
+  const cCourseFont = document.getElementById('contentHdrCourseFont');
+  if (cCourseFont) cCourseFont.value = appState.headerCourseFont || "'Outfit', sans-serif";
+  const cfgCourseFont = document.getElementById('cfgHdrCourseFont');
+  if (cfgCourseFont) cfgCourseFont.value = appState.headerCourseFont || "'Outfit', sans-serif";
+
+  const cUnitFont = document.getElementById('contentHdrUnitFont');
+  if (cUnitFont) cUnitFont.value = appState.headerUnitFont || "'Outfit', sans-serif";
+  const cfgUnitFont = document.getElementById('cfgHdrUnitFont');
+  if (cfgUnitFont) cfgUnitFont.value = appState.headerUnitFont || "'Outfit', sans-serif";
+
+  const cFooterFont = document.getElementById('contentFooterFont');
+  if (cFooterFont) cFooterFont.value = appState.footerTaglineFont || "'Outfit', sans-serif";
+  const cfgFooterFont = document.getElementById('cfgFooterFont');
+  if (cfgFooterFont) cfgFooterFont.value = appState.footerTaglineFont || "'Outfit', sans-serif";
 
   const wmToggle = document.getElementById('cfgWatermarkToggle');
   if (wmToggle) wmToggle.checked = appState.watermarkEnabled;
@@ -624,14 +792,14 @@ export function toggleCustomCoverBox() {
  */
 export function saveAllSettings() {
   // General & Metadata
-  const courseInput = document.getElementById('cfgHeaderCourse');
-  if (courseInput) {
+  const courseInput = document.getElementById('contentHeaderCourse') || document.getElementById('cfgHeaderCourse');
+  if (courseInput && courseInput.value) {
     appState.headerCourse = courseInput.value;
     appState.coverSubject = courseInput.value;
   }
 
-  const unitInput = document.getElementById('cfgHeaderUnit');
-  if (unitInput) appState.headerUnit = unitInput.value;
+  const unitInput = document.getElementById('contentHeaderUnit') || document.getElementById('cfgHeaderUnit');
+  if (unitInput && unitInput.value) appState.headerUnit = unitInput.value;
 
   // Subject
   const subjectSelect = document.getElementById('cfgActiveSubject');
@@ -642,8 +810,16 @@ export function saveAllSettings() {
     }
   }
 
-  const footerInput = document.getElementById('cfgFooterTag');
-  if (footerInput) appState.footerTagline = footerInput.value;
+  const footerInput = document.getElementById('contentFooterTag') || document.getElementById('cfgFooterTag');
+  if (footerInput && footerInput.value) appState.footerTagline = footerInput.value;
+
+  // Header & Footer Fonts
+  const hdrCourseFont = document.getElementById('contentHdrCourseFont') || document.getElementById('cfgHdrCourseFont');
+  if (hdrCourseFont && hdrCourseFont.value) appState.headerCourseFont = hdrCourseFont.value;
+  const hdrUnitFont = document.getElementById('contentHdrUnitFont') || document.getElementById('cfgHdrUnitFont');
+  if (hdrUnitFont && hdrUnitFont.value) appState.headerUnitFont = hdrUnitFont.value;
+  const footerFont = document.getElementById('contentFooterFont') || document.getElementById('cfgFooterFont');
+  if (footerFont && footerFont.value) appState.footerTaglineFont = footerFont.value;
 
   const wmToggle = document.getElementById('cfgWatermarkToggle');
   if (wmToggle) appState.watermarkEnabled = wmToggle.checked;
@@ -812,9 +988,16 @@ export function switchSubjectTab(subjectKey) {
 
   const courseInput = document.getElementById('cfgHeaderCourse');
   if (courseInput) courseInput.value = meta.headerCourse;
+  const cCourseInput = document.getElementById('contentHeaderCourse');
+  if (cCourseInput) cCourseInput.value = meta.headerCourse;
 
   const unitInput = document.getElementById('cfgHeaderUnit');
   if (unitInput) unitInput.value = meta.headerUnit;
+  const cUnitInput = document.getElementById('contentHeaderUnit');
+  if (cUnitInput) cUnitInput.value = meta.headerUnit;
+
+  const cFooterInput = document.getElementById('contentFooterTag');
+  if (cFooterInput) cFooterInput.value = appState.footerTagline || 'Academic Publishing Series';
 
   const covSubj = document.getElementById('cfgCoverSubject');
   if (covSubj) covSubj.value = meta.coverSubject;
@@ -920,4 +1103,7 @@ if (typeof window !== 'undefined') {
   window.resetFactoryDefaults = resetFactoryDefaults;
   window.saveAllSettings = saveAllSettings;
   window.resetDemoContent = resetDemoContent;
+  window.syncHeaderFooterInputs = syncHeaderFooterInputs;
+  window.syncHeaderFooterFonts = syncHeaderFooterFonts;
+  window.setHeaderPreset = setHeaderPreset;
 }

@@ -31,11 +31,7 @@ let lastThemeToggleTime = 0;
 const SUN_SVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
 const MOON_SVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
 
-/**
- * Explicitly applies and persists selected theme (dark | light)
- * @param {'dark' | 'light'} theme 
- */
-export function setTheme(theme) {
+function applyThemeDOM(theme) {
   const htmlEl = document.documentElement;
   appState.theme = theme;
   htmlEl.setAttribute('data-theme', theme);
@@ -43,7 +39,7 @@ export function setTheme(theme) {
   // Sync Android / System Status Bar Color
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   if (themeMeta) {
-    themeMeta.setAttribute('content', theme === 'dark' ? '#180B10' : '#4A1112');
+    themeMeta.setAttribute('content', theme === 'dark' ? '#180e10' : '#4A1112');
   }
 
   // Sync Brand Header Icon with Active Theme Architecture
@@ -60,9 +56,9 @@ export function setTheme(theme) {
 
   if (theme === 'light') {
     if (btnIcon) btnIcon.innerHTML = MOON_SVG;
-    if (btnText) btnText.innerText = 'Dark Mahogany';
+    if (btnText) btnText.innerText = 'Dark Obsidian';
     if (fabIcon) fabIcon.innerHTML = MOON_SVG;
-    if (fabTooltip) fabTooltip.innerText = 'Dark Mahogany';
+    if (fabTooltip) fabTooltip.innerText = 'Dark Obsidian';
   } else {
     if (btnIcon) btnIcon.innerHTML = SUN_SVG;
     if (btnText) btnText.innerText = 'Warm White';
@@ -71,7 +67,19 @@ export function setTheme(theme) {
   }
 
   localStorage.setItem('mutu_doc_theme', theme);
-  // Pure instantaneous CSS variable theme swap - zero DOM thrashing
+}
+
+/**
+ * Explicitly applies and persists selected theme (dark | light) with silky velvet easing
+ * @param {'dark' | 'light'} theme 
+ */
+export function setTheme(theme) {
+  const htmlEl = document.documentElement;
+  htmlEl.classList.add('theme-switching');
+  applyThemeDOM(theme);
+  setTimeout(() => {
+    htmlEl.classList.remove('theme-switching');
+  }, 420);
 }
 
 /**
@@ -1182,14 +1190,23 @@ export function scrollToPage(targetIndex) {
 }
 
 /**
- * Tracks which page the user is currently reading
+ * Tracks which page the user is currently reading and keeps native history aligned
  */
 export function updatePageScrollTracking() {
   if (isProgrammaticScroll) return;
   clearTimeout(scrollTrackingTimer);
   scrollTrackingTimer = setTimeout(() => {
     if (isProgrammaticScroll) return;
-    currentPageIndex = getCurrentVisiblePageIndex();
+    const newIdx = getCurrentVisiblePageIndex();
+    if (newIdx !== currentPageIndex) {
+      currentPageIndex = newIdx;
+      lastBackPressTime = 0; // Clear exit timer when moving through pages
+      if (newIdx > 0) {
+        try {
+          window.history.pushState({ pageIndex: newIdx }, document.title);
+        } catch (e) {}
+      }
+    }
   }, 120);
 }
 
@@ -1345,23 +1362,33 @@ window.addEventListener('popstate', () => {
 
   // 4. Document Multi-Page Native Navigation Stack:
   // "যদি আমরা তিন নাম্বার পেজ থাকি, তাহলে তিনবার ব্যাক বাটন হোম পেজে আসার পরে ব্যাক বাটন দিলে তোমার ই হবে।
-  //  মানে যেই পেজে থাকবো ব্যাক বাটন দিলে সেই ওইখান থেকে আগের পেজে যাবে। দুইটা দিলে দুইটা আগের পেজ দিবে।"
-  const currentVisible = getCurrentVisiblePageIndex();
-  if (currentVisible > 0) {
-    const prevPageIndex = currentVisible - 1;
-    scrollToPage(prevPageIndex);
-    lastBackPressTime = 0; // Clear exit timer so navigating pages NEVER triggers app exit!
+  // 4. Document Multi-Page Native Navigation Stack:
+  // "যেই পেজে থাকো ব্যাক বাটনে ক্লিক করলে সেই পেজের ব্যাকে যাবে। 
+  //  মনে করো যে আমি তিন নাম্বার পেজে আছি। তো দুইটা ব্যাক বাটন করলে এক নাম্বার পেজে আসবে। 
+  //  দুইটা ব্যাক বাটন করলে যে অ্যাপ ক্লোজ হবে এমন না। হোম পেজ ছাড়া অন্যান্য পেজ থেকে ক্লোজ হওয়া একদম বন্ধ।"
+  const visibleIdx = getCurrentVisiblePageIndex();
+  let activePage = isProgrammaticScroll ? currentPageIndex : visibleIdx;
+  if (activePage === 0 && currentPageIndex > 0) {
+    activePage = currentPageIndex;
+  }
+
+  if (activePage > 0) {
+    const targetPage = Math.max(0, activePage - 1);
+    currentPageIndex = targetPage;
+    lastBackPressTime = 0; // Explicitly ensure exit is NEVER triggered when leaving a page!
+    scrollToPage(targetPage);
     try {
-      window.history.pushState({ root: true, pageIndex: prevPageIndex }, document.title);
+      window.history.pushState({ pageIndex: targetPage }, document.title);
     } catch (err) {}
     return;
   }
 
-  // 5. On Root Home Page (Page 1): Double-Back to Exit Protection
+  // 5. On Root Home Page (Page 0 / Cover): Double-Back to Exit Protection ONLY when at root
   const now = Date.now();
-  if (now - lastBackPressTime < 2000) {
-    // User pressed back again within 2 seconds: allow exit without blanking screen
+  if (lastBackPressTime > 0 && (now - lastBackPressTime < 2500)) {
+    // User pressed back twice within 2.5s while ALREADY on root page: allow exit
     if (navigator.vibrate) navigator.vibrate([20, 50, 20]);
+    lastBackPressTime = 0;
     window.history.back();
   } else {
     lastBackPressTime = now;

@@ -37,67 +37,137 @@ export const DEFAULT_DEMO_CONTENT = `
   </section>
 
   <section>
-    <div class="module-heading">Key Vocabulary Matrix &bull; শব্দভাণ্ডার ও পদবিন্যাস</div>
+    <div class="module-heading">Key Vocabulary &bull; শব্দভাণ্ডার, সমার্থক ও বিপরীতার্থক শব্দ</div>
     <div class="vocab-matrix-grid">
       <div class="vocab-card">
         <div class="vocab-top"><span class="vocab-en-term">Revolutionise</span><span class="vocab-badge">Verb</span></div>
         <div class="vocab-bn-meaning">বৈপ্লবিক পরিবর্তন ঘটানো</div>
-        <div class="vocab-synonym">Syn: Transform radically</div>
+        <div class="vocab-syn-row"><span class="vocab-tag-syn">Syn</span> Transform, Overhaul</div>
+        <div class="vocab-ant-row"><span class="vocab-tag-ant">Ant</span> Stagnate, Preserve</div>
       </div>
       <div class="vocab-card">
         <div class="vocab-top"><span class="vocab-en-term">Personalised</span><span class="vocab-badge">Adj</span></div>
         <div class="vocab-bn-meaning">ব্যক্তিকেন্দ্রিক / স্বতন্ত্র</div>
-        <div class="vocab-synonym">Syn: Tailored, Custom</div>
+        <div class="vocab-syn-row"><span class="vocab-tag-syn">Syn</span> Customized, Tailored</div>
+        <div class="vocab-ant-row"><span class="vocab-tag-ant">Ant</span> Standardized, Uniform</div>
       </div>
       <div class="vocab-card">
         <div class="vocab-top"><span class="vocab-en-term">Repetitive</span><span class="vocab-badge">Adj</span></div>
         <div class="vocab-bn-meaning">বারবার ঘটে এমন কাজ</div>
-        <div class="vocab-synonym">Syn: Routine, Monotonous</div>
+        <div class="vocab-syn-row"><span class="vocab-tag-syn">Syn</span> Monotonous, Routine</div>
+        <div class="vocab-ant-row"><span class="vocab-tag-ant">Ant</span> Varied, Diverse</div>
       </div>
       <div class="vocab-card">
         <div class="vocab-top"><span class="vocab-en-term">Pedagogy</span><span class="vocab-badge">Noun</span></div>
         <div class="vocab-bn-meaning">শিক্ষণবিজ্ঞান / পাঠদান নীতি</div>
-        <div class="vocab-synonym">Syn: Teaching method</div>
+        <div class="vocab-syn-row"><span class="vocab-tag-syn">Syn</span> Didactics, Tuition</div>
+        <div class="vocab-ant-row"><span class="vocab-tag-ant">Ant</span> Intuition, Misdirection</div>
       </div>
       <div class="vocab-card">
         <div class="vocab-top"><span class="vocab-en-term">Indispensable</span><span class="vocab-badge">Adj</span></div>
         <div class="vocab-bn-meaning">অপরিহার্য বা অত্যাবশ্যক</div>
-        <div class="vocab-synonym">Syn: Essential, Vital</div>
+        <div class="vocab-syn-row"><span class="vocab-tag-syn">Syn</span> Essential, Vital, Crucial</div>
+        <div class="vocab-ant-row"><span class="vocab-tag-ant">Ant</span> Redundant, Optional</div>
       </div>
       <div class="vocab-card">
         <div class="vocab-top"><span class="vocab-en-term">Automate</span><span class="vocab-badge">Verb</span></div>
         <div class="vocab-bn-meaning">স্বয়ংক্রিয়ভাবে সম্পাদন</div>
-        <div class="vocab-synonym">Syn: Mechanize, Digitize</div>
+        <div class="vocab-syn-row"><span class="vocab-tag-syn">Syn</span> Mechanize, Computerize</div>
+        <div class="vocab-ant-row"><span class="vocab-tag-ant">Ant</span> Manualize, Handcraft</div>
       </div>
       <div class="vocab-card">
         <div class="vocab-top"><span class="vocab-en-term">Algorithmic Bias</span><span class="vocab-badge">Noun</span></div>
         <div class="vocab-bn-meaning">অ্যালগরিদমের পক্ষপাত</div>
-        <div class="vocab-synonym">Syn: Data prejudice</div>
+        <div class="vocab-syn-row"><span class="vocab-tag-syn">Syn</span> Data prejudice, Skew</div>
+        <div class="vocab-ant-row"><span class="vocab-tag-ant">Ant</span> Fairness, Neutrality</div>
       </div>
       <div class="vocab-card">
         <div class="vocab-top"><span class="vocab-en-term">Empathy</span><span class="vocab-badge">Noun</span></div>
         <div class="vocab-bn-meaning">সহমর্মিতা ও সহানুভূতি</div>
-        <div class="vocab-synonym">Syn: Compassion</div>
+        <div class="vocab-syn-row"><span class="vocab-tag-syn">Syn</span> Compassion, Affinity</div>
+        <div class="vocab-ant-row"><span class="vocab-tag-ant">Ant</span> Apathy, Indifference</div>
       </div>
-      <div class="vocab-card">
-        <div class="vocab-top"><span class="vocab-en-term">Mentorship</span><span class="vocab-badge">Noun</span></div>
-        <div class="vocab-bn-meaning">प्रत्यক্ষ পরামর্শ ও তত্ত্বাবধান</div>
-        <div class="vocab-synonym">Syn: Guidance</div>
+    </div>
+  </section>
+
+  <!-- Dedicated Academic Synonym & Antonym Matrix -->
+  <section>
+    <div class="module-heading">Synonyms &amp; Antonyms Analysis &bull; সমার্থক ও বিপরীতার্থক তুলনামূলক বিশ্লেষণ</div>
+    <div class="syn-ant-grid">
+      <div class="syn-ant-card">
+        <div class="syn-ant-header">
+          <div>
+            <span class="sa-word-title">Indispensable</span>
+            <span class="sa-meaning">(অপরিহার্য / অনস্বীকার্য)</span>
+          </div>
+          <span class="sa-pos-badge">Adjective</span>
+        </div>
+        <div class="syn-ant-columns">
+          <div class="sa-col">
+            <div class="sa-col-label syn">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              সমার্থক (Synonyms)
+            </div>
+            <div class="sa-pills-list">
+              <span class="sa-pill syn">Essential</span>
+              <span class="sa-pill syn">Vital</span>
+              <span class="sa-pill syn">Crucial</span>
+              <span class="sa-pill syn">Imperative</span>
+            </div>
+          </div>
+          <div class="sa-col">
+            <div class="sa-col-label ant">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              বিপরীতার্থক (Antonyms)
+            </div>
+            <div class="sa-pills-list">
+              <span class="sa-pill ant">Superfluous</span>
+              <span class="sa-pill ant">Redundant</span>
+              <span class="sa-pill ant">Dispensable</span>
+            </div>
+          </div>
+        </div>
+        <div class="sa-context-note">
+          <strong>ভর্তি পরীক্ষা টিপস:</strong> DU 'A' ও 'D' ইউনিটের প্রিপজিশন ক্লু: <em>Indispensable to / for</em>.
+        </div>
       </div>
-      <div class="vocab-card">
-        <div class="vocab-top"><span class="vocab-en-term">Proprietary</span><span class="vocab-badge">Adj</span></div>
-        <div class="vocab-bn-meaning">ব্যক্তিমালিকানাধীন ব্যবস্থা</div>
-        <div class="vocab-synonym">Syn: Privately owned</div>
-      </div>
-      <div class="vocab-card">
-        <div class="vocab-top"><span class="vocab-en-term">Exacerbate</span><span class="vocab-badge">Verb</span></div>
-        <div class="vocab-bn-meaning">তীব্রতর বা সংকটময় করা</div>
-        <div class="vocab-synonym">Syn: Worsen, Aggravate</div>
-      </div>
-      <div class="vocab-card">
-        <div class="vocab-top"><span class="vocab-en-term">Scaffolding</span><span class="vocab-badge">Noun</span></div>
-        <div class="vocab-bn-meaning">শিক্ষার্থীদের ক্রমান্বয়ে সহায়তা</div>
-        <div class="vocab-synonym">Syn: Guided support</div>
+
+      <div class="syn-ant-card">
+        <div class="syn-ant-header">
+          <div>
+            <span class="sa-word-title">Exacerbate</span>
+            <span class="sa-meaning">(তীব্রতর / সংকটময় করা)</span>
+          </div>
+          <span class="sa-pos-badge">Verb</span>
+        </div>
+        <div class="syn-ant-columns">
+          <div class="sa-col">
+            <div class="sa-col-label syn">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              সমার্থক (Synonyms)
+            </div>
+            <div class="sa-pills-list">
+              <span class="sa-pill syn">Aggravate</span>
+              <span class="sa-pill syn">Worsen</span>
+              <span class="sa-pill syn">Intensify</span>
+              <span class="sa-pill syn">Inflame</span>
+            </div>
+          </div>
+          <div class="sa-col">
+            <div class="sa-col-label ant">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              বিপরীতার্থক (Antonyms)
+            </div>
+            <div class="sa-pills-list">
+              <span class="sa-pill ant">Ameliorate</span>
+              <span class="sa-pill ant">Alleviate</span>
+              <span class="sa-pill ant">Soothe</span>
+            </div>
+          </div>
+        </div>
+        <div class="sa-context-note">
+          <strong>ভর্তি পরীক্ষা টিপস:</strong> মেডিকেল ও বিসিএস পরীক্ষায় <em>Exacerbate &bull; Ameliorate</em> জোড়া অত্যন্ত কমন।
+        </div>
       </div>
     </div>
   </section>
@@ -128,27 +198,103 @@ export const DEFAULT_DEMO_CONTENT = `
     <div class="st-bn">"এটি অ্যাসাইনমেন্ট এবং কুইজের দ্রুত মূল্যায়ন করতে পারে, যা শিক্ষকদের সময় বাঁচিয়ে সৃজনশীল পাঠ পরিকল্পনা প্রণয়নের সুযোগ দেয়।"</div>
   </section>
 
-  <section class="grammar-analysis-card">
-    <div class="grammar-rule-name">Rule 1: Non-defining Relative Clause with Parallel Gerunds</div>
-    <div class="grammar-formula-chip">Main Clause, + which + Verb Phrase | such as + [Gerund-1 + and + Gerund-2]</div>
-    <div class="grammar-explanation">
-      কমা-পরবর্তী <strong>', which can free up...'</strong> অংশটি পূর্ববর্তী পূর্ণাঙ্গ বক্তব্যের ফলাফল নির্দেশ করতে ব্যবহূত হয়েছে। এছাড়া প্রিপজিশনাল ফ্রেজ 'such as'-এর পরে <strong>'planning'</strong> ও <strong>'providing'</strong> সমান্তরাল জেরান্ড (Parallelism) বজায় রেখেছে।
+  <!-- Modern Grammatical Structure Card 01 -->
+  <section class="grammar-structure-card">
+    <div class="grammar-structure-header">
+      <div class="struct-badge-group">
+        <span class="struct-number-badge">Structure 01</span>
+        <span class="struct-category-badge">Complex Sentence &bull; Non-defining Clause</span>
+      </div>
+      <span class="struct-rule-title">Relative Pronoun 'Which' with Parallel Gerunds</span>
     </div>
-    <div class="grammar-example-row">
-      <span class="example-en">Ex: The school introduced digital labs, which significantly improved student engagement.</span><br>
-      <span class="example-bn">বঙ্গানুবাদ: বিদ্যালয়টি ডিজিটাল ল্যাব চালু করেছিল, যা শিক্ষার্থীদের সম্পৃক্ততা লক্ষণীয়ভাবে বৃদ্ধি করেছিল।</span>
+
+    <!-- Visual Structure Blueprint Box -->
+    <div class="struct-blueprint-box">
+      <span class="struct-formula-token token-highlight">Main Clause</span>
+      <span class="struct-formula-op">+</span>
+      <span class="struct-formula-token">, which + Verb Phrase</span>
+      <span class="struct-formula-op">+</span>
+      <span class="struct-formula-token">such as + [Gerund₁</span>
+      <span class="struct-formula-op">and</span>
+      <span class="struct-formula-token">Gerund₂]</span>
+    </div>
+
+    <!-- Syntactical Breakdown Alignment Table -->
+    <table class="struct-breakdown-table">
+      <thead>
+        <tr>
+          <th>Independent Clause</th>
+          <th>Relative Connector</th>
+          <th>Consequence / Verb</th>
+          <th>Parallel Complements</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>It can grade quizzes...</td>
+          <td><strong>, which</strong> (পুরো ক্লজের বিকল্প)</td>
+          <td>can free up teachers' time</td>
+          <td>for <em>lesson planning</em> and <em>mentoring</em></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="struct-explanation">
+      কমা-পরবর্তী <strong>', which can free up...'</strong> অংশটি কোনো একক শব্দ নয়, বরং পূর্ববর্তী পূর্ণাঙ্গ বক্তব্যের সামগ্রিক ফলাফল নির্দেশ করে (Sentential Relative Clause)। এছাড়া প্রিপজিশন 'for' বা 'such as'-এর পরে দুটি ক্রিয়া এলে উভয়েই সমান্তরাল জেরান্ড <strong>(Parallel Gerunds)</strong> গ্রহণ করে।
+    </div>
+
+    <div class="struct-shortcut-box">
+      <span class="struct-shortcut-icon">💡</span>
+      <span><strong>শর্টকাট নিয়ম:</strong> কমার পর পুরো বাক্যের ফলাফলে 'that' কখনো বসে না; সর্বদা <strong>', which'</strong> বসে।</span>
+    </div>
+
+    <div class="struct-example-block">
+      <span class="struct-ex-en">Ex: The college launched digital labs, which significantly boosted research output.</span>
+      <span class="struct-ex-bn">বঙ্গানুবাদ: কলেজটি ডিজিটাল ল্যাব চালু করেছিল, যা গবেষণার ফলাফল লক্ষণীয়ভাবে বৃদ্ধি করেছিল।</span>
+      <div class="struct-trap-row">
+        <span class="struct-trap-bad">❌ Incorrect:</span> ...digital labs, that boosted research.
+        <span class="struct-trap-good">✅ Correct:</span> ...digital labs, which boosted research.
+      </div>
     </div>
   </section>
 
-  <section class="grammar-analysis-card">
-    <div class="grammar-rule-name">Rule 2: Adjectival Infinitive Modifying Noun of Capacity</div>
-    <div class="grammar-formula-chip">Subject + Linking Verb + Complement [Noun (ability/potential) + to + Verb₁]</div>
-    <div class="grammar-explanation">
-      'Ability', 'Opportunity', বা 'Potential'-এর মতো বিমূর্ত নাউনের পর বসা <code>to + Verb₁</code> এডজেক্টিভ হিসেবে নাউনের উদ্দেশ্য বা কার্যকারিতা সংজ্ঞায়িত করে।
+  <!-- Modern Grammatical Structure Card 02 -->
+  <section class="grammar-structure-card">
+    <div class="grammar-structure-header">
+      <div class="struct-badge-group">
+        <span class="struct-number-badge">Structure 02</span>
+        <span class="struct-category-badge">Syntax Blueprint &bull; Adjectival Infinitive</span>
+      </div>
+      <span class="struct-rule-title">Abstract Noun of Capacity + 'To-Infinitive'</span>
     </div>
-    <div class="grammar-example-row">
-      <span class="example-en">Ex: Students develop the ability to think critically when challenged with complex problems.</span><br>
-      <span class="example-bn">বঙ্গানুবাদ: জটিল সমস্যার মুখোমুখি হলে শিক্ষার্থীরা সমালোচনামূলক চিন্তা করার সক্ষমতা অর্জন করে।</span>
+
+    <!-- Visual Structure Blueprint Box -->
+    <div class="struct-blueprint-box">
+      <span class="struct-formula-token token-highlight">Subject</span>
+      <span class="struct-formula-op">+</span>
+      <span class="struct-formula-token">Verb</span>
+      <span class="struct-formula-op">+</span>
+      <span class="struct-formula-token token-highlight">Noun (ability / capacity / potential)</span>
+      <span class="struct-formula-op">+</span>
+      <span class="struct-formula-token">to + Verb₁ (Infinitive)</span>
+    </div>
+
+    <div class="struct-explanation">
+      'Ability', 'Capacity', 'Potential' বা 'Opportunity'-এর মতো সক্ষমতা-জ্ঞাপক বিমূর্ত নাউনের পর বসা <code>to + Verb₁</code> এডজেক্টিভ হিসেবে নাউনের উদ্দেশ্য বা কার্যকারিতা সংজ্ঞায়িত করে।
+    </div>
+
+    <div class="struct-shortcut-box">
+      <span class="struct-shortcut-icon">💡</span>
+      <span><strong>শর্টকাট টেকনিক:</strong> 'ability of doing' লেখা ভুল; সঠিক রূপ হলো <strong>'ability to do'</strong>।</span>
+    </div>
+
+    <div class="struct-example-block">
+      <span class="struct-ex-en">Ex: Students develop the ability to think critically when challenged with complex problems.</span>
+      <span class="struct-ex-bn">বঙ্গানুবাদ: জটিল সমস্যার মুখোমুখি হলে শিক্ষার্থীরা সমালোচনামূলক চিন্তা করার সক্ষমতা অর্জন করে।</span>
+      <div class="struct-trap-row">
+        <span class="struct-trap-bad">❌ Incorrect:</span> AI has the ability of automating tasks.
+        <span class="struct-trap-good">✅ Correct:</span> AI has the ability to automate tasks.
+      </div>
     </div>
   </section>
 
@@ -253,18 +399,19 @@ export const SVG_DEFS = `
  */
 export function getLogoSVG(height = 38) {
   return `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" style="height: ${height}px; width: auto;" role="img" aria-label="MUTU STUDY Master Logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" style="height: ${height}px; width: auto; display: block; margin: 0 auto;" role="img" aria-label="MUTU STUDY Master Logo">
       ${SVG_DEFS}
-      <g transform="translate(-20, 42) scale(0.492)">
+      <!-- Unified Bounding Box: Left edge (Icon) at X=70, Right edge ('Study') at X=830. Dead Center = 450px -->
+      <g transform="translate(41.5, 42) scale(0.492)">
         <path fill="url(#m-left-fill)" d="M 58.05,46.45 L 147.48,97.94 C 162.85,106.75 170.78,120.15 170.78,135.43 L 170.78,322.16 L 75.14,267.86 C 64.14,261.61 58.05,252.95 58.05,240.17 Z"/>
         <path fill="url(#m-center-fill)" d="M 290.75,104.54 L 199.54,166.45 C 191.19,172.12 186.69,176.00 186.69,183.09 C 186.69,190.18 191.61,195.98 199.66,200.23 L 246.45,224.91 C 257.11,230.52 261.78,238.05 261.78,246.31 C 261.78,254.48 258.67,261.18 249.36,267.17 L 192.14,303.51 C 188.45,305.85 186.74,308.03 186.74,311.14 L 186.74,323.27 L 275.19,269.26 C 285.43,263.01 290.75,254.51 290.75,241.91 Z"/>
         <path fill="url(#m-gold-upper)" d="M 291.42,26.78 L 210.28,81.46 C 196.41,90.76 188.85,101.12 188.85,116.95 L 188.85,152.66 L 278.07,92.10 C 287.35,85.81 291.42,77.74 291.42,66.92 Z"/>
         <path fill="url(#m-gold-lower)" d="M 189.52,214.14 L 230.66,235.55 C 235.16,237.89 237.36,240.63 237.36,245.66 C 237.36,250.43 235.55,253.07 231.10,255.96 L 189.52,283.43 Z"/>
       </g>
-      <text x="158" y="164"><tspan class="logo-fn">M</tspan><tspan class="logo-bs">utu</tspan></text>
-      <text x="470" y="164" class="logo-fn">S</text>
-      <text x="558" y="164" class="logo-bs">tudy</text>
-      <g transform="translate(448, 16) scale(0.08)">
+      <text x="214" y="164"><tspan class="logo-fn">M</tspan><tspan class="logo-bs">utu</tspan></text>
+      <text x="526" y="164" class="logo-fn">S</text>
+      <text x="614" y="164" class="logo-bs">tudy</text>
+      <g transform="translate(504, 16) scale(0.08)">
         <path d="M 460 340 L 1110 340 L 1108 642 C 970 638, 840 622, 730 622 C 610 622, 500 700, 460 760 Z" fill="var(--logo-cap-base)"/>
         <path d="M 160 280 L 800 75 L 1440 280 L 800 490 Z" fill="url(#m-cap-board)"/>
         <path d="M 160 280 L 800 490 L 800 508 L 160 298 Z" fill="var(--logo-cap-edge-left)"/>
