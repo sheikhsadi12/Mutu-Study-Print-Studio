@@ -21,7 +21,7 @@ import {
   SUBJECT_META
 } from './settings.js';
 
-import { runAutoPagination, applyTypography } from './paginator.js';
+import { runAutoPagination, applyTypography, renderAllPendingPagesMath } from './paginator.js';
 import { DEFAULT_DEMO_CONTENT } from './demo-content.js';
 
 // PWA deferred install prompt holder
@@ -74,12 +74,7 @@ function applyThemeDOM(theme) {
  * @param {'dark' | 'light'} theme 
  */
 export function setTheme(theme) {
-  const htmlEl = document.documentElement;
-  htmlEl.classList.add('theme-switching');
   applyThemeDOM(theme);
-  setTimeout(() => {
-    htmlEl.classList.remove('theme-switching');
-  }, 420);
 }
 
 /**
@@ -593,6 +588,9 @@ export function exportPDF(targetTheme = null) {
     setTheme(themeToApply);
   }
 
+  // Ensure all lazy/offscreen pages have their KaTeX/MathJax formulas rendered before print
+  renderAllPendingPagesMath();
+
   showToast(`PDF প্রস্তুত হচ্ছে: "${pdfFileName}.pdf"`, 2500);
 
   setTimeout(() => {
@@ -605,7 +603,7 @@ export function exportPDF(targetTheme = null) {
         setTheme(currentTheme);
       }
     }, 1500);
-  }, isSwitchNeeded ? 140 : 40);
+  }, isSwitchNeeded ? 80 : 30);
 }
 
 /**
@@ -820,25 +818,32 @@ export function getPageNormalizedPoint(clientX, clientY) {
     return { wrapper: null, uX: 0.5, uY: 0.5 };
   }
 
+  // O(1) index estimate from scrollTop so we never call getBoundingClientRect on all 200 pages
+  const { y: scrollY } = getDocumentViewportScroll();
+  const approxPageStride = Math.max(200, 1123 * currentDocScale + 28);
+  const approxIdx = Math.max(0, Math.min(wrappers.length - 1, Math.floor(scrollY / approxPageStride)));
+  const startIdx = Math.max(0, approxIdx - 2);
+  const endIdx = Math.min(wrappers.length - 1, approxIdx + 3);
+
   let chosenWrapper = null;
   let minDiff = Infinity;
 
-  wrappers.forEach((w) => {
+  for (let i = startIdx; i <= endIdx; i++) {
+    const w = wrappers[i];
     const rect = w.getBoundingClientRect();
     if (clientY >= rect.top && clientY <= rect.bottom) {
       chosenWrapper = w;
+      break;
     }
     const mid = rect.top + rect.height / 2;
     const diff = Math.abs(mid - clientY);
     if (diff < minDiff) {
       minDiff = diff;
-      if (!chosenWrapper) {
-        chosenWrapper = w;
-      }
+      chosenWrapper = w;
     }
-  });
+  }
 
-  if (!chosenWrapper) chosenWrapper = wrappers[0];
+  if (!chosenWrapper) chosenWrapper = wrappers[approxIdx] || wrappers[0];
 
   const rect = chosenWrapper.getBoundingClientRect();
   const uX = rect.width > 0 ? Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) : 0.5;
@@ -858,7 +863,7 @@ export function zoomToTargetScale(
   targetScale,
   clientFocalX = window.innerWidth / 2,
   clientFocalY = window.innerHeight / 2,
-  smoothScroll = true
+  smoothScroll = false
 ) {
   const fitScale = calculateFitScale();
   // Set isDocInFitMode: true if targetScale is close to fitScale, false if custom zoom

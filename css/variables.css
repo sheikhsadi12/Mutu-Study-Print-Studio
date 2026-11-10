@@ -286,39 +286,10 @@ html[data-theme="dark"] body {
     radial-gradient(circle at 78% 75%, rgba(55, 28, 33, 0.35) 0%, transparent 60%);
 }
 
-/* Silky Velvet Theme Transition Engine (Smooth, seamless light <-> dark switching) */
-html.theme-switching body,
-html.theme-switching .document-viewport,
-html.theme-switching .document-stage,
-html.theme-switching .a4-page,
-html.theme-switching .a4-cover-page,
+/* Instant Zero-Lag Theme Switching across 100–200+ A4 Pages */
 html.theme-switching .screen-control-bar,
-html.theme-switching .page-header,
-html.theme-switching .page-footer,
-html.theme-switching .surface-card,
-html.theme-switching .glass-card,
-html.theme-switching .bilingual-passage-card,
-html.theme-switching .explanation-card,
-html.theme-switching .vocab-card,
-html.theme-switching .syn-ant-card,
-html.theme-switching .sentence-breakdown-card,
-html.theme-switching .grammar-structure-card,
-html.theme-switching .teachers-corner-card,
-html.theme-switching .academic-table td,
-html.theme-switching .academic-table th,
 html.theme-switching .ui-btn,
 html.theme-switching .fab-trigger,
-html.theme-switching .fab-btn-action,
-html.theme-switching .settings-modal,
-html.theme-switching .modal-overlay {
-  transition: background-color 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-              background 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-              color 0.34s cubic-bezier(0.22, 1, 0.36, 1),
-              border-color 0.34s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1) !important;
-}
-
-/* Gentle fallback for other elements */
-html.theme-switching svg {
-  transition: fill 0.34s ease, stroke 0.34s ease !important;
+html.theme-switching .settings-modal {
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }

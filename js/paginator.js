@@ -351,11 +351,199 @@ function isHeadingElement(el) {
   );
 }
 
+let viewportMathObserver = null;
+let idleMathQueue = [];
+let idleMathHandle = null;
+
+/**
+ * Renders KaTeX / MathJax on a single A4 page or section if not yet rendered
+ * @param {HTMLElement} pageEl
+ */
+export async function renderPageMathIfNeeded(pageEl) {
+  if (!pageEl || pageEl.dataset.mathPending !== 'true') return;
+  pageEl.dataset.mathPending = 'false';
+  pageEl.dataset.mathRendered = 'true';
+  await renderAllMathInElement(pageEl);
+}
+
+/**
+ * Synchronously flushes KaTeX / MathJax on all remaining unrendered pages (used before PDF export / print)
+ */
+export function renderAllPendingPagesMath() {
+  if (idleMathHandle) {
+    if (typeof window !== 'undefined' && window.cancelIdleCallback) {
+      window.cancelIdleCallback(idleMathHandle);
+    } else {
+      clearTimeout(idleMathHandle);
+    }
+    idleMathHandle = null;
+  }
+  idleMathQueue = [];
+
+  const pendingPages = document.querySelectorAll('.a4-page[data-math-pending="true"]');
+  pendingPages.forEach((page) => {
+    page.dataset.mathPending = 'false';
+    page.dataset.mathRendered = 'true';
+    if (viewportMathObserver) {
+      viewportMathObserver.unobserve(page);
+    }
+    if (typeof window !== 'undefined' && typeof window.renderMathInElement === 'function') {
+      try {
+        window.renderMathInElement(page, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\[', right: '\\]', display: true },
+            { left: '\\(', right: '\\)', display: false }
+          ],
+          throwOnError: false,
+          trust: true
+        });
+      } catch (err) {
+        console.warn('[MUTU Math] Print flush notice:', err);
+      }
+    }
+  });
+}
+
+/**
+ * Schedules non-blocking idle background math rendering for offscreen pages
+ */
+function scheduleNextIdleMathRender() {
+  if (idleMathQueue.length === 0) {
+    idleMathHandle = null;
+    return;
+  }
+
+  const runSlice = (deadline) => {
+    while (
+      idleMathQueue.length > 0 &&
+      (!deadline || deadline.timeRemaining() > 6 || deadline.didTimeout)
+    ) {
+      const nextPage = idleMathQueue.shift();
+      if (nextPage && nextPage.isConnected && nextPage.dataset.mathPending === 'true') {
+        if (viewportMathObserver) {
+          viewportMathObserver.unobserve(nextPage);
+        }
+        renderPageMathIfNeeded(nextPage);
+        break; // Render at most 1 page per idle slice to keep 60fps responsiveness
+      }
+    }
+    if (idleMathQueue.length > 0) {
+      scheduleNextIdleMathRender();
+    } else {
+      idleMathHandle = null;
+    }
+  };
+
+  if (typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function') {
+    idleMathHandle = window.requestIdleCallback(runSlice, { timeout: 1200 });
+  } else {
+    idleMathHandle = setTimeout(() => runSlice(null), 60);
+  }
+}
+
+/**
+ * Sets up IntersectionObserver so KaTeX/MathJax only triggers for pages/sections entering the viewport
+ * @param {NodeListOf<Element>|Element[]} pages
+ */
+function observePagesForViewportMath(pages) {
+  if (typeof window === 'undefined') return;
+
+  if (viewportMathObserver) {
+    viewportMathObserver.disconnect();
+  }
+  if (idleMathHandle) {
+    if (window.cancelIdleCallback) {
+      window.cancelIdleCallback(idleMathHandle);
+    } else {
+      clearTimeout(idleMathHandle);
+    }
+    idleMathHandle = null;
+  }
+  idleMathQueue = [];
+
+  const viewportRoot = document.getElementById('document-viewport') || null;
+
+  if ('IntersectionObserver' in window) {
+    viewportMathObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const pageEl = entry.target;
+            viewportMathObserver.unobserve(pageEl);
+            renderPageMathIfNeeded(pageEl);
+          }
+        });
+      },
+      {
+        root: viewportRoot,
+        rootMargin: '900px 0px 900px 0px',
+        threshold: 0.01
+      }
+    );
+  }
+
+  const pageArray = Array.from(pages);
+  // Immediately render the first 2 visible pages so initial paint has zero flicker
+  const immediateCount = Math.min(2, pageArray.length);
+  for (let i = 0; i < immediateCount; i++) {
+    renderPageMathIfNeeded(pageArray[i]);
+  }
+
+  // Observe remaining pages via IntersectionObserver and queue for low-priority idle rendering
+  for (let i = immediateCount; i < pageArray.length; i++) {
+    const page = pageArray[i];
+    if (viewportMathObserver) {
+      viewportMathObserver.observe(page);
+    }
+    idleMathQueue.push(page);
+  }
+
+  if (idleMathQueue.length > 0) {
+    scheduleNextIdleMathRender();
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeprint', () => {
+    renderAllPendingPagesMath();
+  });
+}
+
+/**
+ * Estimates extra vertical height that unrendered LaTeX display math ($$...$$) will occupy once KaTeX renders
+ * @param {Element} el
+ * @returns {number}
+ */
+function estimateUnrenderedMathDelta(el) {
+  if (!el || !el.textContent) return 0;
+  const txt = el.textContent;
+  if (!txt.includes('$') && !txt.includes('\\[')) return 0;
+
+  let extra = 0;
+  const displayMatches = txt.match(/\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]/g);
+  if (displayMatches) {
+    for (let i = 0; i < displayMatches.length; i++) {
+      const m = displayMatches[i];
+      extra += 14;
+      if (m.includes('\\frac') || m.includes('\\dfrac') || m.includes('\\int') || m.includes('\\sum')) {
+        extra += 12;
+      }
+      if (m.includes('\\begin{aligned}') || m.includes('\\\\')) {
+        const lines = m.split('\\\\').length;
+        extra += (lines - 1) * 16;
+      }
+    }
+  }
+  return extra;
+}
+
 /**
  * Master Auto-Pagination Engine
- * Ultra-fast single-pass math rendering, 2-column diagram grid normalization,
- * O(1) offscreen page measurement (handles 5,000–10,000+ lines with zero lag),
- * and deep recursive inside-box splitting across A4 page margins (zero dead bottom voids)
+ * Ultra-fast single-pass batch height measurement, 2-column diagram grid normalization,
+ * zero-reflow arithmetic page packing (handles 5,000–10,000+ lines with zero UI freeze),
+ * and IntersectionObserver lazy KaTeX/MathJax rendering for sections/pages in the viewport.
  * @param {object} [state=appState] - Application state object
  */
 export async function runAutoPagination(state = appState) {
@@ -398,17 +586,68 @@ export async function runAutoPagination(state = appState) {
     // Normalize oversized diagrams into compact 2-column side-by-side grids
     normalizeDiagramGrids(tempPool);
 
-    // Render all math formulas in the pool ONCE
-    await renderAllMathInElement(tempPool);
-
     const stage = document.getElementById('document-stage');
     if (!stage) {
       if (tempPool.parentNode) tempPool.parentNode.removeChild(tempPool);
       return;
     }
 
-    // Build all pages into an offscreen DocumentFragment, using a SINGLE measurement page
-    // in the DOM so layout calculation is O(1) per block even for 6,000+ line lecture sheets!
+    // Flatten plain <section> wrappers that have no visual card border/background of their own
+    const flowNodes = [];
+    Array.from(tempPool.children).forEach((child) => {
+      if (child.tagName === 'SECTION' && child.classList.length === 0 && child.children.length > 1) {
+        Array.from(child.children).forEach((inner) => flowNodes.push(inner));
+      } else {
+        flowNodes.push(child);
+      }
+    });
+
+    // SINGLE-PASS BATCH LAYOUT MEASUREMENT (1 layout read pass total, zero layout thrashing!)
+    const heightMap = new WeakMap();
+    const measureEl = (el, isLeaf = false) => {
+      if (!el || el.nodeType !== 1) return 24;
+      const h = el.offsetHeight || 22;
+      const mathDelta = isLeaf ? estimateUnrenderedMathDelta(el) : 0;
+      const total = h + mathDelta + 5;
+      heightMap.set(el, total);
+      return total;
+    };
+
+    for (let i = 0; i < flowNodes.length; i++) {
+      const node = flowNodes[i];
+      const children = node.children;
+      const hasChildren = children && children.length > 1;
+      measureEl(node, !hasChildren);
+
+      if (node.tagName === 'TABLE' && node.querySelector('tbody')) {
+        const thead = node.querySelector('thead');
+        if (thead) measureEl(thead, true);
+        const rows = node.querySelectorAll('tbody > tr');
+        for (let r = 0; r < rows.length; r++) {
+          measureEl(rows[r], true);
+        }
+      } else if (hasChildren) {
+        for (let c = 0; c < children.length; c++) {
+          const child = children[c];
+          const grandChildren = child.children;
+          const hasGrand = grandChildren && grandChildren.length > 1;
+          measureEl(child, !hasGrand);
+          if (hasGrand) {
+            for (let g = 0; g < grandChildren.length; g++) {
+              measureEl(grandChildren[g], true);
+            }
+          }
+        }
+      }
+    }
+
+    const getH = (el) => heightMap.get(el) || 26;
+
+    // Clean up tempPool immediately after the single batch read pass
+    if (tempPool.parentNode) {
+      tempPool.parentNode.removeChild(tempPool);
+    }
+
     const stageFragment = document.createDocumentFragment();
     let pageSequence = 0;
 
@@ -423,40 +662,17 @@ export async function runAutoPagination(state = appState) {
       stageFragment.appendChild(wrapper);
     }
 
-    // Flatten plain <section> wrappers that have no visual card border/background of their own
-    const flowNodes = [];
-    Array.from(tempPool.children).forEach((child) => {
-      if (child.tagName === 'SECTION' && child.classList.length === 0 && child.children.length > 1) {
-        Array.from(child.children).forEach((inner) => flowNodes.push(inner));
-      } else {
-        flowNodes.push(child);
-      }
-    });
-
-    // Clean up tempPool before measuring pages
-    if (tempPool.parentNode) {
-      tempPool.parentNode.removeChild(tempPool);
-    }
-
     if (flowNodes.length > 0) {
-      // Dedicated offscreen measurement host for O(1) reflow cost
-      const measureHost = document.createElement('div');
-      measureHost.style.position = 'absolute';
-      measureHost.style.left = '-9999px';
-      measureHost.style.top = '0';
-      measureHost.style.visibility = 'hidden';
-      measureHost.style.pointerEvents = 'none';
-      document.body.appendChild(measureHost);
+      // Exact printable content height inside A4 page (1123px page - 64px top/bottom pad - 66px header/footer - 16px gaps)
+      const maxContentHeight = 964;
+      const cardShellOverhead = 16;
 
       let currentPage = createNewA4Page(state);
-      measureHost.appendChild(currentPage);
+      currentPage.dataset.mathPending = 'true';
       let contentArea = currentPage.querySelector('.page-content-area');
-      const maxContentHeight = contentArea.clientHeight + 2;
+      let usedHeight = 0;
 
       const flushCurrentPageToFragment = () => {
-        if (currentPage.parentNode) {
-          currentPage.parentNode.removeChild(currentPage);
-        }
         const wrapper = document.createElement('div');
         wrapper.className = 'a4-page-wrapper';
         wrapper.dataset.pageIndex = String(pageSequence++);
@@ -468,72 +684,73 @@ export async function runAutoPagination(state = appState) {
       const startNextPage = () => {
         const lastEl = contentArea.lastElementChild;
         let carriedHeading = null;
+        let carriedHeight = 0;
         if (lastEl && isHeadingElement(lastEl) && contentArea.children.length > 1) {
           carriedHeading = lastEl;
+          carriedHeight = getH(lastEl);
           contentArea.removeChild(lastEl);
         }
         flushCurrentPageToFragment();
         currentPage = createNewA4Page(state);
-        measureHost.appendChild(currentPage);
+        currentPage.dataset.mathPending = 'true';
         contentArea = currentPage.querySelector('.page-content-area');
+        usedHeight = 0;
         if (carriedHeading) {
           contentArea.appendChild(carriedHeading);
+          usedHeight += carriedHeight;
         }
       };
 
-      const fitsInCurrentPage = () => contentArea.scrollHeight <= maxContentHeight;
+      const fitsHeight = (additionalPx) => (usedHeight + additionalPx) <= maxContentHeight;
 
       /**
-       * Deep recursive inside-box splitter:
-       * Splits cards (.science-card, .grammar-structure-card, .teachers-corner-card, etc.) AND
-       * their inner wrapper lists (.tc-list, .tc-grid, .struct-formula-box, .concept-body, etc.)
-       * so no large blank space is ever left at the bottom of the previous page.
+       * Zero-reflow arithmetic inside-box splitter:
+       * Packs and splits cards, tables, and inner lists purely in memory using pre-measured heights!
        */
       const appendNodeWithNaturalSplit = (node) => {
-        contentArea.appendChild(node);
-        if (fitsInCurrentPage()) {
+        const nodeH = getH(node);
+        if (fitsHeight(nodeH)) {
+          contentArea.appendChild(node);
+          usedHeight += nodeH;
           return;
         }
-
-        contentArea.removeChild(node);
 
         // 1. Table row-by-row splitting across page boundaries
         if (node.tagName === 'TABLE' && node.querySelector('tbody')) {
           const thead = node.querySelector('thead');
+          const theadH = thead ? getH(thead) : 28;
           const rows = Array.from(node.querySelectorAll('tbody > tr'));
           if (rows.length > 1) {
+            if (!fitsHeight(theadH + getH(rows[0]) + 10) && contentArea.children.length > 0) {
+              startNextPage();
+            }
             let tablePart = node.cloneNode(false);
             if (thead) tablePart.appendChild(thead.cloneNode(true));
             let tbodyPart = document.createElement('tbody');
             tablePart.appendChild(tbodyPart);
             contentArea.appendChild(tablePart);
+            usedHeight += theadH + 8;
 
-            let addedToFirstPart = 0;
             for (let r = 0; r < rows.length; r++) {
-              const rowClone = rows[r];
-              tbodyPart.appendChild(rowClone);
-              if (!fitsInCurrentPage()) {
-                tbodyPart.removeChild(rowClone);
-                if (addedToFirstPart === 0) {
-                  contentArea.removeChild(tablePart);
-                }
+              const row = rows[r];
+              const rowH = getH(row);
+              if (!fitsHeight(rowH) && tbodyPart.children.length > 0) {
                 startNextPage();
                 tablePart = node.cloneNode(false);
                 if (thead) tablePart.appendChild(thead.cloneNode(true));
                 tbodyPart = document.createElement('tbody');
                 tablePart.appendChild(tbodyPart);
                 contentArea.appendChild(tablePart);
-                tbodyPart.appendChild(rowClone);
-                addedToFirstPart = 1;
-              } else {
-                addedToFirstPart++;
+                usedHeight += theadH + 8;
               }
+              tbodyPart.appendChild(row);
+              usedHeight += rowH;
             }
             return;
           }
         }
 
-        // 2. Recursive multi-child card & inner-list splitting (supports 2-level nested lists like .tc-list, .tc-grid, .concept-body, etc.)
+        // 2. Recursive multi-child card & inner-list splitting
         const childElements = Array.from(node.children);
         const isUnsplittableGrid =
           node.classList.contains('diagram-side-by-side-grid') ||
@@ -543,89 +760,102 @@ export async function runAutoPagination(state = appState) {
         if (childElements.length > 1 && !isUnsplittableGrid) {
           let cardPart = node.cloneNode(false);
           contentArea.appendChild(cardPart);
+          usedHeight += cardShellOverhead;
           let nonHeadingAdded = 0;
 
           for (let c = 0; c < childElements.length; c++) {
             const child = childElements[c];
-            cardPart.appendChild(child);
+            const childH = getH(child);
 
-            if (!fitsInCurrentPage()) {
-              cardPart.removeChild(child);
-
-              // Check if `child` itself is a multi-item inner container (e.g. .tc-list, .tc-grid, .vocab-matrix-grid, .syn-ant-grid, .chem-grid, or multi-block div)
-              const grandChildren = Array.from(child.children);
-              const isChildUnsplittable =
-                child.classList.contains('diagram-side-by-side-grid') ||
-                child.classList.contains('science-diagram-grid') ||
-                child.classList.contains('katex-display') ||
-                child.classList.contains('katex') ||
-                child.tagName === 'SVG';
-
-              if (grandChildren.length > 1 && !isChildUnsplittable) {
-                let innerPart = child.cloneNode(false);
-                cardPart.appendChild(innerPart);
-                let innerAdded = 0;
-
-                for (let g = 0; g < grandChildren.length; g++) {
-                  const gc = grandChildren[g];
-                  innerPart.appendChild(gc);
-                  if (!fitsInCurrentPage()) {
-                    innerPart.removeChild(gc);
-                    if (innerAdded === 0 && nonHeadingAdded === 0) {
-                      cardPart.removeChild(innerPart);
-                      contentArea.removeChild(cardPart);
-                      startNextPage();
-                      cardPart = node.cloneNode(false);
-                      contentArea.appendChild(cardPart);
-                      // Re-append any headings that were in the original node before `c`
-                      for (let prevIdx = 0; prevIdx < c; prevIdx++) {
-                        cardPart.appendChild(childElements[prevIdx].cloneNode(true));
-                      }
-                      innerPart = child.cloneNode(false);
-                      cardPart.appendChild(innerPart);
-                    } else {
-                      if (innerAdded === 0) {
-                        cardPart.removeChild(innerPart);
-                      }
-                      startNextPage();
-                      cardPart = node.cloneNode(false);
-                      contentArea.appendChild(cardPart);
-                      innerPart = child.cloneNode(false);
-                      cardPart.appendChild(innerPart);
-                    }
-                    innerPart.appendChild(gc);
-                    innerAdded = 1;
-                    nonHeadingAdded = 1;
-                  } else {
-                    innerAdded++;
-                    nonHeadingAdded++;
-                  }
-                }
-                continue;
-              }
-
-              // If only a heading fit inside cardPart so far and `child` couldn't split, move the whole card to next page
-              if (nonHeadingAdded === 0) {
-                contentArea.removeChild(cardPart);
-                startNextPage();
-                cardPart = node.cloneNode(false);
-                contentArea.appendChild(cardPart);
-                for (let prevIdx = 0; prevIdx < c; prevIdx++) {
-                  cardPart.appendChild(childElements[prevIdx]);
-                }
-                cardPart.appendChild(child);
-                nonHeadingAdded = isHeadingElement(child) ? 0 : 1;
-              } else {
-                startNextPage();
-                cardPart = node.cloneNode(false);
-                contentArea.appendChild(cardPart);
-                cardPart.appendChild(child);
-                nonHeadingAdded = isHeadingElement(child) ? 0 : 1;
-              }
-            } else {
+            if (fitsHeight(childH)) {
+              cardPart.appendChild(child);
+              usedHeight += childH;
               if (!isHeadingElement(child)) {
                 nonHeadingAdded++;
               }
+              continue;
+            }
+
+            // Check if `child` itself is a multi-item inner container (.tc-list, .tc-grid, .concept-body, etc.)
+            const grandChildren = Array.from(child.children);
+            const isChildUnsplittable =
+              child.classList.contains('diagram-side-by-side-grid') ||
+              child.classList.contains('science-diagram-grid') ||
+              child.classList.contains('katex-display') ||
+              child.classList.contains('katex') ||
+              child.tagName === 'SVG';
+
+            if (grandChildren.length > 1 && !isChildUnsplittable) {
+              let innerPart = child.cloneNode(false);
+              cardPart.appendChild(innerPart);
+              let innerAdded = 0;
+
+              for (let g = 0; g < grandChildren.length; g++) {
+                const gc = grandChildren[g];
+                const gcH = getH(gc);
+
+                if (!fitsHeight(gcH)) {
+                  if (innerAdded === 0 && nonHeadingAdded === 0) {
+                    cardPart.removeChild(innerPart);
+                    contentArea.removeChild(cardPart);
+                    startNextPage();
+                    cardPart = node.cloneNode(false);
+                    contentArea.appendChild(cardPart);
+                    usedHeight += cardShellOverhead;
+                    for (let prevIdx = 0; prevIdx < c; prevIdx++) {
+                      const prevClone = childElements[prevIdx].cloneNode(true);
+                      cardPart.appendChild(prevClone);
+                      usedHeight += getH(childElements[prevIdx]);
+                    }
+                    innerPart = child.cloneNode(false);
+                    cardPart.appendChild(innerPart);
+                  } else {
+                    if (innerAdded === 0) {
+                      cardPart.removeChild(innerPart);
+                    }
+                    startNextPage();
+                    cardPart = node.cloneNode(false);
+                    contentArea.appendChild(cardPart);
+                    usedHeight += cardShellOverhead;
+                    innerPart = child.cloneNode(false);
+                    cardPart.appendChild(innerPart);
+                  }
+                }
+
+                innerPart.appendChild(gc);
+                usedHeight += gcH;
+                innerAdded++;
+                nonHeadingAdded++;
+              }
+              continue;
+            }
+
+            // If only a heading fit inside cardPart so far and `child` couldn't split, move the card to next page
+            if (nonHeadingAdded === 0) {
+              contentArea.removeChild(cardPart);
+              if (contentArea.children.length > 0) {
+                startNextPage();
+              } else {
+                usedHeight = 0;
+              }
+              cardPart = node.cloneNode(false);
+              contentArea.appendChild(cardPart);
+              usedHeight += cardShellOverhead;
+              for (let prevIdx = 0; prevIdx < c; prevIdx++) {
+                cardPart.appendChild(childElements[prevIdx]);
+                usedHeight += getH(childElements[prevIdx]);
+              }
+              cardPart.appendChild(child);
+              usedHeight += childH;
+              nonHeadingAdded = isHeadingElement(child) ? 0 : 1;
+            } else {
+              startNextPage();
+              cardPart = node.cloneNode(false);
+              contentArea.appendChild(cardPart);
+              usedHeight += cardShellOverhead;
+              cardPart.appendChild(child);
+              usedHeight += childH;
+              nonHeadingAdded = isHeadingElement(child) ? 0 : 1;
             }
           }
           return;
@@ -636,6 +866,7 @@ export async function runAutoPagination(state = appState) {
           startNextPage();
         }
         contentArea.appendChild(node);
+        usedHeight += nodeH;
       };
 
       for (let i = 0; i < flowNodes.length; i++) {
@@ -645,12 +876,6 @@ export async function runAutoPagination(state = appState) {
       // Flush final page
       if (contentArea.children.length > 0) {
         flushCurrentPageToFragment();
-      } else if (currentPage.parentNode) {
-        currentPage.parentNode.removeChild(currentPage);
-      }
-
-      if (measureHost.parentNode) {
-        measureHost.parentNode.removeChild(measureHost);
       }
     }
 
@@ -662,7 +887,7 @@ export async function runAutoPagination(state = appState) {
     }
     document.documentElement.style.setProperty('--watermark-opacity', state.watermarkOpacity);
 
-    // 3. Dynamic Page Numbers Calculation (PAGE XX / YY) in DocumentFragment before mounting
+    // Dynamic Page Numbers Calculation (PAGE XX / YY) in DocumentFragment before mounting
     const contentPages = stageFragment.querySelectorAll('.a4-page:not(.a4-cover-page)');
     const totalContentPages = contentPages.length;
     contentPages.forEach((page, index) => {
@@ -676,6 +901,10 @@ export async function runAutoPagination(state = appState) {
 
     // Single atomic DOM replacement — zero layout thrashing!
     stage.replaceChildren(stageFragment);
+
+    // Trigger IntersectionObserver viewport-based KaTeX/MathJax rendering for mounted pages
+    const mountedContentPages = stage.querySelectorAll('.a4-page:not(.a4-cover-page)');
+    observePagesForViewportMath(mountedContentPages);
 
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('mutu-pages-rendered'));
@@ -698,6 +927,8 @@ if (typeof window !== 'undefined') {
   window.applyTypography = applyTypography;
   window.runAutoPagination = runAutoPagination;
   window.renderAllMathInElement = renderAllMathInElement;
+  window.renderAllPendingPagesMath = renderAllPendingPagesMath;
   window.sanitizeAndFormatTemplateHtml = sanitizeAndFormatTemplateHtml;
   window.normalizeDiagramGrids = normalizeDiagramGrids;
 }
+

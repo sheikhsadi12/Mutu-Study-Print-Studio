@@ -64,6 +64,14 @@
   box-sizing: border-box;
 }
 
+@media screen {
+  .a4-page-wrapper {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 794px auto 1151px;
+    contain: layout style paint;
+  }
+}
+
 /* Responsive Document Viewport Adaptations for Mobile & Tablet */
 @media screen and (max-width: 860px) {
   #document-stage,
@@ -103,7 +111,7 @@
   break-after: page;
   page-break-inside: auto;
   break-inside: auto;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  contain: layout style paint;
   will-change: auto;
 }
 
@@ -606,6 +614,9 @@ h1, h2, h3, .module-heading {
     text-shadow: none !important;
   }
   .a4-page-wrapper {
+    content-visibility: visible !important;
+    contain-intrinsic-size: none !important;
+    contain: none !important;
     width: 210mm !important;
     height: 297mm !important;
     margin: 0 !important;

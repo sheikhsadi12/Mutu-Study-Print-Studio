@@ -50,8 +50,6 @@
 .physics-diagram-card,
 .law-callout-box {
   background: var(--surface-card) !important;
-  backdrop-filter: blur(8px) saturate(140%);
-  -webkit-backdrop-filter: blur(8px) saturate(140%);
   border: 1px solid var(--border-color);
   border-top: 1px solid var(--glass-border-light);
   box-shadow: var(--glass-card-shadow);
