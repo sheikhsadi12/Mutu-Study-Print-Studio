@@ -202,7 +202,7 @@ export function sanitizeAndFormatTemplateHtml(html) {
   // 3. Convert standalone university / target / type tags outside math ($...$, $$...$$) and outside existing badge/pill tags
   const parts = out.split(/(\$\$[\s\S]*?\$\$|\$[^$]+?\$|<[^>]+>)/g);
   const uniPattern = /\[((?:[^\[\]{}]|\{[^{}]*\})*(?:BUET|KUET|RUET|CUET|IUT|CKRUET|SUST|BUTEX|DU|JU|CU|RU|GST|MAT|DAT|AFMC|MIST|BUP|Target|Written|MCQ|Type|Hack|Board|বোর্ড)(?:[^\[\]{}]|\{[^{}]*\})*)\]/gi;
-  const badgeClassRegex = /\b(?:uni-pill|uni-badge|university-badge|concept-tag|formula-badge|struct-badge|struct-category-badge|struct-number-badge|tc-badge|tc-tag|law-badge|chapter-badge|chapter-meta-pill|physics-diagram-badge|vocab-badge|sa-pos-badge|chem-temp|type-badge|box-hack-header)\b/i;
+  const badgeClassRegex = /\b(?:uni-pill|uni-badge|univ-tag|university-badge|concept-tag|formula-badge|struct-badge|struct-category-badge|struct-number-badge|tc-badge|tc-tag|law-badge|chapter-badge|chapter-meta-pill|physics-diagram-badge|vocab-badge|sa-pos-badge|chem-temp|type-badge|box-hack-header)\b/i;
 
   let insideBadgeDepth = 0;
 
@@ -755,6 +755,7 @@ export async function runAutoPagination(state = appState) {
         const isUnsplittableGrid =
           node.classList.contains('diagram-side-by-side-grid') ||
           node.classList.contains('science-diagram-grid') ||
+          node.classList.contains('solve-split') ||
           node.classList.contains('chapter-hero-banner');
 
         if (childElements.length > 1 && !isUnsplittableGrid) {
@@ -781,6 +782,7 @@ export async function runAutoPagination(state = appState) {
             const isChildUnsplittable =
               child.classList.contains('diagram-side-by-side-grid') ||
               child.classList.contains('science-diagram-grid') ||
+              child.classList.contains('solve-split') ||
               child.classList.contains('katex-display') ||
               child.classList.contains('katex') ||
               child.tagName === 'SVG';

@@ -1544,3 +1544,66 @@ html[data-theme="dark"] .struct-trap-good {
   font-weight: 600;
   fill: var(--text-bengali);
 }
+
+/* ========================================================= */
+/* MUTU A4 STUDIO: 2-COLUMN MATH SOLVE (FLUSH LEFT FIX)      */
+/* ========================================================= */
+
+/* ১. সমাধান বক্স ও ২ কলামের গ্রিড */
+.solve-box {
+  border: 1.5px solid var(--accent-secondary);
+  background: var(--surface-card) !important;
+  border-top: 1px solid var(--glass-border-light);
+  box-shadow: var(--glass-card-shadow);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 6px;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.solve-trigger {
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: var(--accent-primary);
+  margin-bottom: 4px;
+}
+.solve-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.solve-left {
+  border-right: 1px dashed var(--accent-secondary);
+  padding-right: 10px;
+}
+.solve-right {
+  padding-left: 6px;
+}
+
+/* ২. কমলা বক্সের সমস্যার সমাধান: সমীকরণগুলোকে কলামের একদম বাম পাশ থেকে শুরু করানো */
+.solve-split .katex-display {
+  text-align: left !important;
+  margin: 4px 0 !important;
+}
+.solve-split .katex-display > .katex {
+  text-align: left !important;
+  display: inline-block !important;
+}
+
+/* ৩. ব্যাজের লেখা উজ্জ্বল সাদা রাখা */
+.formula-badge,
+.struct-number-badge,
+.struct-category-badge,
+.tc-tag,
+.univ-tag {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  background: var(--accent-primary) !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.struct-category-badge {
+  background: var(--accent-secondary) !important;
+}
+
