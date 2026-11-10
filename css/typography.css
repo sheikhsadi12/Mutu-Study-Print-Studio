@@ -3,9 +3,41 @@
    ========================================================================== */
 
 /* 1. Google Fonts Extended Library */
-@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700&family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700&family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap');
 
-/* 2. Local Font-Face Fallbacks & Universal Bengali Robust Aliases */
+/* 2. Universal Mouse-Selectable Text & Diagram Engine */
+.a4-page,
+.a4-page *,
+.a4-cover-page,
+.a4-cover-page *,
+section,
+section *,
+.page-content-area,
+.page-content-area *,
+p, span, h1, h2, h3, h4, h5, h6,
+td, th, table, div, article, li, blockquote,
+.katex,
+.katex-html,
+.katex *,
+.MathJax,
+.MathJax * {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Ensure SVG text elements in charts, geometry & physics diagrams are crisp and mouse selectable */
+svg text,
+svg tspan {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  user-select: text !important;
+  cursor: text !important;
+  pointer-events: auto !important;
+}
+
+/* 3. Local Font-Face Fallbacks & Universal Bengali Robust Aliases */
 @font-face {
   font-family: 'Cinzel Decorative';
   src: local('Cinzel Decorative Bold'), local('Cinzel Decorative'), url('CinzelDecorative.otf') format('opentype');
@@ -131,20 +163,26 @@ h1, h2, h3, h4,
 .katex-display .mtext,
 .katex .mord.text,
 .katex .katex-error {
-  font-family: var(--font-english-primary, 'Outfit'), 'HindSiliguriBengali', 'Hind Siliguri', sans-serif !important;
+  font-family: 'Hind Siliguri', 'Inter', var(--font-english-primary, 'Outfit'), 'Noto Sans Bengali', sans-serif !important;
   font-style: normal !important;
   color: inherit !important;
   border: none !important;
   background: transparent !important;
+  letter-spacing: 0 !important;
+  font-variant-ligatures: normal !important;
+  -webkit-user-select: text !important;
+  user-select: text !important;
 }
 .MathJax,
 .MathJax * {
-  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Noto Sans Bengali', inherit;
+  font-family: 'Inter', var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Noto Sans Bengali', inherit;
+  -webkit-user-select: text !important;
+  user-select: text !important;
 }
 mjx-container,
 mjx-container [class*="mtext"],
 mjx-container text {
-  font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
+  font-family: 'Inter', var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
 }
 
 /* Master Universal Bengali Character & Conjunct Protection Engine */
@@ -170,9 +208,9 @@ mjx-container text {
   font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Anek Bangla', 'Tiro Bangla', system-ui, sans-serif !important;
   letter-spacing: 0 !important;
   word-spacing: normal !important;
-  line-height: 1.68 !important;
+  line-height: 1.55 !important;
   text-rendering: optimizeLegibility !important;
-  font-variant-ligatures: contextual common-ligatures !important;
+  font-variant-ligatures: normal !important;
   font-feature-settings: "kern" 1, "liga" 1, "clig" 1 !important;
   word-break: normal !important;
   overflow-wrap: break-word !important;
@@ -196,10 +234,98 @@ mjx-container text {
 .example-en, 
 .pq-content {
   font-family: var(--font-english-primary, 'Outfit'), 'Hind Siliguri', 'Noto Sans Bengali', sans-serif !important;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
-/* Global Font Scale Support for A4 Pages */
+/* 6. Strict Publication-Grade Typographic Scale & Visual Harmony */
+/* Body text & math equations: 9.5pt (line-height: 1.55) */
 .a4-page {
-  font-size: calc(10pt * var(--global-font-scale, 1));
+  font-size: calc(9.5pt * var(--global-font-scale, 1));
+  line-height: 1.55;
+}
+
+.page-content-area p,
+.page-content-area li,
+.passage-en,
+.passage-bn,
+.st-en,
+.st-bn,
+.explanation-card,
+.grammar-explanation,
+.struct-explanation,
+.struct-shortcut-box,
+.struct-example-block,
+.struct-formula-box,
+.tc-grid,
+.tc-list,
+.tc-item,
+.mnemonic-text,
+.pq-content,
+.pq-answer,
+.concept-body,
+.law-text,
+.chem-notes,
+.science-card,
+.math-formula-box,
+.formula-equation,
+.formula-main,
+.formula-legend,
+.formula-vars,
+.katex,
+.katex-display {
+  font-size: 9.5pt !important;
+  line-height: 1.55 !important;
+}
+
+.katex-display {
+  margin: 0.35em 0 !important;
+}
+
+/* Section headings: 11pt - 11.5pt */
+.chapter-hero-banner h1,
+.chapter-hero-banner h2 {
+  font-size: 11.5pt !important;
+  line-height: 1.3 !important;
+}
+
+.page-content-area h1,
+.page-content-area h2,
+.page-content-area h3,
+.module-heading,
+.struct-title,
+.struct-rule-title,
+.grammar-rule-name,
+.tc-title,
+.concept-title,
+.physics-diagram-title,
+.pq-title {
+  font-size: 11pt !important;
+  line-height: 1.35 !important;
+}
+
+/* Badges & Pills: 8pt */
+.formula-badge,
+.struct-number-badge,
+.struct-category-badge,
+.struct-badge,
+.tc-tag,
+.tc-badge,
+.mnemonic-pill,
+.mnemonic-label,
+.law-badge,
+.concept-tag,
+.chapter-badge,
+.chapter-meta-pill,
+.vocab-badge,
+.sa-pos-badge,
+.chem-badge,
+.chem-temp,
+.physics-diagram-badge,
+.uni-pill,
+.uni-badge,
+.university-badge,
+.type-badge,
+.box-hack-header {
+  font-size: 8pt !important;
+  line-height: 1.25 !important;
 }

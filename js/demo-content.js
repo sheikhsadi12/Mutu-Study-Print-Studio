@@ -584,42 +584,37 @@ export const SUBJECT_DEMO_TEMPLATES = {
     </div>
   </section>
 
-  <section>
-    <div class="module-heading">Vector Resolution &amp; Diagram &bull; ভেক্টর বিভাজন ও লব্ধি বিশ্লেষণ</div>
-    <div class="science-concept-card">
-      <div class="concept-title">
-        <span>সামান্তরিক সূত্র (Parallelogram Law of Vectors)</span>
-        <span class="concept-tag">বলবিদ্যা</span>
+  <section class="science-card">
+    <div class="module-heading">Vector Resolution &amp; Diagram &bull; ভেক্টর বিভাজন ও লব্ধি বিশ্লেষণ <span class="uni-pill">[BUET 25-26 | Written #3]</span></div>
+    <div class="diagram-side-by-side-grid">
+      <div class="diagram-theory-col">
+        <div class="concept-title">
+          <span>সামান্তরিক সূত্র (Parallelogram Law)</span>
+          <span class="concept-tag">বলবিদ্যা • [KUET 25-26]</span>
+        </div>
+        <div class="concept-body">
+          যদি কোনো কণার ওপর একই সময়ে ক্রিয়ারত দুটি ভেক্টরকে $\\vec{P}$ ও $\\vec{Q}$ দ্বারা নির্দেশ করা হয় এবং তাদের মধ্যবর্তী কোণ $\\alpha$ হয়, তবে তাদের লব্ধির মান $R$ এবং দিক $\\theta$:
+          $$R = \\sqrt{P^2 + Q^2 + 2PQ \\cos\\alpha}, \\quad \\tan\\theta = \\frac{Q \\sin\\alpha}{P + Q \\cos\\alpha}$$
+        </div>
       </div>
-      <div class="concept-body">
-        যদি কোনো কণার ওপর একই সময়ে ক্রিয়ারত দুটি ভেক্টরকে $\\vec{P}$ ও $\\vec{Q}$ দ্বারা নির্দেশ করা হয় এবং তাদের মধ্যবর্তী কোণ $\\alpha$ হয়, তবে তাদের লব্ধির মান $R$ হবে:
-        $$R = \\sqrt{P^2 + Q^2 + 2PQ \\cos\\alpha}$$
-        এবং লব্ধির দিক $\\theta$:
-        $$\\tan\\theta = \\frac{Q \\sin\\alpha}{P + Q \\cos\\alpha}$$
+      <div class="diagram-figure-col">
+        <div class="diagram-svg-container">
+          <svg viewBox="0 0 360 165" class="diagram-svg" aria-label="Vector Parallelogram Diagram">
+            <line x1="25" y1="130" x2="335" y2="130" stroke="var(--border-color)" stroke-dasharray="3,3" />
+            <line x1="40" y1="130" x2="205" y2="130" stroke="var(--accent-primary)" stroke-width="2.5" />
+            <text x="115" y="148" fill="var(--accent-primary)" font-weight="700" font-size="11">P (ভেক্টর)</text>
+            <line x1="40" y1="130" x2="130" y2="38" stroke="var(--accent-secondary)" stroke-width="2.5" />
+            <text x="55" y="75" fill="var(--accent-secondary)" font-weight="700" font-size="11">Q (ভেক্টর)</text>
+            <line x1="205" y1="130" x2="295" y2="38" stroke="var(--text-english-muted)" stroke-dasharray="4,4" />
+            <line x1="130" y1="38" x2="295" y2="38" stroke="var(--text-english-muted)" stroke-dasharray="4,4" />
+            <line x1="40" y1="130" x2="295" y2="38" stroke="#C1621A" stroke-width="2.8" />
+            <text x="180" y="72" fill="#C1621A" font-weight="800" font-size="12">R (লব্ধি)</text>
+            <path d="M 80 130 A 40 40 0 0 0 68 105" fill="none" stroke="var(--text-bengali)" stroke-width="1.5" />
+            <text x="86" y="118" fill="var(--text-bengali)" font-size="11">&alpha;</text>
+          </svg>
+          <div class="diagram-caption">চিত্র ২.১: ভেক্টর $\\vec{P}$ ও $\\vec{Q}$-এর লব্ধি $\\vec{R}$</div>
+        </div>
       </div>
-    </div>
-
-    <div class="diagram-svg-container">
-      <svg viewBox="0 0 460 170" class="diagram-svg" aria-label="Vector Parallelogram Diagram">
-        <!-- Grid baseline -->
-        <line x1="40" y1="130" x2="420" y2="130" stroke="var(--border-color)" stroke-dasharray="3,3" />
-        <!-- P vector -->
-        <line x1="60" y1="130" x2="240" y2="130" stroke="var(--accent-primary)" stroke-width="2.5" marker-end="url(#arrow)" />
-        <text x="140" y="150" fill="var(--accent-primary)" font-weight="700" font-size="12">P (ভেক্টর)</text>
-        <!-- Q vector -->
-        <line x1="60" y1="130" x2="160" y2="40" stroke="var(--accent-secondary)" stroke-width="2.5" />
-        <text x="85" y="75" fill="var(--accent-secondary)" font-weight="700" font-size="12">Q (ভেক্টর)</text>
-        <!-- Parallelogram dotted lines -->
-        <line x1="240" y1="130" x2="340" y2="40" stroke="var(--text-english-muted)" stroke-dasharray="4,4" />
-        <line x1="160" y1="40" x2="340" y2="40" stroke="var(--text-english-muted)" stroke-dasharray="4,4" />
-        <!-- Resultant R vector -->
-        <line x1="60" y1="130" x2="340" y2="40" stroke="#C1621A" stroke-width="3" />
-        <text x="220" y="70" fill="#C1621A" font-weight="800" font-size="13">R (লব্ধি ভেক্টর)</text>
-        <!-- Angle arc -->
-        <path d="M 100 130 A 40 40 0 0 0 88 105" fill="none" stroke="var(--text-bengali)" stroke-width="1.5" />
-        <text x="106" y="118" fill="var(--text-bengali)" font-size="11">&alpha;</text>
-      </svg>
-      <div class="diagram-caption">চিত্র ২.১: সামান্তরিক সূত্রে ভেক্টর $\\vec{P}$ ও $\\vec{Q}$-এর লব্ধি $\\vec{R}$ নির্ধারণ।</div>
     </div>
   </section>
 
@@ -765,38 +760,37 @@ export const SUBJECT_DEMO_TEMPLATES = {
     </div>
   </section>
 
-  <section>
-    <div class="module-heading">Geometric Interpretation &bull; জ্যামিতিক তাৎপর্য ও স্পর্শকের ঢাল</div>
-    <div class="science-concept-card">
-      <div class="concept-title">
-        <span>বক্ররেখার স্পর্শকের ঢাল (Slope of Tangent)</span>
-        <span class="concept-tag">জ্যামিতি</span>
+  <section class="science-card">
+    <div class="module-heading">Geometric Interpretation &bull; জ্যামিতিক তাৎপর্য ও স্পর্শকের ঢাল <span class="uni-pill">[BUET 25-26 | Written #3]</span></div>
+    <div class="diagram-side-by-side-grid">
+      <div class="diagram-theory-col">
+        <div class="concept-title">
+          <span>বক্ররেখার স্পর্শকের ঢাল (Slope of Tangent)</span>
+          <span class="concept-tag">[IUT] • [RUET]</span>
+        </div>
+        <div class="concept-body">
+          বক্ররেখা $y = f(x)$ এর ওপর $(x_1, y_1)$ বিন্দুতে স্পর্শকের ঢাল $m = \\left(\\frac{dy}{dx}\\right)_{(x_1, y_1)} = \\tan\\theta$।<br>
+          উক্ত বিন্দুতে স্পর্শক ও অভিলম্বের সমীকরণ:
+          $$y - y_1 = m(x - x_1), \\quad m(y - y_1) + (x - x_1) = 0$$
+        </div>
       </div>
-      <div class="concept-body">
-        বক্ররেখা $y = f(x)$ এর ওপর $(x_1, y_1)$ বিন্দুতে স্পর্শকের ঢাল $m = \\left(\\frac{dy}{dx}\\right)_{(x_1, y_1)}$।<br>
-        উক্ত বিন্দুতে স্পর্শকের সরলরেখা সমীকরণ:
-        $$y - y_1 = m(x - x_1)$$
+      <div class="diagram-figure-col">
+        <div class="diagram-svg-container">
+          <svg viewBox="0 0 340 160" class="diagram-svg" aria-label="Calculus Curve and Tangent Line">
+            <line x1="25" y1="140" x2="315" y2="140" stroke="var(--border-color)" stroke-width="1.8" />
+            <line x1="35" y1="150" x2="35" y2="15" stroke="var(--border-color)" stroke-width="1.8" />
+            <text x="320" y="144" font-size="11" fill="var(--text-english)">x</text>
+            <text x="30" y="13" font-size="11" fill="var(--text-english)">y</text>
+            <path d="M 42 122 Q 145 115 225 42 T 305 20" fill="none" stroke="var(--accent-primary)" stroke-width="2.8" />
+            <text x="260" y="34" font-size="11.5" font-weight="700" fill="var(--accent-primary)">y = f(x)</text>
+            <line x1="95" y1="135" x2="280" y2="18" stroke="#C1621A" stroke-width="2" stroke-dasharray="5,2" />
+            <circle cx="185" cy="78" r="4.5" fill="#D6A13B" stroke="var(--accent-primary)" stroke-width="2" />
+            <text x="194" y="84" font-size="10.5" font-weight="700" fill="var(--text-english)">P(x&#8321;, y&#8321;)</text>
+            <text x="210" y="55" font-size="10" font-weight="600" fill="#C1621A">m = tan&theta;</text>
+          </svg>
+          <div class="diagram-caption">চিত্র ৯.১: স্পর্শক ও তাৎক্ষণিক ঢাল বিশ্লেষণ</div>
+        </div>
       </div>
-    </div>
-
-    <div class="diagram-svg-container">
-      <svg viewBox="0 0 440 160" class="diagram-svg" aria-label="Calculus Curve and Tangent Line">
-        <!-- Axes -->
-        <line x1="30" y1="140" x2="410" y2="140" stroke="var(--border-color)" stroke-width="1.8" />
-        <line x1="40" y1="150" x2="40" y2="15" stroke="var(--border-color)" stroke-width="1.8" />
-        <text x="415" y="145" font-size="11" fill="var(--text-english)">x</text>
-        <text x="35" y="15" font-size="11" fill="var(--text-english)">y</text>
-        <!-- Curve f(x) -->
-        <path d="M 50 120 Q 180 115 280 40 T 400 20" fill="none" stroke="var(--accent-primary)" stroke-width="3" />
-        <text x="360" y="35" font-size="12" font-weight="700" fill="var(--accent-primary)">y = f(x)</text>
-        <!-- Tangent Line -->
-        <line x1="120" y1="135" x2="350" y2="15" stroke="#C1621A" stroke-width="2.2" stroke-dasharray="5,2" />
-        <!-- Tangent Point P -->
-        <circle cx="230" cy="74" r="5" fill="#D6A13B" stroke="var(--accent-primary)" stroke-width="2" />
-        <text x="240" y="80" font-size="11" font-weight="700" fill="var(--text-english)">P(x&#8321;, y&#8321;)</text>
-        <text x="280" y="55" font-size="10.5" font-weight="600" fill="#C1621A">ঢাল m = tan&theta;</text>
-      </svg>
-      <div class="diagram-caption">চিত্র ৯.১: বক্ররেখার নির্দিষ্ট বিন্দুতে স্পর্শক ও তাৎক্ষণিক ঢাল বিশ্লেষণ।</div>
     </div>
   </section>
   `,

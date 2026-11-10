@@ -1026,6 +1026,8 @@ export function switchSubjectTab(subjectKey) {
   }
 }
 
+let contentInputDebounceTimer = null;
+
 /**
  * Real-time Handler for Raw Content Textarea Input
  * @param {string} val 
@@ -1039,6 +1041,14 @@ export function onContentTextareaInput(val) {
     localStorage.setItem('mutu_user_custom_edited', 'true');
   } catch (e) {}
   savePersistedState();
+
+  // Debounced auto-pagination and math render on paste or typing
+  if (typeof window !== 'undefined' && typeof window.runAutoPagination === 'function') {
+    clearTimeout(contentInputDebounceTimer);
+    contentInputDebounceTimer = setTimeout(() => {
+      window.runAutoPagination();
+    }, 280);
+  }
 }
 
 /**

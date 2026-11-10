@@ -18,25 +18,25 @@
   --font-footer-tag: 'Outfit';
   --page-width: 210mm;
   --page-height: 297mm;
-  --watermark-opacity: 0.085;
+  --watermark-opacity: 0.115;
   --global-font-scale: 1;
 }
 
-/* 2. THEME 1: ACADEMIC DARK OBSIDIAN & WARM CHOCOLATE-WINE (Exact Match to User Screenshots) */
+/* 2. THEME 1: ACADEMIC DARK OBSIDIAN & WARM CHOCOLATE-WINE (Translucent Glassmorphism) */
 html[data-theme="dark"] {
   --app-stage-bg: #180e10;
   --bg-page: #180e10;
   --bg-page-gradient: radial-gradient(circle at 50% 30%, #32191d 0%, #251316 45%, #190e10 82%, #140b0d 100%);
-  --surface-card: linear-gradient(180deg, rgba(40, 23, 26, 0.94) 0%, rgba(33, 19, 22, 0.97) 100%);
-  --surface-card-subtle: rgba(233, 129, 92, 0.08);
-  --surface-card-strong: #271619;
+  --surface-card: linear-gradient(135deg, rgba(44, 23, 27, 0.50) 0%, rgba(30, 16, 19, 0.56) 100%);
+  --surface-card-subtle: rgba(233, 129, 92, 0.06);
+  --surface-card-strong: rgba(54, 26, 31, 0.58);
   
-  /* Luxury Crystal Glassmorphism matching Exact Screenshot Cards */
-  --glass-surface: rgba(36, 21, 24, 0.90);
-  --glass-surface-card: rgba(40, 23, 26, 0.92);
-  --glass-border: rgba(255, 200, 190, 0.12);
-  --glass-border-light: rgba(255, 215, 205, 0.20);
-  --glass-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 215, 205, 0.10);
+  /* Luxury Crystal Glassmorphism (Watermark Logo Clearly Visible Behind Cards) */
+  --glass-surface: rgba(38, 21, 24, 0.52);
+  --glass-surface-card: rgba(42, 23, 27, 0.52);
+  --glass-border: rgba(255, 200, 190, 0.16);
+  --glass-border-light: rgba(255, 215, 205, 0.24);
+  --glass-shadow: 0 8px 28px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 215, 205, 0.14);
 
   /* Ambient Orbs (Warm Burgundy & Coral Amber from Screenshot) */
   --orb-1: rgba(233, 129, 92, 0.18);
@@ -44,30 +44,31 @@ html[data-theme="dark"] {
   --orb-3: rgba(120, 25, 40, 0.22);
   --orb-4: rgba(233, 129, 92, 0.10);
 
-  /* Modular Glass-Card System matching Screenshot */
-  --glass-card-bg: linear-gradient(180deg, rgba(40, 23, 26, 0.94) 0%, rgba(33, 19, 22, 0.97) 100%);
-  --glass-card-border: rgba(255, 200, 190, 0.12);
+  /* Modular Glass-Card System */
+  --glass-card-bg: linear-gradient(135deg, rgba(44, 23, 27, 0.50) 0%, rgba(30, 16, 19, 0.56) 100%);
+  --glass-card-border: rgba(255, 200, 190, 0.16);
   --glass-card-sheen: linear-gradient(90deg, transparent 5%, rgba(233, 129, 92, 0.20) 50%, transparent 95%);
-  --glass-card-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 215, 205, 0.10);
-  --glass-card-hover-shadow: 0 16px 44px rgba(0, 0, 0, 0.75), 0 0 20px rgba(233, 129, 92, 0.24);
+  --glass-card-shadow: 0 8px 28px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 215, 205, 0.14);
+  --glass-card-hover-shadow: 0 14px 36px rgba(0, 0, 0, 0.55), 0 0 18px rgba(233, 129, 92, 0.22);
   --glass-card-hover-border: rgba(233, 129, 92, 0.55);
 
   /* Exact Screenshot Coral-Orange & Accents */
   --accent-primary: #e9815c;
   --accent-secondary: #f39a7b;
   --accent-glow: rgba(233, 129, 92, 0.28);
-  --border-color: rgba(255, 200, 190, 0.12);
-  --border-subtle: rgba(255, 200, 190, 0.06);
+  --border-color: rgba(255, 200, 190, 0.16);
+  --border-subtle: rgba(255, 200, 190, 0.09);
   --border-strong: rgba(233, 129, 92, 0.42);
   
   --text-english: #fffcfa;
-  --text-english-muted: #a89797;
+  --text-english-muted: #c2b0b0;
   --text-bengali: #fffcfa;
-  --text-bengali-secondary: #a89797;
+  --text-bengali-secondary: #c2b0b0;
   --text-warm-white: #fffcfa;
   --text-warm-white-sub: #f0e6dd;
-  --badge-contrast-text: #0e0000;
-  --table-stripe: rgba(48, 26, 30, 0.70);
+  --badge-contrast-text: #ffffff;
+  --badge-mahogany-bg: #4A1112;
+  --table-stripe: rgba(48, 25, 29, 0.36);
   --app-ui-bg: rgba(33, 19, 22, 0.94);
   
   /* Floating Action Menu (FAB) */
@@ -122,31 +123,71 @@ html[data-theme="dark"] .header-subject-tag {
   color: var(--text-warm-white, #FFF8ED);
 }
 
-/* Contrast badges on Coral-Orange background matching Screenshot */
-html[data-theme="dark"] .tc-tag,
-html[data-theme="dark"] .mnemonic-pill,
+/* Signature Dark Mahogany Badges & University Pills with Crisp White Text */
+.formula-badge,
+.struct-number-badge,
+.struct-category-badge,
+.struct-badge,
+.tc-tag,
+.tc-badge,
+.mnemonic-pill,
+.law-badge,
+.chapter-badge,
+.type-badge,
+.box-hack-header,
+.concept-tag,
+.uni-pill,
+.uni-badge,
+.university-badge,
+.chapter-meta-pill,
+.physics-diagram-badge,
+.vocab-badge,
+.sa-pos-badge,
+.chem-temp,
+html[data-theme="dark"] .formula-badge,
 html[data-theme="dark"] .struct-number-badge,
-html[data-theme="dark"] .formula-badge {
-  background: var(--accent-primary, #e9815c) !important;
-  color: var(--badge-contrast-text, #0e0000) !important;
+html[data-theme="dark"] .struct-category-badge,
+html[data-theme="dark"] .struct-badge,
+html[data-theme="dark"] .tc-tag,
+html[data-theme="dark"] .tc-badge,
+html[data-theme="dark"] .mnemonic-pill,
+html[data-theme="dark"] .law-badge,
+html[data-theme="dark"] .chapter-badge,
+html[data-theme="dark"] .type-badge,
+html[data-theme="dark"] .box-hack-header,
+html[data-theme="dark"] .concept-tag,
+html[data-theme="dark"] .uni-pill,
+html[data-theme="dark"] .uni-badge,
+html[data-theme="dark"] .university-badge,
+html[data-theme="dark"] .chapter-meta-pill,
+html[data-theme="dark"] .physics-diagram-badge,
+html[data-theme="dark"] .vocab-badge,
+html[data-theme="dark"] .sa-pos-badge,
+html[data-theme="dark"] .chem-temp {
+  background: #4A1112 !important;
+  background-image: linear-gradient(135deg, #59091D 0%, #3B0613 100%) !important;
+  color: #ffffff !important;
   font-weight: 700 !important;
+  font-size: 8pt !important;
+  border: 1px solid rgba(255, 225, 215, 0.28) !important;
+  box-shadow: 0 1px 4px rgba(74, 17, 18, 0.25) !important;
 }
 
-/* 3. THEME 2: WARM WHITE / IVORY (Crisp Daylight Academic Light) */
+/* 3. THEME 2: WARM WHITE / IVORY (Translucent Glassmorphic Daylight Academic Light) */
 html[data-theme="light"] {
   --app-stage-bg: #EFE9DE;
   --bg-page: #FDFBF7;
   --bg-page-gradient: #FDFBF7;
-  --surface-card: rgba(244, 239, 230, 0.62);
-  --surface-card-subtle: rgba(250, 246, 239, 0.52);
-  --surface-card-strong: rgba(237, 229, 216, 0.72);
+  --surface-card: linear-gradient(135deg, rgba(255, 253, 249, 0.44) 0%, rgba(244, 238, 226, 0.50) 100%);
+  --surface-card-subtle: rgba(250, 246, 238, 0.36);
+  --surface-card-strong: rgba(237, 229, 214, 0.52);
   
-  /* Luxury Crystal Glassmorphism (Light Mode) */
-  --glass-surface: rgba(253, 251, 247, 0.86);
-  --glass-surface-card: rgba(244, 239, 230, 0.82);
-  --glass-border: rgba(226, 218, 200, 0.9);
-  --glass-border-light: rgba(255, 255, 255, 0.95);
-  --glass-shadow: 0 16px 42px rgba(74, 17, 18, 0.08), 0 2px 8px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+  /* Luxury Crystal Glassmorphism (Light Mode — Watermark Logo Clearly Visible Behind Cards) */
+  --glass-surface: rgba(253, 251, 247, 0.48);
+  --glass-surface-card: rgba(248, 243, 234, 0.46);
+  --glass-border: rgba(218, 206, 184, 0.78);
+  --glass-border-light: rgba(255, 255, 255, 0.88);
+  --glass-shadow: 0 8px 26px rgba(74, 17, 18, 0.06), 0 2px 6px rgba(0, 0, 0, 0.02), inset 0 1px 1px rgba(255, 255, 255, 0.85);
   
   /* 3D Ambient Orbs (Warm Golden Ivory) */
   --orb-1: rgba(200, 180, 150, 0.42);
@@ -155,25 +196,26 @@ html[data-theme="light"] {
   --orb-4: rgba(214, 161, 59, 0.2);
   
   /* Modular Glass-Card System */
-  --glass-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.84) 0%, rgba(245, 239, 229, 0.74) 100%);
-  --glass-card-border: rgba(255, 255, 255, 0.92);
-  --glass-card-sheen: linear-gradient(90deg, transparent 5%, rgba(255, 255, 255, 0.95) 50%, transparent 95%);
-  --glass-card-shadow: 0 8px 22px rgba(74, 17, 18, 0.06), 0 2px 6px rgba(0, 0, 0, 0.02), inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 1px rgba(113, 14, 41, 0.03);
-  --glass-card-hover-shadow: 0 12px 28px rgba(74, 17, 18, 0.11), 0 0 14px rgba(214, 161, 59, 0.18), inset 0 1px 2px rgba(255, 255, 255, 1);
+  --glass-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.48) 0%, rgba(245, 239, 229, 0.44) 100%);
+  --glass-card-border: rgba(255, 255, 255, 0.82);
+  --glass-card-sheen: linear-gradient(90deg, transparent 5%, rgba(255, 255, 255, 0.85) 50%, transparent 95%);
+  --glass-card-shadow: 0 6px 20px rgba(74, 17, 18, 0.05), 0 2px 6px rgba(0, 0, 0, 0.02), inset 0 1px 1.5px rgba(255, 255, 255, 0.85);
+  --glass-card-hover-shadow: 0 10px 24px rgba(74, 17, 18, 0.09), 0 0 12px rgba(214, 161, 59, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.9);
   --glass-card-hover-border: rgba(214, 161, 59, 0.5);
 
   --accent-primary: #4A1112;
   --accent-secondary: #7A1D20;
   --accent-glow: rgba(74, 17, 18, 0.16);
-  --border-color: #E2DAC8;
-  --border-subtle: #ECE5D8;
-  --border-strong: #C9BDA5;
+  --border-color: rgba(210, 198, 176, 0.78);
+  --border-subtle: rgba(224, 214, 196, 0.65);
+  --border-strong: rgba(188, 172, 146, 0.85);
   
   --text-english: #1F1B1C;
   --text-english-muted: #574F52;
   --text-bengali: #2D2427;
   --text-bengali-secondary: #6B5E63;
-  --table-stripe: rgba(249, 245, 236, 0.52);
+  --badge-mahogany-bg: #4A1112;
+  --table-stripe: rgba(246, 240, 230, 0.36);
   --app-ui-bg: rgba(239, 233, 222, 0.88);
   
   /* Floating Action Menu (FAB) */

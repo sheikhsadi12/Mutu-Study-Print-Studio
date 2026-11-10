@@ -161,10 +161,88 @@
     });
   </script>
 
-  <!-- KaTeX Ultra-Fast Local & CDN Synchronous Math Engine & Typography -->
-  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
-  <script src="./vendor/katex/katex.min.js"></script>
-  <script src="./vendor/katex/auto-render.min.js"></script>
+  <!-- KaTeX v0.16.9 High-Performance Math Engine, Chemistry Formulas (mhchem) & Copy-Tex -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/mhchem.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/copy-tex.min.js" crossorigin="anonymous"></script>
+
+  <!-- KaTeX Auto-Render Engine & Dynamic DOM MutationObserver -->
+  <script>
+    (function() {
+      var katexDelimiters = [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false },
+        { left: '\\[', right: '\\]', display: true },
+        { left: '\\(', right: '\\)', display: false }
+      ];
+
+      window.renderKatexMath = function(target) {
+        if (typeof window.renderMathInElement !== 'function') return;
+        var el = target || document.getElementById('document-stage') || document.body;
+        if (!el) return;
+        try {
+          window.renderMathInElement(el, {
+            delimiters: katexDelimiters,
+            ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'option'],
+            ignoredClasses: ['katex', 'katex-display'],
+            throwOnError: false,
+            trust: true
+          });
+        } catch (err) {
+          console.warn('[KaTeX Auto-Render Notice]', err);
+        }
+      };
+
+      // Auto-render on DOM ready & lightweight MutationObserver for external unpaginated DOM nodes only
+      document.addEventListener('DOMContentLoaded', function() {
+        var stage = document.getElementById('document-stage');
+        var observerTarget = stage || document.body;
+        var mathRenderDebounce = null;
+
+        var observer = new MutationObserver(function(mutations) {
+          if (window.__mutuPaginating) return;
+          var unrenderedNodes = [];
+          for (var i = 0; i < mutations.length; i++) {
+            var mut = mutations[i];
+            if (mut.addedNodes && mut.addedNodes.length > 0) {
+              for (var j = 0; j < mut.addedNodes.length; j++) {
+                var node = mut.addedNodes[j];
+                if (node.nodeType === 1) {
+                  if (
+                    node.dataset && node.dataset.mathRendered === 'true' ||
+                    node.classList.contains('a4-page-wrapper') ||
+                    node.classList.contains('a4-page') ||
+                    node.classList.contains('katex') ||
+                    node.classList.contains('katex-display') ||
+                    (node.closest && node.closest('[data-math-rendered="true"]'))
+                  ) {
+                    continue;
+                  }
+                  unrenderedNodes.push(node);
+                }
+              }
+            }
+          }
+
+          if (unrenderedNodes.length > 0) {
+            clearTimeout(mathRenderDebounce);
+            mathRenderDebounce = setTimeout(function() {
+              for (var k = 0; k < unrenderedNodes.length; k++) {
+                window.renderKatexMath(unrenderedNodes[k]);
+              }
+            }, 30);
+          }
+        });
+
+        observer.observe(observerTarget, {
+          childList: true,
+          subtree: false
+        });
+      });
+    })();
+  </script>
 
   <!-- MathJax 3 CDN with TeX configuration for Multi-Subject Science & Math Studio -->
   <script>
@@ -194,10 +272,10 @@
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <!-- Google Fonts Preconnect & High-Performance Bengali Typography Engine -->
+  <!-- Google Fonts Preconnect & High-Performance Bengali/English Typography Engine -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700&family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700&family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Tiro+Bangla:ital@0;1&display=swap" />
 
   <!-- Modular CSS Hierarchy -->
   <link rel="stylesheet" href="./css/variables.css" />

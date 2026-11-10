@@ -101,8 +101,8 @@
   overflow: hidden;
   page-break-after: always;
   break-after: page;
-  page-break-inside: avoid;
-  break-inside: avoid;
+  page-break-inside: auto;
+  break-inside: auto;
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
   will-change: auto;
 }
@@ -205,8 +205,38 @@ html[data-theme="light"] .a4-page {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 6px;
   overflow: hidden;
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+/* Natural Multi-Line & Card Flow Across Page Margins (Zero Dead Bottom Voids) */
+.page-content-area section,
+.page-content-area > *,
+.science-card,
+.science-concept-card,
+.grammar-structure-card,
+.grammar-analysis-card,
+.teachers-corner-card,
+.math-formula-box,
+.practice-question-card,
+.bilingual-passage-card,
+.sentence-breakdown-card,
+.explanation-card,
+.chem-reaction-card,
+.law-callout-box,
+.academic-table,
+.academic-table tbody,
+.academic-table tr {
+  break-inside: auto !important;
+  page-break-inside: auto !important;
+}
+
+/* Prevent Orphan Headers Only */
+h1, h2, h3, .module-heading {
+  break-after: avoid !important;
+  page-break-after: avoid !important;
 }
 
 /* Fixed Slim Running Footer */
@@ -598,10 +628,51 @@ html[data-theme="light"] .a4-page {
     padding: 9.5mm 13mm 7.5mm 13mm !important;
     page-break-after: always !important;
     break-after: page !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
   }
   .a4-cover-page {
     padding: 14mm 16mm 12mm 16mm !important;
+  }
+  section,
+  .science-card,
+  .science-concept-card,
+  .grammar-structure-card,
+  .grammar-analysis-card,
+  .teachers-corner-card,
+  .math-formula-box,
+  .practice-question-card,
+  .bilingual-passage-card,
+  .sentence-breakdown-card,
+  .explanation-card,
+  .chem-reaction-card,
+  .law-callout-box,
+  .academic-table {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+  h1, h2, h3, .module-heading {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .a4-page,
+  .a4-page *,
+  .a4-cover-page,
+  .a4-cover-page *,
+  .katex,
+  .katex *,
+  svg,
+  svg text,
+  svg tspan,
+  svg path {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    text-rendering: geometricPrecision !important;
+    -webkit-font-smoothing: antialiased !important;
+    shape-rendering: geometricPrecision !important;
   }
 }
